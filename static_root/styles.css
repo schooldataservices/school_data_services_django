@@ -1,0 +1,54 @@
+/* Add some hover effect to the button */
+.send-emails-button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+/* Add some padding and border-radius to the button */
+.send-emails-button {
+    width: 200px;
+    height: 50px;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Add a shadow effect to the button */
+.send-emails-button {
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+/* Add some margin between the form and other elements */
+.form-inline {
+    margin-bottom: 20px;
+}
+
+
+.email-configuration-form {
+    margin-bottom: 20px; /* Add some margin below the form */
+}
+
+.form-field {
+    margin-bottom: 15px; /* Add margin between form fields */
+}
+
+.error-message {
+    color: red; /* Style error messages in red */
+}
+
+.save-configuration-button {
+    width: 150px; /* Set the width of the button */
+    height: 40px; /* Set the height of the button */
+    background-color: #007bff; /* Set button background color */
+    color: #fff; /* Set button text color */
+    font-size: 16px; /* Set button font size */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Apply border radius to button */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.save-configuration-button:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
