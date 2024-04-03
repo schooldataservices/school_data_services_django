@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import initial_view, email_config_view, send_emails_view
+from . import views
 
 
 # URLs define the mapping between URL patterns and view functions or classes.
@@ -10,9 +10,9 @@ from .views import initial_view, email_config_view, send_emails_view
 
 urlpatterns = [
     
-    path('', initial_view, name='initial_view'),
-    path('email_config/', email_config_view, name='email_config_view'),
-    path('send_emails/', send_emails_view, name='send_emails_view'),
+    path('', views.initial_view, name='initial_view'),
+    path('email_config/', views.email_config_view, name='email_config_view'),
+    path('send_emails/', views.send_emails_view, name='send_emails_view'),
     # path('email_config/', email_config_view, name='email_config_view')
 ]
 

@@ -6,9 +6,8 @@ from datetime import datetime
 import time
 import logging
 import os
-from emailscraper_app.modules.Sending_Emails.sends import EmailConfig
 from emailscraper_app.modules.Sending_Emails.sends import SendMail
-from emailscraper_app.modules.Sending_Emails.html_email_strings.schools_sport_focus import get_template
+
 #This import dictates template
 
 
@@ -21,12 +20,12 @@ logging.basicConfig(filename= logpath_creation + '\\Email_Sender.log', level=log
                     format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S', force=True)
 
 
-df = pd.read_csv('phony.csv')
+
 # ---------------------------
 
 def blast(email_config, df, test=False):
 
-    
+    print('Blast has been called')
 
     # Get the next 50 emails iteratively and send every 60 seconds with a new SMTP connection
     # get_next_50 is what ends this function. It will break once end_point has surpassed.
@@ -47,7 +46,7 @@ def blast(email_config, df, test=False):
             print('Reached the end_point limit of 1500. Exited the loop.')
             break
         
-        # SMTP conn populates direclty in process
+        # SMTP conn populates directly in process
         email_history = SendMail.process(next_50, email_config, test)
         email_history.to_csv('output.csv', index = False)
 

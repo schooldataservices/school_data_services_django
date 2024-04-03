@@ -1,6 +1,6 @@
 from django import forms
 from .models import EmailOption
-from config import imap_password_customplanet, db_password, db_username
+from config import email_config
 from .modules.Sending_Emails.sends import SendMail
 
 # Forms handle the validation and processing of user input from HTML forms.
@@ -11,23 +11,23 @@ from .modules.Sending_Emails.sends import SendMail
 class EmailBlastForm(forms.Form):
     email_options = forms.ModelChoiceField(queryset=EmailOption.objects.all())
 
-# used for selecting a single model object from a queryset.
-# retrieves all rows from the EmailOption model, in other words it pulls in all records from that tablle
-    
+#Completely depends on config    
 
 class EmailConfigForm(forms.Form):
-                EMAIL_ADDRESS_FROM = forms.EmailField(initial='2015samtaylor@gmail.com')
-                EMAIL_PASS = forms.CharField(widget=forms.HiddenInput(), initial='B@dasspig1')  # Assuming it's a password field
-                server = forms.CharField(initial='emailcampaign.c9vhoi6ncot7.us-east-1.rds.amazonaws.com')
-                database = forms.CharField(initial='emailcampaign')
-                table_name = forms.CharField(initial='email_history')
-                filter_date = forms.DateField(initial='2024-03-04')  # Assuming YYYY-MM-DD format
-                email_subject_line = forms.CharField(initial='Local Supplier for Baseball Apparel')
-                email_campaign_name = forms.CharField(initial='Local Supplier Baseball')
-                contact_column = forms.CharField(initial='email')
-                sport = forms.CharField(initial='Baseball')
-                db_pass = forms.CharField(widget=forms.HiddenInput(), initial = db_password)  # Assuming it's a password field
-                db_user = forms.CharField(initial='admin')
+                EMAIL_ADDRESS_FROM = forms.EmailField(initial=email_config.EMAIL_ADDRESS_FROM)
+                EMAIL_PASS = forms.CharField(widget=forms.HiddenInput(), initial=email_config.EMAIL_PASS)  # Assuming it's a password field
+                server = forms.CharField(initial=email_config.server)
+                database = forms.CharField(initial=email_config.database)
+                table_name = forms.CharField(initial=email_config.table_name)
+                filter_date = forms.DateField(initial=email_config.filter_date)  # Assuming YYYY-MM-DD format
+                email_subject_line = forms.CharField(initial=email_config.email_subject_line)
+                email_campaign_name = forms.CharField(initial=email_config.email_campaign_name)
+                contact_column = forms.CharField(initial=email_config.contact_column)
+                sport = forms.CharField(initial=email_config.sport)
+                db_pass = forms.CharField(widget=forms.HiddenInput(), initial = email_config.db_pass)  # Assuming it's a password field
+                db_user = forms.CharField(initial=email_config.db_user)
+                optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
+                template_str = forms.CharField(initial=email_config.template_str)
 
 
 

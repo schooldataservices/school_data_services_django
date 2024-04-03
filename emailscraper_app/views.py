@@ -7,7 +7,10 @@ from email_send_main import blast
 from config import *
 import pandas as pd
 from datetime import datetime
-df = pd.read_csv('phony.csv')
+from emailscraper_app.modules.Sending_Emails import KC_schools
+
+df = KC_schools.read_in()
+df = KC_schools.filter_emails_by_sport(df, ['Baseball', 'Softball'])
 
 
 
@@ -17,55 +20,15 @@ df = pd.read_csv('phony.csv')
 
 
 
+
+
+
 def initial_view(request):
     print('Calling initial view')
+
+    #initialize EmailConfigForm instanc, pass into Homepage
     email_config_form = EmailConfigForm()
     return render(request, 'homepage.html', {'email_config_form': email_config_form})
-
-
-
-# def email_config_view(request):
-#     print('Calling email_config_view')
-#     if request.method == 'POST':
-
-#         form = EmailConfigForm(request.POST)
-#         if form.is_valid():
-#             # Process form data and save configuration
-
-#             # Display success message
-#             messages.success(request, 'Configuration saved successfully.')
-#             return redirect('initial_view')  # Redirect to the homepage or wherever you want
-#     else:
-#         form = EmailConfigForm()
-    
-#     return render(request, 'homepage.html', {'email_config_form': form})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def email_config_view(request):
@@ -118,7 +81,11 @@ def email_config_view(request):
 def send_emails_view(request):
 
     email_config = request.session.get('email_config')
+    print('Send emails view has been called')
+    print(email_config)
     if request.method == 'POST':
+
+        #The df needs to be passed in here
 
         # Call the blast function from email_send_main.py
         blast(email_config, df, test=True)

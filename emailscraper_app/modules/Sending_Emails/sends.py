@@ -9,8 +9,11 @@ from datetime import datetime
 import pytz
 import time
 import base64
-from html_email_strings.schools_sport_focus import get_template 
-# from Sending_Emails.modules.html_email_strings.baseball_intro import get_intro_template   #Dictates what template is being passed in into the body variable
+import importlib
+import ast 
+import warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
+
 
 
 class SendMail:
@@ -44,8 +47,6 @@ class SendMail:
 
     def get_next_50(df):
 
-        #email_config does not exist here
-
         try:    
             email_history = pd.read_csv(os.getcwd() + '\\output.csv')
 
@@ -66,7 +67,7 @@ class SendMail:
             print('Output is not created, first run of 50 emails preparing to be sent')
             logging.info('Output is not created, first run of 50 emails preparing to be sent')
 
-            # # Process df starting from the index_to_start
+            #Process df starting from the index_to_start
             df_remaining = df.iloc[0:50]
 
         except TypeError:
@@ -81,14 +82,18 @@ class SendMail:
     # ------------------------------------------------------
 
 
-    def send(email_config, email_contact, **kwargs):
+    def send(email_config, email_contact, SMTP_CONN,  **kwargs):
 
-        EMAIL_ADDRESS_FROM = email_config.EMAIL_ADDRESS_FROM
-        EMAIL_PASS = email_config.EMAIL_PASS
-        SMTP_CONN = email_config.SMTP_CONN
-        email_subject_line = email_config.email_subject_line
-        template = email_config.template
-
+        #This can not be configured as a dict, because of SMTP conn and template func
+        EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
+        EMAIL_PASS = email_config['EMAIL_PASS']
+        email_subject_line = email_config['email_subject_line']
+    
+        #establish the template based on the config file template_str
+        template_str = email_config['template_str']
+        template_name = f"emailscraper_app.modules.Sending_Emails.html_email_strings.{template_str}"
+        module = importlib.import_module(template_name)
+        template = module.get_template
 
         msg = EmailMessage()
         msg['From'] = EMAIL_ADDRESS_FROM
@@ -123,9 +128,9 @@ class SendMail:
 
 
         if test == True:
-            df.loc[0, 'email'] = '2015samtaylor@gmail.com'
-            df.loc[1, 'email'] = 'sammytaylor2006@yahoo.com'
-            df.loc[2, 'email'] = 'jerrybons2006@gmail.com'
+            df.at[0, 'email'] = '2015samtaylor@gmail.com'
+            df.at[1, 'email'] = 'sammytaylor2006@yahoo.com'
+            df.at[2, 'email'] = 'jerrybons2006@gmail.com'
             df = df[:2]
             logging.info('Test argument is True, cutting down frame and sending to personal emails')
             print('Test argument is True, cutting down frame and sending to personal emails')
@@ -140,13 +145,17 @@ class SendMail:
 
         #next 50 must be passed in as the df, otherwise it will keep running
 
-        EMAIL_ADDRESS_FROM = email_config.EMAIL_ADDRESS_FROM
-        contact_column = email_config.contact_column
-        sport = email_config.sport
-        email_campaign_name = email_config.email_campaign_name
-        email_subject_line = email_config.email_subject_line
-        optional_iterated_columns = email_config.optional_iterated_columns
+        EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
+        EMAIL_PASS = email_config['EMAIL_PASS']
+        contact_column = email_config['contact_column']
+        sport = email_config['sport']
+        email_campaign_name = email_config['email_campaign_name']
+        email_subject_line = email_config['email_subject_line']
+        optional_iterated_columns_str = email_config['optional_iterated_columns']
+        optional_iterated_columns = ast.literal_eval(optional_iterated_columns_str)
 
+        #establish SMTP conn based on variables in config, passed into send function. Lasts throughout send. If fails re-configures within send
+        SMTP_CONN = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS) #Established in view click button
 
         #create the test right here with a True False flag. 
         #Then limit it to two. And send to self
@@ -156,7 +165,6 @@ class SendMail:
         #returns subsidized portion of the df if arg it True
         df = SendMail.test_func(test, df)
 
-  
         #Limit df itterrows to test
         for index, row in df.iterrows():
 
@@ -165,7 +173,6 @@ class SendMail:
             now_central = datetime.now(central_time_zone)
             formatted_date = now_central.strftime("%m/%d/%Y")
             email_contact = row[contact_column] #should always be 'email' column name
-    
     
             # Check if the email has already been processed once
             if email_contact in processed_emails:
@@ -183,11 +190,16 @@ class SendMail:
                 # Iterate through optional_iterated_columns and add them to kwargs
                 for column_name in optional_iterated_columns:
 
-                    kwargs[column_name] = row[column_name]
+                    if column_name in row: #check if column name exists in the row data
+
+                        kwargs[column_name] = row[column_name]
+
+                    else:
+                        print(f'Column {column_name} does not exist in the DataFrame row')
 
                     #optional kwargs get passed into send, which are passed into template. Then are called upon through dict format
 
-            SendMail.send(email_config, email_contact,**kwargs)
+            SendMail.send(email_config, email_contact, SMTP_CONN, **kwargs)
 
         
         #contact_email is how the get_next_50 finds where it left off
