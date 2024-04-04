@@ -6,5 +6,4 @@ from django.apps import AppConfig
 
 
 class EmailscraperAppConfig(AppConfig):
-    default_auto_field = "django.db.models.BigAutoField" #BigAutoField is the default primary key field type for models in app
     name = "emailscraper_app"

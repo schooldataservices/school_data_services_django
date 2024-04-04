@@ -1,16 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Blast</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'emailscraper_django/styles.css' %}">
 </head>
 <body>
     <h1>Send Emails</h1>
 
-    <!-- Display messages -->
+    <!-- Display messages generated in the current session, such as save succesful -->
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
@@ -19,8 +19,8 @@
         </ul>
     {% endif %}
 
-    <!-- Email configuration form -->
-    <form action="{% url 'email_config_view' %}" method="post" class="email-configuration-form">
+    <!-- Email configuration form comes from cleansed form created in the email_config_view -->
+    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form">
         {% csrf_token %}
         {% for field in email_config_form %}
             {% if field.widget.input_type != 'hidden' %}
@@ -37,7 +37,7 @@
     </form>
 
 
-    <form action="{% url 'send_emails_view' %}" method="post" class="form-inline">
+    <form action="{% url 'email_send' %}" method="post" class="form-inline">
         {% csrf_token %}
         <button type="submit" class="send-emails-button">Send Emails</button>
     </form>
@@ -46,7 +46,9 @@
     <!-- Display sent emails here -->
 
     {% if emails_sent %}
-    <p>Emails sent successfully!</p>
+        <div class="messages">
+            <p>Emails sent successfully!</p>
+        </div>
     {% endif %}
     
 </body>

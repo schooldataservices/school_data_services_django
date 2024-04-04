@@ -28,7 +28,9 @@ def initial_view(request):
 
     #initialize EmailConfigForm instanc, pass into Homepage
     email_config_form = EmailConfigForm()
-    return render(request, 'homepage.html', {'email_config_form': email_config_form})
+    emails_sent = request.session.get('emails_sent', False)
+
+    return render(request, 'emailscraper_django/homepage.html', {'email_config_form': email_config_form, 'emails_sent': emails_sent})
 
 
 def email_config_view(request):
@@ -57,7 +59,7 @@ def email_config_view(request):
             # return redirect('email_config_view')
             
             # Render the same template with the success message
-            return render(request, 'homepage.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
+            return render(request, 'emailscraper_django/homepage.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
         
         else:
 
@@ -72,7 +74,7 @@ def email_config_view(request):
 
 
 
-    return render(request, 'homepage.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
+    return render(request, 'emailscraper_django/homepage.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
 
 
 # #WHERE WAS THE SMTP COMING FROM PRIOR
@@ -80,23 +82,26 @@ def email_config_view(request):
 
 def send_emails_view(request):
 
-    email_config = request.session.get('email_config')
+    email_config = request.session.get('email_config') #get the variables from the session, if saved it will be overwritten
     print('Send emails view has been called')
     print(email_config)
+
     if request.method == 'POST':
 
-        #The df needs to be passed in here
-
-        # Call the blast function from email_send_main.py
+        # Call the blast function from email_send_main.py, df can be configured to be passed in dynamically with the adlibs
+        #currently reads df from views file being a global variable
         blast(email_config, df, test=True)
+
+        messages.success(request, 'Emails sent successfully!')
         
-        # Optionally, return a response to the client
-        return render(request, 'homepage.html', {'emails_sent': True})
+        # Redirect to the homepage URL
+        #What about altering the query string through and additional param , emails_sent = True
+        return redirect('initial_view')
     
     else: #on initial page load
         form = EmailBlastForm()
         
-    return render(request, 'homepage.html', {'form': form})
+    return render(request, 'emailscraper_django/homepage.html', {'form': form})
 
     
 

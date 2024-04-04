@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "emailscraper_app",
+    "emailscraper_app.apps.EmailscraperAppConfig"
+    # "emailscraper_app", #if default conventions
 ]
 
 MIDDLEWARE = [
@@ -127,11 +128,9 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'emailscraper_app', 'static') # Path to custom CSS files
+STATICFILES_DIR = [
+    os.path.join(BASE_DIR, 'emailscraper_app', 'static', 'emailscraper_django') # Path to custom CSS files
 ]
-
-
 
 if DEBUG:
 

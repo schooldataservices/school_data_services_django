@@ -11,9 +11,8 @@ from . import views
 urlpatterns = [
     
     path('', views.initial_view, name='initial_view'),
-    path('email_config/', views.email_config_view, name='email_config_view'),
-    path('send_emails/', views.send_emails_view, name='send_emails_view'),
-    # path('email_config/', email_config_view, name='email_config_view')
+    path('email_config/', views.email_config_view, name='email_config_home'),
+    path('send_emails/', views.send_emails_view, name='email_send')
 ]
 
 
