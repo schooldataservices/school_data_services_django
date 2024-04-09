@@ -1,0 +1,24 @@
+{% extends 'emailscraper_django/base.html' %}
+
+{% block content %}
+    <h2>Files</h2>
+
+    <table class="table">
+        <thread>
+            <tr>
+                <th>Emails</th>
+                <th>HighSchools</th>
+                <th>File</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.Emails }}</td>
+                <td>{{ file.HighSchools }}</td>
+                <td>{{ file.File }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

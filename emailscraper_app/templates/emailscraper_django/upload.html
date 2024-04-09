@@ -1,0 +1,13 @@
+{% extends 'emailscraper_django/base.html' %}
+
+{% block content %}
+    <h2> Upload Files</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="document">
+        <button type="submit">Upload</button>
+    </form>
+    
+
+{% endblock content %}

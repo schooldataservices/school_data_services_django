@@ -1,13 +1,19 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from .forms import EmailBlastForm, EmailConfigForm
-from .models import EmailOption
-from email_send_main import blast
+from django.core.files.storage import FileSystemStorage
+from .forms import EmailBlastForm, EmailConfigForm, EmailFileForm
+from .models import EmailOption, EmailFileUpload
+
+
+import csv
 from config import *
 import pandas as pd
+import codecs
+import csv
 from datetime import datetime
 from emailscraper_app.modules.Sending_Emails import KC_schools
+from email_send_main import blast
 
 df = KC_schools.read_in()
 df = KC_schools.filter_emails_by_sport(df, ['Baseball', 'Softball'])
@@ -21,16 +27,19 @@ df = KC_schools.filter_emails_by_sport(df, ['Baseball', 'Softball'])
 
 
 
-
-
 def initial_view(request):
     print('Calling initial view')
+
+    context = {
+        'emails': EmailOption.objects.all()
+    }
 
     #initialize EmailConfigForm instanc, pass into Homepage
     email_config_form = EmailConfigForm()
     emails_sent = request.session.get('emails_sent', False)
 
-    return render(request, 'emailscraper_django/homepage.html', {'email_config_form': email_config_form, 'emails_sent': emails_sent})
+    #register with initial generic form
+    return render(request, 'emailscraper_django/homepage_base.html', {'email_config_form': email_config_form, 'emails_sent': emails_sent, 'email_context': context})
 
 
 def email_config_view(request):
@@ -59,7 +68,7 @@ def email_config_view(request):
             # return redirect('email_config_view')
             
             # Render the same template with the success message
-            return render(request, 'emailscraper_django/homepage.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
+            return render(request, 'emailscraper_django/homepage_base.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
         
         else:
 
@@ -74,7 +83,7 @@ def email_config_view(request):
 
 
 
-    return render(request, 'emailscraper_django/homepage.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
+    return render(request, 'emailscraper_django/homepage_base.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
 
 
 # #WHERE WAS THE SMTP COMING FROM PRIOR
@@ -95,7 +104,6 @@ def send_emails_view(request):
         messages.success(request, 'Emails sent successfully!')
         
         # Redirect to the homepage URL
-        #What about altering the query string through and additional param , emails_sent = True
         return redirect('initial_view')
     
     else: #on initial page load
@@ -103,7 +111,16 @@ def send_emails_view(request):
         
     return render(request, 'emailscraper_django/homepage.html', {'form': form})
 
-    
+
+#Upload file to root, did not configure in settings
+#Also had it print local url to the page via context
+
+def upload(request):
+    if request.method == 'POST':
+        uploaded_file = request.FILES['document']
+        fs = FileSystemStorage()
+        fs.save(uploaded_file.name, uploaded_file)
+    return render(request, 'emailscraper_django/upload.html')
 
 
 
@@ -111,3 +128,23 @@ def send_emails_view(request):
 
 
 
+def file_list(request):
+    files = EmailFileUpload.objects.all()
+    return render(request, 'emailscraper_django/file_list.html', {
+        'files': files
+    })
+
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = EmailFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('file_list')
+        
+    else:
+        form = EmailFileForm()
+
+    return render(request, 'emailscraper_django/upload_file.html', {
+        'form': form
+    })

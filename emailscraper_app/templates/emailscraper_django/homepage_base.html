@@ -1,23 +1,14 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Blast</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'emailscraper_django/styles.css' %}">
-</head>
-<body>
+{% extends 'emailscraper_django/base.html' %}
+
+{% block title %}
+Email Campaign - Home
+{% endblock title %}
+
+
+{% block content %}
+
     <h1>Send Emails</h1>
 
-    <!-- Display messages generated in the current session, such as save succesful -->
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 
     <!-- Email configuration form comes from cleansed form created in the email_config_view -->
     <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form">
@@ -41,8 +32,11 @@
         {% csrf_token %}
         <button type="submit" class="send-emails-button">Send Emails</button>
     </form>
-    
 
+{% endblock content %}
+
+{% block footer %}
+    
     <!-- Display sent emails here -->
 
     {% if emails_sent %}
@@ -50,6 +44,15 @@
             <p>Emails sent successfully!</p>
         </div>
     {% endif %}
-    
-</body>
-</html>
+
+    <!-- Display all email options -->
+    <h2>Pulling in Example Data From The DB</h2>
+    <ul>
+        {% for email_option in email_context.emails %}
+            <li>Name: {{ email_option.name }}, Subject: {{ email_option.subject }}, Sender: {{ email_option.sender_email }}</li>
+            <!-- Add more fields as needed -->
+        {% endfor %}
+    </ul>
+
+
+{% endblock footer %}

@@ -35,13 +35,16 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "emailscraper_app.apps.EmailscraperAppConfig",
+    "users.apps.UsersConfig",
+    "crispy_forms",
+    "crispy_bootstrap4",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "emailscraper_app.apps.EmailscraperAppConfig"
+    "django.contrib.staticfiles"
     # "emailscraper_app", #if default conventions
 ]
 
@@ -126,7 +129,13 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap4'
+LOGIN_REDIRECT_URL = 'initial_view'
+LOGIN_URL = 'login'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 STATICFILES_DIR = [
     os.path.join(BASE_DIR, 'emailscraper_app', 'static', 'emailscraper_django') # Path to custom CSS files

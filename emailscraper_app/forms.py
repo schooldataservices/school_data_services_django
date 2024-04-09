@@ -1,7 +1,6 @@
 from django import forms
-from .models import EmailOption
+from .models import EmailOption, EmailFileUpload
 from config import email_config
-from .modules.Sending_Emails.sends import SendMail
 
 # Forms handle the validation and processing of user input from HTML forms.
 # Django forms are Python classes that subclass django.forms.Form or django.forms.ModelForm.
@@ -30,6 +29,12 @@ class EmailConfigForm(forms.Form):
                 template_str = forms.CharField(initial=email_config.template_str)
 
 
+class EmailFileForm(forms.ModelForm):
+    class Meta:
+        model = EmailFileUpload
+        fields = ('email', 'HighSchools', 'file')
 
+        
+                
 
                 

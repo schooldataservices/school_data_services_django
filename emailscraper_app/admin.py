@@ -1,7 +1,9 @@
 from django.contrib import admin
-from .models import MyModel
-
-admin.site.register(MyModel)
+from .models import EmailFileUpload, EmailOption
 
 
-# Register your models here.
+# Register your models here in order to appear on admin site
+
+# admin.site.register(MyModel)
+admin.site.register(EmailFileUpload)
+admin.site.register(EmailOption)

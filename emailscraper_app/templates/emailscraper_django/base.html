@@ -1,54 +1,72 @@
-<!--Need to create a base.html that uses template inheritance {% block content %}{% endblock %} -->
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Title and Custom CSS -->
     <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'emailscraper_django/styles.css' %}">
+    <!-- Add your CSS and other head elements here -->
 </head>
 <body>
-    <header>
-        <h1>{% block header %}Welcome to My Website{% endblock %}</h1>
-    </header>
 
-    <nav>
-        <!-- Navigation links -->
-    </nav>
+<!-- Navigation bar -->
+<nav>
+    <ul class="navbar">
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'initial_view' %}">Home</a></li>
+            <li><a href="{% url 'initial_view' %}">Send Emails</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+       
 
-    <main>
-        {% block content %}
-        <p>This is the main content area.</p>
-        {% endblock %}
-    </main>
+   
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
 
-    <footer>
-        <p>&copy; 2024 My Website</p>
-    </footer>
-</body>
-</html>
-
-
-<!--  Example of the inheritance, by extending the base template  -->
-
-{% extends 'base.html' %}
-
-{% block title %}My Awesome Website{% endblock title %}
-
-{% block header %}
-    <h1>Welcome to My Awesome Website</h1>
-{% endblock header %}
-
-{% block content %}
-    <p>This is some awesome content!</p>
-    <p>Check out these cool features:</p>
-    <ul>
-        <li>Feature 1</li>
-        <li>Feature 2</li>
-        <li>Feature 3</li>
+        {% endif%}
+   
+        <!-- Add more navigation links as needed -->
     </ul>
-{% endblock content %}
+</nav>
 
 
+<!-- Content block -->
+<div class="content">
 
+    <!-- Display messages generated in the current session, such as save succesful -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
+    {% block content %}
+    <!-- Content specific to child templates will go here -->
+    {% endblock %}
+</div>
+
+<!-- Footer -->
+<footer>
+    {% block footer %}
+    <!-- Content specific to footer goes here -->
+    {% endblock footer %}
+</footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body> 
+</html>

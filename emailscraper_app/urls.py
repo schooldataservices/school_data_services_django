@@ -12,7 +12,10 @@ urlpatterns = [
     
     path('', views.initial_view, name='initial_view'),
     path('email_config/', views.email_config_view, name='email_config_home'),
-    path('send_emails/', views.send_emails_view, name='email_send')
+    path('send_emails/', views.send_emails_view, name='email_send'),
+    path('upload/', views.upload, name='upload'),
+    path('file_list/', views.file_list, name='file_list'),
+    path('file_list/upload_file/', views.upload_file, name='upload_file'),
 ]
 
 
