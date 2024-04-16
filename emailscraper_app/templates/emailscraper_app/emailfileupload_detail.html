@@ -1,0 +1,25 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Email File Upload
+{% endblock title %}
+
+
+{% block content %}
+{% endblock content %}
+
+{% block footer %}
+    
+    <h1>Email File Pagination</h1>
+        <h2 class="email-email">
+            <a href="{% url 'email-detail' object.id %}">{{ object.email }}</a>
+        </h2>
+        <p class="email-file"> UPLOADED FILE: <a href="{{ object.file.url }}">{{ object.file.name }}</a></p>
+
+        <a href="{% url 'email-update' object.pk %}" class="btn btn-primary">Update Current File</a>
+
+{% endblock footer %}
+
+<!-- when dealing with detail views, must use object. -->
+<!-- I want to get create a link that says update the file -->

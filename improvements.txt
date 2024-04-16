@@ -1,0 +1,15 @@
+Some of the fields on the dropdown need to be configured within the profile section
+which can only be seen by the user
+
+
+List out all the files under the profile or another section 
+and then have it as a clickable link to those pages
+
+
+need to fix the template path. 
+Previously had emailscraper_django need to chagne to emailscraper_app
+
+
+The url route upload_file and email/new have the same functionality
+
+Try the iteration on the upload_file

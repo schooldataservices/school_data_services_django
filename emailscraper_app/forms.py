@@ -32,7 +32,7 @@ class EmailConfigForm(forms.Form):
 class EmailFileForm(forms.ModelForm):
     class Meta:
         model = EmailFileUpload
-        fields = ('email', 'HighSchools', 'file')
+        fields = ('file', 'file_tag')
 
         
                 

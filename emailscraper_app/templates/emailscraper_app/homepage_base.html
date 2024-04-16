@@ -1,4 +1,5 @@
-{% extends 'emailscraper_django/base.html' %}
+{% extends 'emailscraper_app/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Email Campaign - Home
@@ -7,10 +8,12 @@ Email Campaign - Home
 
 {% block content %}
 
-    <h1>Send Emails</h1>
+    <!-- <h1>Send Emails</h1> -->
 
+    <h1>{{ welcome_message }}</h1>
 
-    <!-- Email configuration form comes from cleansed form created in the email_config_view -->
+ 
+    <!-- Email configuration form comes from cleansed form created in the email_config_view --> 
     <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form">
         {% csrf_token %}
         {% for field in email_config_form %}
@@ -25,7 +28,7 @@ Email Campaign - Home
             {% endif %}
         {% endfor %}
         <button type="submit" class="save-configuration-button">Save Configuration</button>
-    </form>
+    </form> 
 
 
     <form action="{% url 'email_send' %}" method="post" class="form-inline">
@@ -36,23 +39,4 @@ Email Campaign - Home
 {% endblock content %}
 
 {% block footer %}
-    
-    <!-- Display sent emails here -->
-
-    {% if emails_sent %}
-        <div class="messages">
-            <p>Emails sent successfully!</p>
-        </div>
-    {% endif %}
-
-    <!-- Display all email options -->
-    <h2>Pulling in Example Data From The DB</h2>
-    <ul>
-        {% for email_option in email_context.emails %}
-            <li>Name: {{ email_option.name }}, Subject: {{ email_option.subject }}, Sender: {{ email_option.sender_email }}</li>
-            <!-- Add more fields as needed -->
-        {% endfor %}
-    </ul>
-
-
 {% endblock footer %}

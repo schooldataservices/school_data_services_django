@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Profile
 
 class UserRegisterForm(UserCreationForm):
     #additional fields added to UserCreationForm
@@ -17,3 +18,18 @@ class UserRegisterForm(UserCreationForm):
 
         #now we can use this instead of UserCreationForm
 
+
+#From that will work with a specific db model
+
+class UserUpdateForm(forms.ModelForm):
+
+      class Meta:
+        model = User
+        fields = ['username', 'email']
+
+
+class ProfileUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = ['image']

@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
+from django.contrib.auth.models import User
 #Whenever changes are made in models.py migrations must be made. This changes db schema
 # python manage.py makemigrations
 # python manage.py migrate
@@ -25,9 +27,17 @@ class EmailOption(models.Model):
 
 
 class EmailFileUpload(models.Model):
-    email = models.CharField(max_length=150)
-    HighSchools = models.CharField(max_length=150)
-    file = models.FileField(upload_to='EmailFiles/files/')
+   
+    file_tag = models.CharField(max_length=150)
+    file = models.FileField(upload_to='email_files/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    creator_id = models.ForeignKey(User, on_delete = models.CASCADE)
+
+    # date_posted = models.DateTimeField(default=timezone.now) 
 
     def __str__(self):
-        return(self.email)
+        return(self.file)
+    
+
+    def get_absolute_url(self):
+        return reverse ('email-detail', kwargs={'pk': self.pk})   #returns full path as a string, and redirects to that page

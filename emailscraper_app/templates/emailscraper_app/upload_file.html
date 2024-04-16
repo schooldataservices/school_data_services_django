@@ -1,0 +1,40 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h2>Upload File</h2>
+    <div style="margin-top: 30px;"></div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Upload File</button>
+    </form>
+{% endblock content %}
+
+{% block footer %}
+<div style="margin-top: 300px;">
+    <h2>Previously Uploaded Files</h2>
+    <select id="file-select">
+        {% for file_upload in previous_files %}
+            <option value="{{ file_upload.file.url }}">{{ file_upload.file.url}}</option>
+        {% empty %}
+            <option>No files uploaded yet.</option>
+        {% endfor %}
+    </select>
+    <button id="download-button">Download</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#download-button').click(function() {
+                var fileUrl = $('#file-select').val();
+                if (fileUrl) {
+                    window.location.href = fileUrl;
+                } else {
+                    alert('No file selected.');
+                }
+            });
+        });
+    </script>
+</div>
+
+{% endblock footer %}
