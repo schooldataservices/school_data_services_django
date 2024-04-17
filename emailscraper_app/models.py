@@ -41,3 +41,5 @@ class EmailFileUpload(models.Model):
 
     def get_absolute_url(self):
         return reverse ('email-detail', kwargs={'pk': self.pk})   #returns full path as a string, and redirects to that page
+
+

@@ -80,8 +80,7 @@ def initial_view(request):
 
 
 def email_config_view(request):
-
-    excluded_fields = ['EMAIL_PASS', 'db_pass']
+    excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
     print('Starting email config view')
 
     if request.method == 'POST':
@@ -89,7 +88,6 @@ def email_config_view(request):
         form = EmailConfigForm(request.POST)
 
         if form.is_valid():
-
             # Convert filter_date string to a date object
             filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
             form.cleaned_data['filter_date'] = filter_date
@@ -98,32 +96,28 @@ def email_config_view(request):
             request.session['email_config'] = form.cleaned_data
 
             messages.success(request, 'Email configuration saved successfully.')
-
-            # Redirect to the same page to clear form fields and show success message
-            print(form.cleaned_data)
-            print('Form was valid')
-            # return redirect('email_config_view')
-            
-            # Render the same template with the success message
-            return render(request, 'emailscraper_app/homepage_base.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
-        
         else:
+            form = EmailConfigForm()
 
-            print('\nForm errors:', form.errors)
-            print('\nForm data:', request.POST)
-
+            # Exclude specified fields from the form
+            for field_name in excluded_fields:
+                if field_name in form.fields:
+                    del form.fields[field_name]
 
     else:
-        # Initialize the form with default values
         form = EmailConfigForm()
-        print('Form was not valid')
+
+        # Exclude specified fields from the form
+        for field_name in excluded_fields:
+            if field_name in form.fields:
+                del form.fields[field_name]
+
+    # Render the template with the form
+    return render(request, 'emailscraper_app/homepage_base.html', {'email_config_form': form})
 
 
 
-    return render(request, 'emailscraper_app/homepage_base.html', {'email_config_form': form, 'excluded_fields': excluded_fields})
 
-
-# #WHERE WAS THE SMTP COMING FROM PRIOR
 
 
 def send_emails_view(request):

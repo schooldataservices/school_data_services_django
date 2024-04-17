@@ -15,7 +15,7 @@ class EmailBlastForm(forms.Form):
 class EmailConfigForm(forms.Form):
                 EMAIL_ADDRESS_FROM = forms.EmailField(initial=email_config.EMAIL_ADDRESS_FROM)
                 EMAIL_PASS = forms.CharField(widget=forms.HiddenInput(), initial=email_config.EMAIL_PASS)  # Assuming it's a password field
-                server = forms.CharField(initial=email_config.server)
+                server = forms.CharField(widget=forms.HiddenInput(), initial=email_config.server)
                 database = forms.CharField(initial=email_config.database)
                 table_name = forms.CharField(initial=email_config.table_name)
                 filter_date = forms.DateField(initial=email_config.filter_date)  # Assuming YYYY-MM-DD format
