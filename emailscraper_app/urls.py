@@ -3,7 +3,8 @@ from . import views
 from .views import (EmailListView,
                     EmailDetailView, 
                     EmailCreateView,
-                    EmailUpdateView)
+                    EmailUpdateView,
+                    EmailDeleteView)
 
 
 # URLs define the mapping between URL patterns and view functions or classes.
@@ -19,6 +20,7 @@ urlpatterns = [
     path('email/<int:pk>/', EmailDetailView.as_view(), name='email-detail'),
     path('email/new/', EmailCreateView.as_view(), name='email-create'),     #class based
     path('email/<int:pk>/update/', EmailUpdateView.as_view(), name='email-update'),
+    path('email/<int:pk>/delete/', EmailDeleteView.as_view(), name='email-delete'),
 
 
     path('email_config/', views.email_config_view, name='email_config_home'),
@@ -40,12 +42,25 @@ urlpatterns = [
 # send_emails_view is the view function associated with this URL pattern.
 # 'send_emails_view' is the name of this URL pattern.
 
-#Has previously updated files dropdown
-# http://localhost:8000/email/1/update/
 
+#Upload File Class Based is looking good 
 
 #
-# http://localhost:8000/email/new/
+#On file submission it stays on the same page, and provides success message
+# On the same page you can utilze a dropdown to download the file or Update the selected file
+#It will only display files for the given user
+
+#Once selected from the dropdown the Update Current File routes you to the pagination
+#Then allowing you to override the file and file_tag
+
+#Once file is submitted in update page 
+#It is then paginated routed from 
+# http://localhost:8000/email/8/update/
+# to
+# http://localhost:8000/email/8/
 
 
-#Change once the file is submitted just pop a success message
+# GOAL
+# On the upload file class based 
+#Insert a button that allows you to delete the file
+#Achieved

@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import (ListView, 
                                   DetailView, 
                                   CreateView,
-                                  UpdateView)
+                                  UpdateView,
+                                  DeleteView)
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
@@ -63,6 +64,8 @@ def initial_view(request):
         'emails': EmailOption.objects.all(),
         'welcome_message': welcome_message,
     }
+
+    print(context)
 
 
     #initialize EmailConfigForm instanc, pass into Homepage
@@ -224,7 +227,7 @@ class EmailUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.creator_id = self.request.user
         return super().form_valid(form)
 
-    def test_func(self): #sees if user passes test condition when altering email
+    def test_func(self): #sees if user passes test condition when altering email confirming they initially posted
 
         email = self.get_object()
         if self.request.user == email.creator_id:
@@ -241,7 +244,26 @@ class EmailUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return context
 
 
+class EmailDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):  #form looks to model_confirm_delete.html by default
+    model = EmailFileUpload
+    success_url = '/'
+    #could put message saying succesfully deleted
     
+    def test_func(self): #sees if user passes test condition when altering email confirming they initially posted
+
+        email = self.get_object()
+        if self.request.user == email.creator_id:
+            return True
+        else:
+            return False
+        
+    def form_valid(self, form):
+        """
+        Override the delete method to display a success message.
+        """
+        messages.success(self.request, "Email successfully deleted.")
+        return super().form_valid(form)
+  
 
  
 
