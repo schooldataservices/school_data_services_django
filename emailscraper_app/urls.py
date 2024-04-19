@@ -15,18 +15,16 @@ from .views import (EmailListView,
 
 urlpatterns = [
 
-    path('', views.initial_view, name='initial_view'),
     path('email/', EmailListView.as_view(), name='email'),
     path('email/<int:pk>/', EmailDetailView.as_view(), name='email-detail'),
-    path('email/new/', EmailCreateView.as_view(), name='email-create'),     #class based
+    path('email/new/', EmailCreateView.as_view(), name='email-create'),     #emailfileupload_form.html
     path('email/<int:pk>/update/', EmailUpdateView.as_view(), name='email-update'),
     path('email/<int:pk>/delete/', EmailDeleteView.as_view(), name='email-delete'),
 
 
-    path('email_config/', views.email_config_view, name='email_config_home'),
+    path('', views.email_config_view, name='email_config_home'),
     path('send_emails/', views.send_emails_view, name='email_send'),
-    path('upload_file/', views.upload_file, name='upload'),                  #custom based
-    path('file_list/', views.file_list, name='file_list'),
+    path('file_uploads/', views.file_list, name='file_list'),
 
     # path('file_list/upload_file/', views.upload_file, name='upload_file'),
 ]
@@ -61,6 +59,6 @@ urlpatterns = [
 
 
 # GOAL
-# On the upload file class based 
-#Insert a button that allows you to delete the file
-#Achieved
+#Based on uploaded files, parse the csv and 
+#create a seperate form that pertains to those
+#contents and display on the homepage

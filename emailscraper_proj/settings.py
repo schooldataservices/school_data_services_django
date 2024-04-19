@@ -134,7 +134,7 @@ STATIC_URL = "/static/"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap4'
 
-LOGIN_REDIRECT_URL = 'initial_view'
+LOGIN_REDIRECT_URL = 'email_config_home'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

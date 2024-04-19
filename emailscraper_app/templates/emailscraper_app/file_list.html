@@ -7,16 +7,18 @@
         <thread>
             <tr>
                 <th>Emails</th>
-                <th>HighSchools</th>
-                <th>File</th>
+                <th>File Type</th>
+                <th>Column Names</th>
+                <th>Delimiter</th>
             </tr>
         </thread>
         <tbody>
             {% for file in files %}
             <tr>
-                <td>{{ file.Emails }}</td>
-                <td>{{ file.HighSchools }}</td>
-                <td>{{ file.File }}</td>
+                <td>{{ file.file }}</td>
+                <td>{{ file.file_tag }}</td>
+                <td>{{ file.column_names }}</td>
+                <td>{{ file.delimiter }}</td>
             </tr>
             {% endfor %}
         </tbody>

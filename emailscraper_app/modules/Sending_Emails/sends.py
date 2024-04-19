@@ -98,7 +98,7 @@ class SendMail:
         msg = EmailMessage()
         msg['From'] = EMAIL_ADDRESS_FROM
         msg['To'] = email_contact
-        msg['Subject'] = email_subject_line +  email_contact     #This can be formatted to iterate the subject line based on the send with an f string
+        msg['Subject'] = email_subject_line    #This can be formatted to iterate the subject line based on the send with an f string
 
         #kwargs adds in additional adlibs columns if specified in config
         body = template(**kwargs) 

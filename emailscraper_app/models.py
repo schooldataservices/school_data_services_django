@@ -32,6 +32,9 @@ class EmailFileUpload(models.Model):
     file = models.FileField(upload_to='email_files/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     creator_id = models.ForeignKey(User, on_delete = models.CASCADE)
+    column_names = models.TextField(blank=True)
+    delimiter = models.CharField(max_length=1, default=',')
+    
 
     # date_posted = models.DateTimeField(default=timezone.now) 
 

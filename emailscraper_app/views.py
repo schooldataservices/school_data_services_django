@@ -35,87 +35,60 @@ df = KC_schools.filter_emails_by_sport(df, ['Baseball', 'Softball'])
 
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .forms import EmailConfigForm
+from .models import EmailOption
+from users.models import Profile
+
 @login_required
-def initial_view(request):
-    print('Calling initial view')
-
-    profile_name = None
-
-    try:
-        profile = Profile.objects.get(user=request.user)
-        profile_name = profile.user.username
-    except Profile.DoesNotExist:
-        pass
-
-    # Check if it's the first-time login
-    first_time_login = False
-    if request.user.last_login is None:
-        first_time_login = True
-
-
-    # Create the welcome message based on the conditions
-    if first_time_login:
-        welcome_message = f'Welcome to the party, {request.user.username}!'
-    else:
-        welcome_message = f'Welcome back, {profile_name}!'
-
-
-    context = {
-        'emails': EmailOption.objects.all(),
-        'welcome_message': welcome_message,
-    }
-
-    print(context)
-
-
-    #initialize EmailConfigForm instanc, pass into Homepage
-    email_config_form = EmailConfigForm()
-    emails_sent = request.session.get('emails_sent', False)
-
-    #register with initial generic form
-    return render(request, 'emailscraper_app/homepage_base.html', 
-                  {'email_config_form': email_config_form, 
-                   'emails_sent': emails_sent, 
-                   'email_context': context})
-
-
 def email_config_view(request):
     excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
-    print('Starting email config view')
 
     if request.method == 'POST':
-        print('Was a post')
         form = EmailConfigForm(request.POST)
-
         if form.is_valid():
-            # Convert filter_date string to a date object
             filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
             form.cleaned_data['filter_date'] = filter_date
 
-            # Create a new instance of EmailConfig using form data
             request.session['email_config'] = form.cleaned_data
-
             messages.success(request, 'Email configuration saved successfully.')
+            print('Form is valid')
+            return redirect('email_config_home')
+            
         else:
-            form = EmailConfigForm()
-
-            # Exclude specified fields from the form
-            for field_name in excluded_fields:
-                if field_name in form.fields:
-                    del form.fields[field_name]
-
+            print('Form is invalid')
+            print(form.errors)
+         
     else:
+        print('Not a post creating basic config form')
         form = EmailConfigForm()
 
-        # Exclude specified fields from the form
-        for field_name in excluded_fields:
-            if field_name in form.fields:
-                del form.fields[field_name]
+    # Exclude specified fields from the form
+    for field_name in excluded_fields:
+        if field_name in form.fields:
+            del form.fields[field_name]
 
-    # Render the template with the form
-    return render(request, 'emailscraper_app/homepage_base.html', {'email_config_form': form})
+    emails = EmailOption.objects.all()
+    profile_name = request.user.profile.user.username if hasattr(request.user, 'profile') else None
+    first_time_login = request.user.last_login is None
+    welcome_message = f'Welcome to the party, {request.user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
 
+    email_config_form = form
+    emails_sent = request.session.get('emails_sent', False)
+    context = {
+        'emails': emails,
+        'welcome_message': welcome_message,
+    }
 
+    return render(request, 'emailscraper_app/homepage_base.html', {
+        'email_config_form': email_config_form,
+        'emails_sent': emails_sent,
+        'email_context': context,
+    })
+
+#Figure out other way to exclude the private fields from the form
 
 
 
@@ -124,9 +97,13 @@ def send_emails_view(request):
 
     email_config = request.session.get('email_config') #get the variables from the session, if saved it will be overwritten
     print('Send emails view has been called')
-    print(email_config)
 
     if request.method == 'POST':
+
+        for key, value in EmailConfigForm.excluded_fields.items():
+            email_config[key] = value
+
+        print(email_config)
 
         # Call the blast function from email_send_main.py, df can be configured to be passed in dynamically with the adlibs
         #currently reads df from views file being a global variable
@@ -135,39 +112,12 @@ def send_emails_view(request):
         messages.success(request, 'Emails sent successfully!')
         
         # Redirect to the homepage URL
-        return redirect('initial_view')
+        return redirect('email_config_home')
     
     else: #on initial page load
         form = EmailBlastForm()
         
-    return render(request, 'emailscraper_app/homepage.html', {'form': form})
-
-
-#Upload file to root, did not configure in settings
-#Also had it print local url to the page via context
-
-def upload_file(request):
-    if request.method == 'POST':
-        form = EmailFileForm(request.POST, request.FILES)
-        if form.is_valid():
-
-            form.instance.creator_id = request.user
-
-            instance = form.save()
-        
-            messages.success(request, f'File has been uploaded succesfully to {instance.file.path}')
-            return redirect('upload')
-        
-    else:
-        form = EmailFileForm()
-
-    previous_files = EmailFileUpload.objects.all()
-
-    return render(request, 'emailscraper_app/upload_file.html', {
-        'form': form,
-        'previous_files': previous_files
-    })
-
+    return render(request, 'emailscraper_app/homepage_base.html', {'form': form})
 
 
 def file_list(request):
@@ -195,11 +145,12 @@ class EmailDetailView(DetailView):  #form looks to model_detail.html by default
 class EmailCreateView(LoginRequiredMixin, CreateView):  #looks to model_form.html by default
 
     model = EmailFileUpload
-    fields = ['file', 'file_tag']
+    form_class = EmailFileForm
+    # fields = ['file', 'file_tag']
     success_url = reverse_lazy('email-create')
 
-
     def form_valid(self, form):
+
         form.instance.creator_id = self.request.user
         response =  super().form_valid(form)
         messages.success(self. request, 'File has been uploaded successfully')
@@ -210,7 +161,7 @@ class EmailCreateView(LoginRequiredMixin, CreateView):  #looks to model_form.htm
         # Add all prior files submitted by the logged-in user to the context
         context['previous_files'] = EmailFileUpload.objects.filter(creator_id=self.request.user)
         return context
-
+    
 
 class EmailUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView): 
 
