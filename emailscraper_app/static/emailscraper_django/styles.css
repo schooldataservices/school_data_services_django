@@ -84,3 +84,30 @@
     background-color: #111; 
 }
 
+
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start; /* Align items to the top */
+    margin-left: 0; /* Remove any left margin */
+}
+
+.email-config-container,
+.compose-email-container {
+    flex-basis: 45%; /* Take up 45% of the container */
+    margin-right: 20px; /* Add some spacing between the two sections */
+}
+
+.email-config-container{
+    margin-right: 20px;
+}
+
+.compose-email-container textarea.wide-textarea {
+    width: 175%; /* Ensure the textarea takes up the full width */
+}
+
+
+
+
+
+

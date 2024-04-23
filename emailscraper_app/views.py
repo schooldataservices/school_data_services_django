@@ -63,7 +63,8 @@ def email_config_view(request):
          
     else:
         print('Not a post creating basic config form')
-        form = EmailConfigForm()
+        email_config_data = request.session.get('email_config')
+        form = EmailConfigForm(initial=email_config_data) if email_config_data else EmailConfigForm()
 
     # Exclude specified fields from the form
     for field_name in excluded_fields:
