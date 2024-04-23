@@ -87,27 +87,44 @@
 
 .container {
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-start; /* Align items to the top */
-    margin-left: 0; /* Remove any left margin */
+    justify-content: left; /* Center align the form */
+    align-items: center; /* Center align vertically */
+    margin: 0;
 }
 
-.email-config-container,
-.compose-email-container {
-    flex-basis: 45%; /* Take up 45% of the container */
-    margin-right: 20px; /* Add some spacing between the two sections */
+.flex-container {
+    display: flex;
+ 
 }
 
-.email-config-container{
-    margin-right: 20px;
-}
-
-.compose-email-container textarea.wide-textarea {
-    width: 175%; /* Ensure the textarea takes up the full width */
+.email-content-container,
+.email-config-container {
+    flex: 1; /* Take up equal space */
+    padding: 10px; /* Add padding for spacing */
 }
 
 
+.email-config-container {
+    order: 1; /* Make it appear before the email-content-container */
+    margin-right: 200px;
+}
 
+.email-content-container {
+    order: 2; /* Make it appear after the email-config-container */
+}
+
+.wide-textarea {
+    width: 250%; /* Set the width to 100% of its container */
+    /* Add any additional styling as needed */
+}
+
+
+
+/* Add your button styles here */
+.save-configuration-button,
+.send-emails-button {
+    /* Your button styles */
+}
 
 
 

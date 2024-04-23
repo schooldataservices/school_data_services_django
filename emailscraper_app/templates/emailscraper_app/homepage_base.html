@@ -5,45 +5,50 @@
 Email Campaign - Home
 {% endblock title %}
 
-
 {% block content %}
 <h1>{{ email_context.welcome_message }}</h1>
 
-
-<div class = "container">
-    <div class="email-config-container">
-        <!-- Email configuration form comes from cleansed form created in the email_config_view --> 
-        <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form">
-            {% csrf_token %}
-            {% for field in email_config_form %}
-                {% if field.widget.input_type != 'hidden' %}
-                    <p class="form-field">
-                        {{ field.label_tag }}<br>
-                        {{ field }}
-                        {% if field.errors %}
-                            <span class="error-message">{{ field.errors }}</span>
+<div class="container">
+    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form">
+        {% csrf_token %}
+        
+        <div class="flex-container">
+            
+            <!-- Email configuration container -->
+            <div class="email-config-container">
+                {% for field in email_config_form %}
+                    {% if field.widget.input_type != 'hidden' %}
+                        {% if field.name != 'email_content' %}
+                            <p class="form-field">
+                                {{ field.label_tag }}<br>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <span class="error-message">{{ field.errors }}</span>
+                                {% endif %}
+                            </p>
                         {% endif %}
-                    </p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Email content container -->
+            <div class="email-content-container">
+                {{  email_config_form.email_content.label_tag }}
+                <br>
+                <textarea name="email_content" rows="15" cols="50" class="wide-textarea">{{ email_config_form.email_content }}</textarea>
+                {% if email_config_form.email_content.errors %}
+                    <span class="error-message">{{ email_config_form.email_content.errors }}</span>
                 {% endif %}
-            {% endfor %}
-            <button type="submit" class="save-configuration-button">Save Configuration</button>
-        </form> 
+            </div>
 
-        <form action="{% url 'email_send' %}" method="post" class="form-inline">
-            {% csrf_token %}
-            <button type="submit" class="send-emails-button">Send Emails</button>
-        </form>
-    </div>
+        </div>
 
+        <!-- Send Emails button -->
+        <!-- Save Configuration button -->
+        <button type="submit" class="save-configuration-button">Save Configuration</button>
+        <button type="submit" formaction="{% url 'email_send' %}" class="send-emails-button">Send Emails</button>
+    </form>
 
-    <!-- Text area for composing emails -->
-    <div class="compose-email-container">
-        <h2>Compose Email</h2>
-            <textarea name="email_content" rows="15" class="wide-textarea" placeholder="Compose your email here"></textarea>
-    </div>
-</div>
     
+</div>
 {% endblock content %}
-
-{% block footer %}
-{% endblock footer %}

@@ -52,7 +52,8 @@ def email_config_view(request):
             filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
             form.cleaned_data['filter_date'] = filter_date
 
-            request.session['email_config'] = form.cleaned_data
+            print(form.cleaned_data)
+
             messages.success(request, 'Email configuration saved successfully.')
             print('Form is valid')
             return redirect('email_config_home')
@@ -63,10 +64,9 @@ def email_config_view(request):
          
     else:
         print('Not a post creating basic config form')
-        email_config_data = request.session.get('email_config')
-        form = EmailConfigForm(initial=email_config_data) if email_config_data else EmailConfigForm()
 
-    # Exclude specified fields from the form
+    form = EmailConfigForm()
+
     for field_name in excluded_fields:
         if field_name in form.fields:
             del form.fields[field_name]

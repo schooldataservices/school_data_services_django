@@ -8,7 +8,6 @@ import logging
 import os
 from emailscraper_app.modules.Sending_Emails.sends import SendMail
 
-#This import dictates template
 
 
 #create log dir and file

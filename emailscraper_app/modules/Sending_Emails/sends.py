@@ -90,18 +90,26 @@ class SendMail:
         email_subject_line = email_config['email_subject_line']
     
         #establish the template based on the config file template_str
-        template_str = email_config['template_str']
-        template_name = f"emailscraper_app.modules.Sending_Emails.html_email_strings.{template_str}"
+        premade_templates = email_config['premade_templates']
+        template_name = f"emailscraper_app.modules.Sending_Emails.html_email_strings.{premade_templates}"
         module = importlib.import_module(template_name)
         template = module.get_template
+
+        #if this template_str is empty, then refer to the contents in the HTML box. 
+
+        #For now over-ride the template here by calling it from email_config in a different variable
+        template = email_config['email_content']
+        print(template)
+
 
         msg = EmailMessage()
         msg['From'] = EMAIL_ADDRESS_FROM
         msg['To'] = email_contact
         msg['Subject'] = email_subject_line    #This can be formatted to iterate the subject line based on the send with an f string
 
-        #kwargs adds in additional adlibs columns if specified in config
-        body = template(**kwargs) 
+        #kwargs adds in additional adlibs columns into the template if specified in config variable
+        # body = template(**kwargs) 
+        body = template
 
         # Set the content as HTML
         msg.set_content(body, subtype='html')
