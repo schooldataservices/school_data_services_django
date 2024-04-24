@@ -46,16 +46,23 @@ from users.models import Profile
 def email_config_view(request):
     excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
 
+    form = request.session.get('email_config', {})
+
+    if form == {}:
+        form = EmailConfigForm()
+    else:
+        #take the dictionary from the session to make a form
+        form = EmailConfigForm(form)
+
     if request.method == 'POST':
         form = EmailConfigForm(request.POST)
         if form.is_valid():
             filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
             form.cleaned_data['filter_date'] = filter_date
 
-            print(form.cleaned_data)
-
+            request.session['email_config'] = form.cleaned_data
             messages.success(request, 'Email configuration saved successfully.')
-            print('Form is valid')
+
             return redirect('email_config_home')
             
         else:
@@ -63,9 +70,7 @@ def email_config_view(request):
             print(form.errors)
          
     else:
-        print('Not a post creating basic config form')
-
-    form = EmailConfigForm()
+        print('Not a post request creating basic config form')
 
     for field_name in excluded_fields:
         if field_name in form.fields:
@@ -76,7 +81,6 @@ def email_config_view(request):
     first_time_login = request.user.last_login is None
     welcome_message = f'Welcome to the party, {request.user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
 
-    email_config_form = form
     emails_sent = request.session.get('emails_sent', False)
     context = {
         'emails': emails,
@@ -84,13 +88,10 @@ def email_config_view(request):
     }
 
     return render(request, 'emailscraper_app/homepage_base.html', {
-        'email_config_form': email_config_form,
+        'email_config_form': form,
         'emails_sent': emails_sent,
         'email_context': context,
     })
-
-#Figure out other way to exclude the private fields from the form
-
 
 
 

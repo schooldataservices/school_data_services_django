@@ -37,7 +37,7 @@ class EmailConfigForm(forms.Form):
     db_user = forms.CharField(initial=email_config.db_user)
     optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
     premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
-    email_content = forms.CharField(widget=forms.Textarea, initial='', required=False)  # Adjust rows and cols as needed
+    email_content = forms.CharField(widget=forms.Textarea, initial=email_config.email_content)  # Adjust rows and cols as needed
 
 
     def __init__(self, *args, **kwargs):

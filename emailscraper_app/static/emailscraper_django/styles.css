@@ -106,7 +106,7 @@
 
 .email-config-container {
     order: 1; /* Make it appear before the email-content-container */
-    margin-right: 200px;
+    margin-right: 130px;
 }
 
 .email-content-container {
@@ -114,7 +114,7 @@
 }
 
 .wide-textarea {
-    width: 250%; /* Set the width to 100% of its container */
+    width: 210%; /* Set the width to 100% of its container */
     /* Add any additional styling as needed */
 }
 
