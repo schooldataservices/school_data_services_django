@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (ListView, 
                                   DetailView, 
@@ -10,7 +11,7 @@ from django.views.generic import (ListView,
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
-from .forms import EmailBlastForm, EmailConfigForm, EmailFileForm
+from .forms import EmailBlastForm, EmailConfigForm, EmailFileForm, EmailFileUploadForm
 from .models import EmailOption, EmailFileUpload
 from users.models import Profile
 
@@ -20,6 +21,7 @@ from config import *
 import pandas as pd
 import codecs
 import csv
+import base64
 from datetime import datetime
 from emailscraper_app.modules.Sending_Emails import KC_schools
 from email_send_main import blast
@@ -55,6 +57,7 @@ def email_config_view(request):
         form = EmailConfigForm(form)
 
     if request.method == 'POST':
+
         form = EmailConfigForm(request.POST)
         if form.is_valid():
             filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
@@ -123,10 +126,45 @@ def send_emails_view(request):
 
 
 def file_list(request):
+
+    if request.method == 'POST':
+        form = EmailFileUploadForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = EmailFileUploadForm()
+
     context = {
-        'files' : EmailFileUpload.objects.all()
+        'files' : EmailFileUpload.objects.all(),
+        'form': form
     }
     return render(request, 'emailscraper_app/file_list.html', context)
+
+
+def upload_image_text_box(request):
+    # Your existing code to initialize the form
+    email_config_form = EmailConfigForm()
+
+    # Check if the 'email_content' field should use CKEditor widget
+    use_ckeditor = True  # Determine this based on your conditions
+
+    return render(request, 'emailscraper_app/upload_image_text_box.html', {
+        'email_config_form': email_config_form,
+        'use_ckeditor': use_ckeditor,  # Pass the flag to the template
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

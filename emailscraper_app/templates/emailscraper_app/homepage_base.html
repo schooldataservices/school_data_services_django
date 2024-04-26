@@ -9,7 +9,7 @@ Email Campaign - Home
 <h1>{{ email_context.welcome_message }}</h1>
 
 <div class="container">
-    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form">
+    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form", enctype="multipart/form-data">
         {% csrf_token %}
         
         <div class="flex-container">
@@ -47,12 +47,16 @@ Email Campaign - Home
             </div>
         </div>
 
+        <div class="expanded-editor">
+            {{ email_config_form.media }}
+        </div>
+
         <!-- Send Emails button -->
         <!-- Save Configuration button -->
         <button type="submit" class="save-configuration-button">Save Configuration</button>
         <button type="submit" formaction="{% url 'email_send' %}" class="send-emails-button">Send Emails</button>
-    </form>
-
-    
+    </form>    
 </div>
+
+
 {% endblock content %}

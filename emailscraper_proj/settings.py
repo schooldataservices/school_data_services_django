@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "emailscraper_app.apps.EmailscraperAppConfig",
+    "ckeditor",
     "users.apps.UsersConfig",
     "crispy_forms",
     "crispy_bootstrap4",

@@ -2,6 +2,7 @@ from django import forms
 from .models import EmailOption, EmailFileUpload
 from config import email_config
 import pandas as pd
+from ckeditor.widgets import CKEditorWidget
 
 # Forms handle the validation and processing of user input from HTML forms.
 # Django forms are Python classes that subclass django.forms.Form or django.forms.ModelForm.
@@ -11,8 +12,13 @@ import pandas as pd
 class EmailBlastForm(forms.Form):
     email_options = forms.ModelChoiceField(queryset=EmailOption.objects.all())
 
-#Completely depends on config    
 
+class RichTextFormField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('widget', CKEditorWidget())
+        super().__init__(*args, **kwargs)  
+
+#Completely depends on config  
 class EmailConfigForm(forms.Form):
 
     excluded_fields = {'EMAIL_PASS' : email_config.EMAIL_PASS,
@@ -38,7 +44,7 @@ class EmailConfigForm(forms.Form):
     optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
     premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
     email_content = forms.CharField(widget=forms.Textarea, initial=email_config.email_content)  # Adjust rows and cols as needed
-
+    email_content_RTF = RichTextFormField()
 
     def __init__(self, *args, **kwargs):
         super(EmailConfigForm, self).__init__(*args, **kwargs)
@@ -80,7 +86,12 @@ class EmailFileForm(forms.ModelForm):
         return instance
 
 
-        
-                
+class EmailFileUploadForm(forms.ModelForm):
+    class Meta:
+        model = EmailFileUpload
+        fields = ['body_rtf']
+        widgets = {
+            'body_rtf': forms.Textarea(attrs={'class': 'rich-textarea'}),
+        }
 
                 

@@ -1,0 +1,35 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Email content container -->
+        <div class="email-content-container">
+            {% for field in email_config_form %}
+                {% if field.name == 'email_content' %}
+                    <p class="form-field">
+                        {{ field.label_tag }}
+                        <br>
+                        {% crispy field %}  {# Render using crispy_forms for CKEditor #}
+                        {% if field.errors %}
+                            <span class="error-message">{{ field.errors }}</span>
+                        {% endif %}
+                    </p>
+                {% elif field.field.widget.input_type == 'checkbox' %}
+                    {# Handle checkbox fields separately #}
+                    <div class="checkbox">
+                        <label for="{{ field.id_for_label }}">
+                            {{ field }} {{ field.label }}
+                        </label>
+                    </div>
+                {% else %}
+                    {# Render other fields using crispy_forms #}
+                    {{ field | crispy }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </form>
+</div>
+{% endblock content %}

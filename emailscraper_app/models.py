@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField
 #Whenever changes are made in models.py migrations must be made. This changes db schema
 # python manage.py makemigrations
 # python manage.py migrate
@@ -34,6 +35,7 @@ class EmailFileUpload(models.Model):
     creator_id = models.ForeignKey(User, on_delete = models.CASCADE)
     column_names = models.TextField(blank=True)
     delimiter = models.CharField(max_length=1, default=',')
+    body_rtf = RichTextField(blank=True, null=True)
     
 
     # date_posted = models.DateTimeField(default=timezone.now) 
@@ -44,5 +46,6 @@ class EmailFileUpload(models.Model):
 
     def get_absolute_url(self):
         return reverse ('email-detail', kwargs={'pk': self.pk})   #returns full path as a string, and redirects to that page
+
 
 

@@ -25,6 +25,7 @@ urlpatterns = [
     path('', views.email_config_view, name='email_config_home'),
     path('send_emails/', views.send_emails_view, name='email_send'),
     path('file_uploads/', views.file_list, name='file_list'),
+    path('upload_image_text_box/', views.upload_image_text_box, name='upload_image_text_box')
 
     # path('file_list/upload_file/', views.upload_file, name='upload_file'),
 ]
@@ -62,3 +63,8 @@ urlpatterns = [
 #Based on uploaded files, parse the csv and 
 #create a seperate form that pertains to those
 #contents and display on the homepage
+
+
+#Figure out where in the email send the csv is passed two 
+#find way to integrate database into what customers are having
+#emails sent to. 

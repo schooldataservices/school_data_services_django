@@ -10,6 +10,7 @@
                 <th>File Type</th>
                 <th>Column Names</th>
                 <th>Delimiter</th>
+                <th>RTF</th>
             </tr>
         </thread>
         <tbody>
@@ -19,8 +20,20 @@
                 <td>{{ file.file_tag }}</td>
                 <td>{{ file.column_names }}</td>
                 <td>{{ file.delimiter }}</td>
+                <td>{{ file.body_rtf }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+   
+    <h2>Add File</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+
 {% endblock content %}
