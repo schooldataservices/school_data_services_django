@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 #Whenever changes are made in models.py migrations must be made. This changes db schema
 # python manage.py makemigrations
 # python manage.py migrate
@@ -35,7 +36,7 @@ class EmailFileUpload(models.Model):
     creator_id = models.ForeignKey(User, on_delete = models.CASCADE)
     column_names = models.TextField(blank=True)
     delimiter = models.CharField(max_length=1, default=',')
-    body_rtf = RichTextField(blank=True, null=True)
+    body_rtf_2 = CKEditor5Field(null=True, blank=True, config_name='extends')
     
 
     # date_posted = models.DateTimeField(default=timezone.now) 

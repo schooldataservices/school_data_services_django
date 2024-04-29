@@ -1,6 +1,7 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load crispy_forms_tags %}
 
+
 {% block title %}
 Email Campaign - Home
 {% endblock title %}
@@ -31,13 +32,18 @@ Email Campaign - Home
                 {% endfor %}
             </div>
 
+          
+     
+          
+
             <!-- Email content container -->
             <div class="email-content-container">
                 {% for field in email_config_form %}
                     {% if field.name == 'email_content' %}
                         <p class="form-field">
                             {{ field.label_tag }}<br>
-                            <textarea class="wide-textarea" name="{{ field.name }}" rows="15" cols="70">{{ field.value }}</textarea>
+                            {{ email_config_form.media }}
+                            {{ field }}
                             {% if field.errors %}
                                 <span class="error-message">{{ field.errors }}</span>
                             {% endif %}
@@ -47,10 +53,9 @@ Email Campaign - Home
             </div>
         </div>
 
-        <div class="expanded-editor">
-            {{ email_config_form.media }}
-        </div>
+     
 
+        
         <!-- Send Emails button -->
         <!-- Save Configuration button -->
         <button type="submit" class="save-configuration-button">Save Configuration</button>
@@ -59,4 +64,6 @@ Email Campaign - Home
 </div>
 
 
+
+<!-- Assuming you have passed the form as email_config_form to your template context -->
 {% endblock content %}

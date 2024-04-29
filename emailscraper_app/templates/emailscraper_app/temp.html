@@ -1,0 +1,14 @@
+      <!-- Email content container -->
+      <div class="email-content-container">
+        {% for field in email_config_form %}
+            {% if field.name == 'email_content' %}
+                <p class="form-field">
+                    {{ field.label_tag }}<br>
+                    <textarea class="wide-textarea" name="{{ field.name }}" rows="15" cols="70">{{ field.value }}</textarea>
+                    {% if field.errors %}
+                        <span class="error-message">{{ field.errors }}</span>
+                    {% endif %}
+                </p>
+            {% endif %}
+        {% endfor %}
+    </div>

@@ -27,7 +27,6 @@ urlpatterns = [
     path('file_uploads/', views.file_list, name='file_list'),
     path('upload_image_text_box/', views.upload_image_text_box, name='upload_image_text_box')
 
-    # path('file_list/upload_file/', views.upload_file, name='upload_file'),
 ]
 
 

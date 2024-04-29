@@ -106,7 +106,7 @@
 
 .email-config-container {
     order: 1; /* Make it appear before the email-content-container */
-    margin-right: 130px;
+    margin-right: 300px;
 }
 
 .email-content-container {
@@ -114,17 +114,16 @@
     margin-left: auto;
 }
 
-.wide-textarea {
-    width: 210%; /* Set the width to 100% of its container */
-    /* Add any additional styling as needed */
+/*Textbox*/
+.ck-editor__editable {
+    min-height: 800px;
+    max-height: 800px;
+    min-width: 960px;
 }
-
-.cke_1 {
-    /* Your CSS styles here */
-    width: 100%;
-    height: 300px;
+/*Toolbar*/
+.ck-editor__top {
+    min-width: 960px;
 }
-
 
 
 

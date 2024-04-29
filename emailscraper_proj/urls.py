@@ -39,8 +39,13 @@ urlpatterns = [
     path('password-reset-complete/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
          name='password_reset_complete'), 
-    path('', include('emailscraper_app.urls'))
+    path('', include('emailscraper_app.urls')),
+    
 ]
+
+urlpatterns += [
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar

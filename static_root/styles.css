@@ -46,13 +46,88 @@
 
 /* Messages styles */
 .messages {
-    background-color: #d4edda !important; /* Light green background */
-    border-color: #c3e6cb !important; /* Green border */
-    color: #155724 !important; /* Dark green text color */
-    padding: 10px !important;
-    margin-bottom: 15px !important;
-    border: 1px solid transparent !important;
-    border-radius: .25rem !important;
+    background-color: #d4edda ; /* Light green background */
+    border-color: #c3e6cb ; /* Green border */
+    color: #155724 ; /* Dark green text color */
+    padding: 10px ;
+    margin-bottom: 15px ;
+    border: 1px solid transparent;
+    border-radius: .25rem;
 }
+
+
+/* Navigation bar styles */
+.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333; /* Background color of the navbar */
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.navbar li {
+    float: left; /* Float the list items to create a horizontal layout */
+}
+
+.navbar li a {
+    display: block;
+    color: white; /* Text color of the links */
+    text-align: center;
+    padding: 14px 8px; /* Padding around the link text */
+    text-decoration: none; /* Remove underline from the links */
+}
+
+/* Change the background color of the links when hovered */
+.navbar li a:hover {
+    background-color: #111; 
+}
+
+
+.container {
+    display: flex;
+    justify-content: left; /* Center align the form */
+    align-items: center; /* Center align vertically */
+    margin: 0;
+}
+
+.flex-container {
+    display: flex;
+ 
+}
+
+.email-content-container,
+.email-config-container{
+    flex: 1; /* Take up equal space */
+    padding: 10px; /* Add padding for spacing */
+}
+
+
+.email-config-container {
+    order: 1; /* Make it appear before the email-content-container */
+    margin-right: 130px;
+}
+
+.email-content-container {
+    order: 2; /* Make it appear after the email-config-container */
+    margin-left: auto;
+}
+
+.wide-textarea {
+    width: 210%; /* Set the width to 100% of its container */
+    /* Add any additional styling as needed */
+}
+
+.cke_1 {
+    /* Your CSS styles here */
+    width: 100%;
+    height: 300px;
+}
+
+
+
+
+
 
 

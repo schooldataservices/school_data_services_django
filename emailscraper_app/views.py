@@ -11,7 +11,7 @@ from django.views.generic import (ListView,
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
-from .forms import EmailBlastForm, EmailConfigForm, EmailFileForm, EmailFileUploadForm
+from .forms import EmailBlastForm, EmailConfigForm, EmailFileForm
 from .models import EmailOption, EmailFileUpload
 from users.models import Profile
 
