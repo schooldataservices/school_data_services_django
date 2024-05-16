@@ -48,24 +48,26 @@ from users.models import Profile
 def email_config_view(request):
     excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
 
-    form = request.session.get('email_config', {})
+    #attempt to get session saved instance. If empty then, populate with defaults
+    form_data = request.session.get('email_config', {})
+    form = EmailConfigForm(request.POST or None, initial=form_data)
+    
 
-    if form == {}:
-        form = EmailConfigForm()
-    else:
-        #take the dictionary from the session to make a form
-        form = EmailConfigForm(form)
-
-    if request.method == 'POST':
-
+    if request.method == 'POST': #When saving the new configuration
         form = EmailConfigForm(request.POST)
+       
         if form.is_valid():
+            
+            #Clean dates
             filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
             form.cleaned_data['filter_date'] = filter_date
 
-            request.session['email_config'] = form.cleaned_data
+            # Save all form data to session
+            form_data.update(form.cleaned_data)
+            request.session['email_config'] = form_data
+            print('Form data saved to session:', form_data)
+           
             messages.success(request, 'Email configuration saved successfully.')
-
             return redirect('email_config_home')
             
         else:
@@ -100,15 +102,16 @@ def email_config_view(request):
 
 def send_emails_view(request):
 
+    #here is the email_config dict passed into process {'email_content': '<p>dfsadafsddassdfs</p>', 'EMAIL_PASS': 'feqdwowrmaqthjkx', 'db_pass': 'Pretty11', 'db_user': 'admin', 'table_name': 'email_history', 'server': 'emailcampaign.c9vhoi6ncot7.us-east-1.rds.amazonaws.com', 'database': 'emailcampaign'}
+
     email_config = request.session.get('email_config') #get the variables from the session, if saved it will be overwritten
+    print(f'Here is the email config from the session: {email_config}')
     print('Send emails view has been called')
 
     if request.method == 'POST':
 
         for key, value in EmailConfigForm.excluded_fields.items():
             email_config[key] = value
-
-        print(email_config)
 
         # Call the blast function from email_send_main.py, df can be configured to be passed in dynamically with the adlibs
         #currently reads df from views file being a global variable

@@ -4,6 +4,7 @@ from config import email_config
 import pandas as pd
 from django_ckeditor_5.fields import CKEditor5Field
 from django_ckeditor_5.widgets import CKEditor5Widget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 # Forms handle the validation and processing of user input from HTML forms.
 # Django forms are Python classes that subclass django.forms.Form or django.forms.ModelForm.
@@ -44,7 +45,7 @@ class EmailConfigForm(forms.Form):
     db_user = forms.CharField(initial=email_config.db_user)
     optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
     premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
-    email_content = RichTextFormField()
+    email_content = forms.CharField(initial='')
 
     def __init__(self, *args, **kwargs):
         super(EmailConfigForm, self).__init__(*args, **kwargs)

@@ -84,6 +84,8 @@ class SendMail:
 
     def send(email_config, email_contact, SMTP_CONN,  **kwargs):
 
+        print(f"here is the email_config dict passed in {email_config}")
+
         #This can not be configured as a dict, because of SMTP conn and template func
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
         EMAIL_PASS = email_config['EMAIL_PASS']
@@ -150,6 +152,8 @@ class SendMail:
 
 
     def process(df, email_config, test=False):
+
+        print(f"here is the email_config dict passed into process {email_config}")
 
         #next 50 must be passed in as the df, otherwise it will keep running
 

@@ -1,20 +1,13 @@
 {% extends 'emailscraper_app/base.html' %}
-{% load crispy_forms_tags %}
-
-
 {% block title %}
 Email Campaign - Home
 {% endblock title %}
-
 {% block content %}
 <h1>{{ email_context.welcome_message }}</h1>
-
 <div class="container">
-    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form", enctype="multipart/form-data">
+    <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form" enctype="multipart/form-data">
         {% csrf_token %}
-        
         <div class="flex-container">
-            
             <!-- Email configuration container -->
             <div class="email-config-container">
                 {% for field in email_config_form %}
@@ -31,19 +24,13 @@ Email Campaign - Home
                     {% endif %}
                 {% endfor %}
             </div>
-
-          
-     
-          
-
             <!-- Email content container -->
             <div class="email-content-container">
                 {% for field in email_config_form %}
                     {% if field.name == 'email_content' %}
                         <p class="form-field">
                             {{ field.label_tag }}<br>
-                            {{ email_config_form.media }}
-                            {{ field }}
+                            <textarea name="{{ field.name }}" id="editor">{{ field.value }}</textarea>
                             {% if field.errors %}
                                 <span class="error-message">{{ field.errors }}</span>
                             {% endif %}
@@ -52,18 +39,20 @@ Email Campaign - Home
                 {% endfor %}
             </div>
         </div>
-
-     
-
-        
         <!-- Send Emails button -->
         <!-- Save Configuration button -->
         <button type="submit" class="save-configuration-button">Save Configuration</button>
         <button type="submit" formaction="{% url 'email_send' %}" class="send-emails-button">Send Emails</button>
-    </form>    
+    </form>
 </div>
-
-
-
-<!-- Assuming you have passed the form as email_config_form to your template context -->
+<!-- Include CKEditor script -->
+<script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
+<!-- Initialize CKEditor -->
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 {% endblock content %}

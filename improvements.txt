@@ -6,10 +6,9 @@ List out all the files under the profile or another section
 and then have it as a clickable link to those pages
 
 
-need to fix the template path. 
-Previously had emailscraper_django need to chagne to emailscraper_app
+Based on the email address from, they need to be able to send out 
 
+Save configuration button is messed up 
 
-The url route upload_file and email/new have the same functionality
-
-Try the iteration on the upload_file
+I believe the save configuration button is only geared for that form
+Maybe ckeditor could be implemented directly in the field
