@@ -3,3 +3,4 @@ Logs/
 phony.csv
 *.pyc
 media/
+*.json

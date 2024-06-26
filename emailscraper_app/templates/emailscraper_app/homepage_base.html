@@ -1,3 +1,4 @@
+
 {% extends 'emailscraper_app/base.html' %}
 {% block title %}
 Email Campaign - Home
@@ -43,14 +44,20 @@ Email Campaign - Home
         <!-- Save Configuration button -->
         <button type="submit" class="save-configuration-button">Save Configuration</button>
         <button type="submit" formaction="{% url 'email_send' %}" class="send-emails-button">Send Emails</button>
+        <a href="{% url 'import-file' %}" class="upload-file-button" class="upload-file-button">Upload Customer File</a>
+        
     </form>
 </div>
 <!-- Include CKEditor script -->
-<script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <!-- Initialize CKEditor -->
 <script>
     ClassicEditor
-        .create(document.querySelector('#editor'))
+        .create(document.querySelector('#editor'), {
+            ckfinder: {
+                uploadUrl: '{% url "ckeditor_upload" %}',
+            },
+        })
         .catch(error => {
             console.error(error);
         });

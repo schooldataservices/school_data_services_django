@@ -1,5 +1,5 @@
 /* Button styles */
-.save-configuration-button, .send-emails-button {
+.save-configuration-button, .send-emails-button, .upload-file-button {
     width: 150px; /* Set the width of the button */
     height: 40px; /* Set the height of the button */
     font-size: 16px; /* Set button font size */

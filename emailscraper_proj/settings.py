@@ -13,6 +13,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from .config import EMAIL_HOST_USER, imap_password_sam
+import google.auth
+from google.auth import credentials
+from storages.backends.gcloud import GoogleCloudStorage
+
+#test
+class CustomGoogleCloudStorage(GoogleCloudStorage):
+    def path(self, name):
+        # Construct the path to the file in Google Cloud Storage
+        return f"https://storage.googleapis.com/{self.bucket_name}/{name}"
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +48,9 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "emailscraper_app.apps.EmailscraperAppConfig",
-    "django_ckeditor_5",
+    "ckeditor",
+    "ckeditor_uploader",
+    "storages",
     "users.apps.UsersConfig",
     "crispy_forms",
     "crispy_bootstrap4",
@@ -46,8 +59,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles"
-    # "emailscraper_app", #if default conventions
+    "django.contrib.staticfiles",
+    # "emailscraper_app" #if default conventions
 ]
 
 MIDDLEWARE = [
@@ -145,14 +158,29 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = imap_password_sam
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
-STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+GS_CREDENTIALS, project_id = google.auth.load_credentials_from_file(
+    r'C:\Users\samuel.taylor\OneDrive - Green Dot Public Schools\Desktop\Git_Directory\CP\CustomPlanet_Work\django_testing\emailscraper_django\django-hosting-427421-9398c1e22567.json'
+)
+GD_PROJECT_ID = project_id
+GS_BUCKET_NAME = 'django_hosting'
 
-STATICFILES_DIRS = [
+
+DEFAULT_FILE_STORAGE = 'emailscraper_proj.settings.CustomGoogleCloudStorage'
+MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
+STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+STATICFILES_DIRS = [ #in the case of switching between apps
     os.path.join(BASE_DIR, 'emailscraper_app', 'static', 'emailscraper_django') # Path to custom CSS files
 ]
+
+#Base dir
+# C:\Users\samuel.taylor\OneDrive - Green Dot Public Schools\Desktop\Git_Directory\CP\CustomPlanet_Work\django_testing\emailscraper_django
+
 
 if DEBUG:
 
@@ -167,94 +195,22 @@ if DEBUG:
         'INTERCEPT_REDIRECTS': False,
     }
 
-#django_ckeditor5 configuration settings 
 
-customColorPalette = [
-    {
-        'color': 'hsl(4, 90%, 58%)',
-        'label': 'Red'
-    },
-    {
-        'color': 'hsl(340, 82%, 52%)',
-        'label': 'Pink'
-    },
-    {
-        'color': 'hsl(291, 64%, 42%)',
-        'label': 'Purple'
-    },
-    {
-        'color': 'hsl(262, 52%, 47%)',
-        'label': 'Deep Purple'
-    },
-    {
-        'color': 'hsl(231, 48%, 48%)',
-        'label': 'Indigo'
-    },
-    {
-        'color': 'hsl(207, 90%, 54%)',
-        'label': 'Blue'
-    },
-]
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
 
-# CKEDITOR_5_CUSTOM_CSS = 'path_to.css' # optional
-# CKEDITOR_5_FILE_STORAGE = "path_to_storage.CustomStorage" # optional
-CKEDITOR_5_CONFIGS = {
-'default': {
-    'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-
-},
-'extends': {
-    'blockToolbar': [
-        'paragraph', 'heading1', 'heading2', 'heading3',
-        '|',
-        'bulletedList', 'numberedList',
-        '|',
-        'blockQuote',
-    ],
-    'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-    'code','subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
-                'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
-                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
-                'insertTable',],
-    'image': {
-        'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
-                    'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
-        'styles': [
-            'full',
-            'side',
-            'alignLeft',
-            'alignRight',
-            'alignCenter',
-        ]
-
-    },
-    'table': {
-        'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
-        'tableProperties', 'tableCellProperties' ],
-        'tableProperties': {
-            'borderColors': customColorPalette,
-            'backgroundColors': customColorPalette
-        },
-        'tableCellProperties': {
-            'borderColors': customColorPalette,
-            'backgroundColors': customColorPalette
-        }
-    },
-    'heading' : {
-        'options': [
-            { 'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph' },
-            { 'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1' },
-            { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
-            { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
-        ]
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source'],
+            ['Image'],  # Add the Image button to the toolbar
+        ],
+        'extraPlugins': 'uploadimage',  # Add the necessary plugins
+        'filebrowserUploadUrl': f'{MEDIA_URL}ckeditor/upload/',
+        'filebrowserBrowseUrl': f'{MEDIA_URL}ckeditor/browse/',
     }
-},
-'list': {
-    'properties': {
-        'styles': 'true',
-        'startIndex': 'true',
-        'reversed': 'true',
-    }
-}
 }

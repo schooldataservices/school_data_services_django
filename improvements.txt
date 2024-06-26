@@ -8,7 +8,72 @@ and then have it as a clickable link to those pages
 
 Based on the email address from, they need to be able to send out 
 
-Save configuration button is messed up 
 
-I believe the save configuration button is only geared for that form
-Maybe ckeditor could be implemented directly in the field
+
+Figure out how to insert media with the ckeditor. 
+
+-------------------------------------------------------
+
+When uploading the file on the admin backedn it can be inserted into the page. 
+Currently showing here /temp
+
+
+Now need to figure out how to show live action on the homepage without sending to the server. 
+
+
+
+#Original Working Piece
+
+@login_required
+def email_config_view(request):
+    excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
+
+    #attempt to get session saved instance. If empty then, populate with defaults
+    form_data = request.session.get('email_config', {})
+    form = EmailConfigForm(request.POST or None, initial=form_data)
+    
+
+    if request.method == 'POST': #When saving the new configuration
+        form = EmailConfigForm(request.POST)
+       
+        if form.is_valid():
+            
+            #Clean dates
+            filter_date = form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
+            form.cleaned_data['filter_date'] = filter_date
+
+            # Save all form data to session
+            form_data.update(form.cleaned_data)
+            request.session['email_config'] = form_data
+            print('Form data saved to session:', form_data)
+           
+            messages.success(request, 'Email configuration saved successfully.')
+            return redirect('email_config_home')
+            
+        else:
+            print('Form is invalid')
+            print(form.errors)
+         
+    else:
+        print('Not a post request creating basic config form')
+
+    for field_name in excluded_fields:
+        if field_name in form.fields:
+            del form.fields[field_name]
+
+    emails = EmailOption.objects.all()
+    profile_name = request.user.profile.user.username if hasattr(request.user, 'profile') else None
+    first_time_login = request.user.last_login is None
+    welcome_message = f'Welcome to the party, {request.user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
+
+    emails_sent = request.session.get('emails_sent', False)
+    context = {
+        'emails': emails,
+        'welcome_message': welcome_message,
+    }
+
+    return render(request, 'emailscraper_app/homepage_base.html', {
+        'email_config_form': form,
+        'emails_sent': emails_sent,
+        'email_context': context,
+    })

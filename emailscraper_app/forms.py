@@ -2,8 +2,7 @@ from django import forms
 from .models import EmailOption, EmailFileUpload
 from config import email_config
 import pandas as pd
-from django_ckeditor_5.fields import CKEditor5Field
-from django_ckeditor_5.widgets import CKEditor5Widget
+from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 # Forms handle the validation and processing of user input from HTML forms.
@@ -13,11 +12,6 @@ from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 class EmailBlastForm(forms.Form):
     email_options = forms.ModelChoiceField(queryset=EmailOption.objects.all())
-
-class RichTextFormField(forms.CharField):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', CKEditor5Widget())
-        super().__init__(*args, **kwargs) 
 
 
 #Completely depends on config  
@@ -45,7 +39,9 @@ class EmailConfigForm(forms.Form):
     db_user = forms.CharField(initial=email_config.db_user)
     optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
     premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
-    email_content = forms.CharField(initial='')
+    email_content = forms.CharField(widget=CKEditorWidget())
+    email_content = forms.CharField(widget=CKEditorUploadingWidget())
+
 
     def __init__(self, *args, **kwargs):
         super(EmailConfigForm, self).__init__(*args, **kwargs)
@@ -55,38 +51,61 @@ class EmailConfigForm(forms.Form):
             if field_name in self.fields:
                 self.fields[field_name].required = False
 
-                
+
+
+
+class EmailFileUploadForm(forms.ModelForm):
+    body_rtf_2 = forms.CharField(widget=CKEditorUploadingWidget())
+    body_rtf_3 = forms.CharField(widget=CKEditorUploadingWidget())
+
+    class Meta:
+
+        model = EmailFileUpload
+        fields = ['file_tag', 'file', 'creator_id', 'column_names', 'delimiter', 'body_rtf_2', 'body_rtf_3']
+
+
+
+
 
 class EmailFileForm(forms.ModelForm):
     class Meta:
         model = EmailFileUpload
-        fields = ('file', 'file_tag')
+        fields = ('file', 'file_tag', 'delimiter')
 
-    def save(self, commit=True):
 
-        print('Save triggered')
+                
 
-        instance = super().save(commit=False)
-        uploaded_file = instance.file
-        delimiter = instance.delimiter
+# class EmailFileForm(forms.ModelForm):
+#     class Meta:
+#         model = EmailFileUpload
+#         fields = ('file', 'file_tag', 'delimiter')
+
+#     def save(self, commit=True):
+
+#         print('Save triggered')
+
+#         instance = super().save(commit=False)
+#         uploaded_file = instance.file
+#         delimiter = instance.delimiter
         
-        # Parse the uploaded file using pandas
-        try:
-            df = pd.read_csv(uploaded_file, delimiter=delimiter)
-            print(df.head())
-        except pd.errors.ParserError as e:
-            raise forms.ValidationError(f"Error parsing file: {e}")
-            print('Did not read csv')
+#         # Parse the uploaded file using pandas
+#         try:
+#             df = pd.read_csv(uploaded_file, delimiter=delimiter)
+#             print(df.head())
+#         except pd.errors.ParserError as e:
+#             raise forms.ValidationError(f"Error parsing file: {e}")
+#             print('Did not read csv')
 
-        # Extract column names and save them to the model
-        instance.column_names = ','.join(df.columns)
+#         # Extract column names and save them to the model
+#         instance.column_names = ','.join(df.columns)
 
-        if commit:
-            instance.save()
+#         if commit:
+#             instance.save()
 
-        return instance
-
-
+#         return instance
 
 
+
+class EmailContentForm(forms.Form):
+    email_content = forms.CharField(widget=CKEditorUploadingWidget(), label='Email Content')
                 

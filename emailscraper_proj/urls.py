@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
+from emailscraper_app.views.homepage_views import email_content_view
+import debug_toolbar
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -40,15 +42,16 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
          name='password_reset_complete'), 
     path('', include('emailscraper_app.urls')),
-    
-]
 
-urlpatterns += [
-    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    #Ckeditor stuff
+    path('email-content/', email_content_view, name='email_content'),
+    path('ckeditor/', include('ckeditor_uploader.urls'))
+    
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 if settings.DEBUG:
-    import debug_toolbar
+   
 
     urlpatterns += [
         path('__debug__/', include(debug_toolbar.urls)),

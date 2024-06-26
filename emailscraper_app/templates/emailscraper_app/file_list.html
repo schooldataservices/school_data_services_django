@@ -20,7 +20,7 @@
                 <td>{{ file.file_tag }}</td>
                 <td>{{ file.column_names }}</td>
                 <td>{{ file.delimiter }}</td>
-                <td>{{ file.body_rtf }}</td>
+                <td>{{ file.body_rtf_2|safe }}</td> <!-- Note the safe filter -->
             </tr>
             {% endfor %}
         </tbody>
@@ -35,5 +35,13 @@
         <button type="submit">Submit</button>
     </form>
 
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('.ckeditor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 
 {% endblock content %}

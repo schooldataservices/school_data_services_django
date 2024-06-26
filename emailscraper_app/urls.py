@@ -1,10 +1,14 @@
 from django.urls import path
-from . import views
-from .views import (EmailListView,
-                    EmailDetailView, 
-                    EmailCreateView,
-                    EmailUpdateView,
-                    EmailDeleteView)
+from .views import homepage_views
+from .views.uploading_file_views import (EmailListView,
+                                        EmailDetailView, 
+                                        EmailCreateView,
+                                        EmailUpdateView,
+                                        EmailDeleteView,
+                                        )
+
+
+
 
 
 # URLs define the mapping between URL patterns and view functions or classes.
@@ -17,17 +21,17 @@ urlpatterns = [
 
     path('email/', EmailListView.as_view(), name='email'),
     path('email/<int:pk>/', EmailDetailView.as_view(), name='email-detail'),
-    path('email/new/', EmailCreateView.as_view(), name='email-create'),     #emailfileupload_form.html
+    path('import-file/', EmailCreateView.as_view(), name='import-file'),     #emailfileupload_form.html
     path('email/<int:pk>/update/', EmailUpdateView.as_view(), name='email-update'),
     path('email/<int:pk>/delete/', EmailDeleteView.as_view(), name='email-delete'),
-
-
-    path('', views.email_config_view, name='email_config_home'),
-    path('send_emails/', views.send_emails_view, name='email_send'),
-    path('file_uploads/', views.file_list, name='file_list'),
-    path('upload_image_text_box/', views.upload_image_text_box, name='upload_image_text_box')
+    path('', homepage_views.email_config_view, name='email_config_home'),
+    path('send_emails/', homepage_views.send_emails_view, name='email_send'),
+    path('file_uploads/', homepage_views.file_list, name='file_list'),
+    path('upload_image_text_box/', homepage_views.upload_image_text_box, name='upload_image_text_box'),
+    path('temp/', homepage_views.email_content_view, name='temp'),
 
 ]
+
 
 
 
