@@ -1,5 +1,6 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
 <div class="content-section">
     <form method="POST" enctype="multipart/form-data">
@@ -28,14 +29,16 @@
         <div style="display: flex; align-items: center;">
             <select id="file-select">
                 {% for file_upload in previous_files %}
-                    <option value="{{ file_upload.pk }}">{{ file_upload.file.url }}</option>
+                    <option value="{{ file_upload.pk }}" data-url="{% url 'serve_file' file_upload.file_path|urlencode %}">{{ file_upload.file.name }}
+                        {{ file_upload.file.name }}
+                    </option>
                 {% empty %}
                     <option>No files uploaded yet.</option>
                 {% endfor %}
             </select>
             <button id="download-button" class="btn btn-secondary btn-sm mt-1 mb-1">Download</button>
+            
             {% if previous_files %}
-
             <div style="margin-left: 10px;">
                 <a href="#" id="update-file-button" class="btn btn-secondary btn-sm mt-1 mb-1">Update Current File</a>
             </div>
@@ -50,35 +53,12 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#download-button').click(function() {
-                var fileUrl = $('#file-select').val();
-                if (fileUrl) {
-                    window.location.href = fileUrl;
-                } else {
-                    alert('No file selected.');
-                }
-            });
-            
-            $('#update-file-button').click(function() {
-                var pk = $('#file-select').val();
-                if (pk) {
-                    var updateUrl = "/email/" + pk + "/update/";
-                    window.location.href = updateUrl;
-                } else {
-                    alert('No file selected.');
-                }
-            });
-    
-            $('#file-select').change(function() {
-                var selectedPk = $(this).val();
-                $('#delete-file-form').attr('action', '/email/' + selectedPk + '/delete/');
-            });
-        });
-    </script>
+    <!-- Div to display the file content -->
+    <div id="file-content" style="margin-top: 20px;"></div>
+
+    <script src="{% static 'js/emailfileupload_form.js' %}" defer></script>
     
     
+
 {% endblock footer %}
 </footer>

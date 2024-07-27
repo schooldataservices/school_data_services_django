@@ -5,6 +5,7 @@ from .views.uploading_file_views import (EmailListView,
                                         EmailCreateView,
                                         EmailUpdateView,
                                         EmailDeleteView,
+                                        serve_gcs_file
                                         )
 
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path('email/', EmailListView.as_view(), name='email'),
     path('email/<int:pk>/', EmailDetailView.as_view(), name='email-detail'),
     path('import-file/', EmailCreateView.as_view(), name='import-file'),     #emailfileupload_form.html
+    path('serve-file/<path:file_path>/', serve_gcs_file, name='serve_file'),
     path('email/<int:pk>/update/', EmailUpdateView.as_view(), name='email-update'),
     path('email/<int:pk>/delete/', EmailDeleteView.as_view(), name='email-delete'),
     path('', homepage_views.email_config_view, name='email_config_home'),

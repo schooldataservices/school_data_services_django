@@ -43,9 +43,9 @@ Email Campaign - Home
         <!-- Send Emails button -->
         <!-- Save Configuration button -->
         <button type="submit" class="save-configuration-button">Save Configuration</button>
-        <button type="submit" formaction="{% url 'email_send' %}" class="send-emails-button">Send Emails</button>
-        <a href="{% url 'import-file' %}" class="upload-file-button" class="upload-file-button">Upload Customer File</a>
-        
+        <button type="submit" class="upload-file-button" formaction="{% url 'import-file' %}" >Upload Email Recipients</button>
+        <button type="submit" class="send-emails-button" formaction="{% url 'email_send' %}" >Send Emails</button>
+    
     </form>
 </div>
 <!-- Include CKEditor script -->

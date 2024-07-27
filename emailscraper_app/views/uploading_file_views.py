@@ -4,6 +4,40 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from ..models import EmailFileUpload
 from ..forms import EmailFileForm
+from google.cloud import storage
+from django.http import HttpResponse, Http404
+from django.core.files.storage import default_storage
+from django.conf import settings
+
+def serve_gcs_file(request, file_path):
+    # Use default_storage to access files
+    if not default_storage.exists(file_path):
+        raise Http404("File not found")
+
+    # Download file content
+    file_content = default_storage.open(file_path).read()
+
+    response = HttpResponse(file_content, content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{file_path.split("/")[-1]}"'
+    return response
+
+
+
+# def serve_gcs_file(request, file_path):
+#     client = storage.Client()
+#     bucket = client.bucket('django_hosting')  # Replace with your bucket name
+#     blob = bucket.blob(file_path)
+
+#     if not blob.exists():
+#         raise Http404("File not found")
+
+#     file_content = blob.download_as_bytes()
+    
+#     response = HttpResponse(file_content, content_type='application/octet-stream')
+#     response['Content-Disposition'] = f'attachment; filename="{blob.name}"'
+#     return response
+
+
 
 
 #Somehow read in the file based on area, and provide attributes in dropdowns
@@ -24,7 +58,7 @@ class EmailCreateView(LoginRequiredMixin, CreateView):  #looks to model_form.htm
 
     model = EmailFileUpload
     form_class = EmailFileForm
-    success_url = reverse_lazy('email-create')
+    success_url = reverse_lazy('import-file')
 
     def form_valid(self, form):
 
@@ -34,9 +68,16 @@ class EmailCreateView(LoginRequiredMixin, CreateView):  #looks to model_form.htm
         return response
     
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
-        # Add all prior files submitted by the logged-in user to the context
-        context['previous_files'] = EmailFileUpload.objects.filter(creator_id=self.request.user)
+        # Get all files uploaded by the logged-in user
+        previous_files = EmailFileUpload.objects.filter(creator_id=self.request.user)
+        
+        # Generate the file path for each file
+        for file in previous_files:
+            file.file_path = file.file.name  # Use the file's name as the path
+        
+        context['previous_files'] = previous_files
         return context
     
 

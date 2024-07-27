@@ -1,14 +1,22 @@
 /* Button styles */
-.save-configuration-button, .send-emails-button {
+.save-configuration-button, 
+.send-emails-button, 
+.upload-file-button {
     width: 150px; /* Set the width of the button */
-    height: 40px; /* Set the height of the button */
+    height: 60px; /* Set the height of the button */
     font-size: 16px; /* Set button font size */
     border: none; /* Remove button border */
     border-radius: 5px; /* Apply border radius to button */
     cursor: pointer; /* Change cursor to pointer on hover */
+    margin: 10px 5px; /* Add consistent margin to buttons for spacing */
 }
 
 .save-configuration-button {
+    background-color: #007bff; /* Set button background color */
+    color: #fff; /* Set button text color */
+}
+
+.upload-file-button {
     background-color: #007bff; /* Set button background color */
     color: #fff; /* Set button text color */
 }
@@ -27,9 +35,12 @@
     color: white;
 }
 
-/* Form styles */
+
 .email-configuration-form {
     margin-bottom: 20px; /* Add some margin below the form */
+    display: flex; /* Use flexbox for the form */
+    flex-direction: row; /* Arrange form fields vertically */
+    align-items: left; /* Center align the form fields */
 }
 
 .form-inline {
@@ -102,6 +113,7 @@
     flex: 1; /* Take up equal space */
     padding: 10px; /* Add padding for spacing */
 }
+
 
 
 .email-config-container {

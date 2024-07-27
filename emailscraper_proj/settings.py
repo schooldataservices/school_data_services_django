@@ -169,14 +169,17 @@ DEFAULT_FILE_STORAGE = 'emailscraper_proj.settings.CustomGoogleCloudStorage'
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
 
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-STATICFILES_DIRS = [ #in the case of switching between apps
-    os.path.join(BASE_DIR, 'emailscraper_app', 'static', 'emailscraper_django') # Path to custom CSS files
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'emailscraper_app', 'static'), #path to css and js
 ]
+
+
+# 'emailscraper_django', 'css'
 
 #Base dir
 # C:\Users\samuel.taylor\OneDrive - Green Dot Public Schools\Desktop\Git_Directory\CP\CustomPlanet_Work\django_testing\emailscraper_django

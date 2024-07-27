@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
-from emailscraper_app.views.homepage_views import email_content_view
+from emailscraper_app.views.homepage_views import email_content_view, serve_image
 import debug_toolbar
 
 urlpatterns = [
@@ -42,6 +42,7 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
          name='password_reset_complete'), 
     path('', include('emailscraper_app.urls')),
+    path('serve-image/', serve_image, name='serve_image'),
 
     #Ckeditor stuff
     path('email-content/', email_content_view, name='email_content'),
