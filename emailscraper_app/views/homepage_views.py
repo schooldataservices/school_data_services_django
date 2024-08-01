@@ -79,15 +79,27 @@ def email_config_view(request):
     welcome_message = f'Welcome to the party, {request.user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
 
     emails_sent = request.session.get('emails_sent', False)
+    previous_files = EmailFileUpload.objects.filter(creator_id=request.user.id)
+    
+    for file in previous_files:
+        file.file_path = file.file.name  # Use the file's name as the path
+
     context = {
-        'emails': emails,
-        'welcome_message': welcome_message,
+        'email_context': {
+            'welcome_message': welcome_message,
+            'emails_sent': emails_sent,
+        },
         'email_config_form': email_config_form,
         'email_file_upload_form': email_file_upload_form,
-        'emails_sent': emails_sent,
-    }
+        'previous_files': previous_files,
 
+        'emails': emails,
+    }
     return render(request, 'emailscraper_app/homepage_base.html', context)
+
+
+
+    
 
 
 

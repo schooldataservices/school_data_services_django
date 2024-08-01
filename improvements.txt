@@ -1,5 +1,3 @@
-# Images uploaded into Ckeditor are now hosted in GCP
-
 # Now customize the dropdowns. 
 
 #Implement the front end to import a customer base from a csv. 
@@ -15,13 +13,13 @@
 
 
 
-Page not found (404)
-Request Method:	POST
-Request URL:	http://localhost:8000/email/new/
-
-#Check the view that routes to this
-
-#When uploading the file email/new/ 
+#All args are currently geared up for a certain csv. 
+#Make the args dynamic based on uploaded csv. 
+#Display file upload on the main page
 
 
-#Get more organized with the views. 
+
+
+
+emailfileupload_form.html   needs the previously_uploaded_files html piece within the base.html
+This should be inherited
