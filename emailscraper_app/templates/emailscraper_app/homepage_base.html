@@ -1,8 +1,9 @@
-
 {% extends 'emailscraper_app/base.html' %}
+{% load static %}
 {% block title %}
 Email Campaign - Home
 {% endblock title %}
+
 {% block content %}
 <h1>{{ email_context.welcome_message }}</h1>
 <div class="container">
@@ -40,17 +41,12 @@ Email Campaign - Home
                 {% endfor %}
             </div>
         </div>
-        <!-- Send Emails button -->
-        <!-- Save Configuration button -->
         <button type="submit" class="save-configuration-button">Save Configuration</button>
-        <button type="submit" class="upload-file-button" formaction="{% url 'import-file' %}" >Upload Email Recipients</button>
-        <button type="submit" class="send-emails-button" formaction="{% url 'email_send' %}" >Send Emails</button>
-    
+        <button type="submit" class="upload-file-button" formaction="{% url 'import-file' %}">Upload Email Recipients</button>
+        <button type="submit" class="send-emails-button" formaction="{% url 'email_send' %}">Send Emails</button>
     </form>
 </div>
-<!-- Include CKEditor script -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-<!-- Initialize CKEditor -->
 <script>
     ClassicEditor
         .create(document.querySelector('#editor'), {
@@ -63,3 +59,42 @@ Email Campaign - Home
         });
 </script>
 {% endblock content %}
+
+{% block footer %}
+<!-- Footer -->
+<footer>
+    <div style="margin-top: 300px;">
+        <h2>Display Uploaded Files</h2>
+        <div style="display: flex; align-items: center;">
+            
+            <select id="file-select">
+                {% for file_upload in previous_files %}
+                    {% if file_upload.file_path %}
+                        <option value="{{ file_upload.pk }}" data-url="{% url 'serve_file' file_upload.file_path|urlencode %}">{{ file_upload.file.name }}</option>
+                    {% else %}
+                        <option value="{{ file_upload.pk }}" disabled>No URL available</option>
+                    {% endif %}
+                {% empty %}
+                    <option>No files uploaded yet.</option>
+                {% endfor %}
+            </select>
+            <button id="download-button" class="btn btn-secondary btn-sm mt-1 mb-1">Download</button>
+            
+            {% if previous_files %}
+            <div style="margin-left: 10px;">
+                <a href="#" id="update-file-button" class="btn btn-secondary btn-sm mt-1 mb-1">Update Current File</a>
+            </div>
+            
+            <div style="margin-left: 10px;">
+                <form id="delete-file-form" method="post" action="" style="display: inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-sm mt-1 mb-1" type="submit">Delete</button>
+                </form>            
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div id="file-content" style="margin-top: 20px;"></div>
+    <script src="{% static 'js/emailfileupload_form.js' %}" defer></script>
+</footer>
+{% endblock footer %}
