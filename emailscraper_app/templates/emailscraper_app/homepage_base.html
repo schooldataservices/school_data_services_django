@@ -41,6 +41,9 @@ Email Campaign - Home
                 {% endfor %}
             </div>
         </div>
+
+        <!-- Hidden input field to store the selected file URL -->
+        <input type="hidden" id="selected-file-url" name="selected_file_url">
         <button type="submit" class="save-configuration-button">Save Configuration</button>
         <button type="submit" class="upload-file-button" formaction="{% url 'import-file' %}">Upload Email Recipients</button>
         <button type="submit" class="send-emails-button" formaction="{% url 'email_send' %}">Send Emails</button>
@@ -63,7 +66,7 @@ Email Campaign - Home
 {% block footer %}
 <!-- Footer -->
 <footer>
-    <div style="margin-top: 300px;">
+    <div style="margin-top: 20px;">
         <h2>Display Uploaded Files</h2>
         <div style="display: flex; align-items: center;">
             
@@ -98,3 +101,4 @@ Email Campaign - Home
     <script src="{% static 'js/emailfileupload_form.js' %}" defer></script>
 </footer>
 {% endblock footer %}
+

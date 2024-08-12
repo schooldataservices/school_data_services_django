@@ -19,7 +19,56 @@
 
 
 
+If the file uploaded is not a csv it will be parsed properly. Need some logic for that. 
+Resize the displayed file, start altering args for email send logic. 
+Put bar in that monitors the send. 
+
+send_emails_view retrieves the most recent session configuration of email_config
+
+if request.method == 'POST':
+
+    for key, value in EmailConfigForm.excluded_fields.items():
+        email_config[key] = value
+
+    # Call the blast function from email_send_main.py, df can be configured to be passed in dynamically with the adlibs
+    #currently reads df from views file being a global variable
+    blast(email_config, df, test=True)
 
 
-emailfileupload_form.html   needs the previously_uploaded_files html piece within the base.html
-This should be inherited
+
+
+Blast is the main process that calls all of the emails
+It is then passed to SendMail.get_next_50(df)
+
+Question becomes how does it default to KC Schools?
+Need to change it to where it can accept any file. Also have the possibility to bypass and call directly
+
+
+The for loop starting at line 181 is going to need some work when the columns start changing. Might need to go into a different kind of DB rather than column based. 
+Data could be prone to change
+
+Is filter date necessary. Need that to be dynamic when looking at the df. 
+
+Insert an email column to uploaded files
+def test_func(test, df):
+
+
+    if test == True:
+        df.at[0, 'email'] = '2015samtaylor@gmail.com'
+        df.at[1, 'email'] = 'sammytaylor2006@yahoo.com'
+        df.at[2, 'email'] = 'jerrybons2006@gmail.com'
+        df = df[:2]
+        logging.info('Test argument is True, cutting down frame and sending to personal emails')
+        print('Test argument is True, cutting down frame and sending to personal emails')
+    else:
+        pass
+
+    return(df)
+
+Issue with rendering the uploaded file from Google Cloud in send_emails_view. 
+Figure out how to read that file in, and configure logging in the cosole
+
+
+
+Get rid of optional columns, but somehow integrate tags to be able
+to expand the columns out. Might be better hosted in a no sql database. 

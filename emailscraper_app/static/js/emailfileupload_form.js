@@ -21,6 +21,9 @@ $(document).ready(function() {
     $('#file-select').change(function() {
         var fileUrl = $(this).find(':selected').data('url');
         $('#delete-file-form').attr('action', '/email/' + $(this).val() + '/delete/');
+        
+        // Update the hidden input field with the selected file URL
+        $('#selected-file-url').val(fileUrl);
 
         // Fetch and display the file content
         if (fileUrl) {
