@@ -5,8 +5,11 @@ from django.http import HttpResponse
 from google.cloud import storage
 from ..forms import EmailBlastForm, EmailConfigForm, EmailFileUploadForm
 from ..models import EmailOption, EmailFileUpload
+from emailscraper_app.views.uploading_file_views import read_csv_from_gcs
 
-
+import pandas as pd
+from io import StringIO
+import requests
 from config import *
 from emailscraper_app.modules.Sending_Emails import KC_schools
 from email_send_main import blast
@@ -113,9 +116,17 @@ def send_emails_view(request):
     print('Send emails view has been called')
 
     if request.method == 'POST':
-
+        
+        #add in the db configurations, server, db info
         for key, value in EmailConfigForm.excluded_fields.items():
             email_config[key] = value
+
+        try:
+            df = read_csv_from_gcs(request, 'uploads/2024/8/2/email_test.csv', pandas_request=True)
+            print('Read in file properly')
+        except Exception as e:
+            print(f'Unable to read file due to {e}')
+
 
         # Call the blast function from email_send_main.py, df can be configured to be passed in dynamically with the adlibs
         #currently reads df from views file being a global variable
