@@ -30,18 +30,19 @@ class EmailConfigForm(forms.Form):
     server = forms.CharField(widget=forms.HiddenInput(), initial=email_config.server)
     database = forms.CharField(initial=email_config.database)
     table_name = forms.CharField(initial=email_config.table_name)
-    filter_date = forms.DateField(initial=email_config.filter_date)  # Assuming YYYY-MM-DD format
     email_subject_line = forms.CharField(initial=email_config.email_subject_line)
     email_campaign_name = forms.CharField(initial=email_config.email_campaign_name)
     contact_column = forms.CharField(initial=email_config.contact_column)
-    sport = forms.CharField(initial=email_config.sport)
     db_pass = forms.CharField(widget=forms.HiddenInput(), initial = email_config.db_pass)  # Assuming it's a password field
     db_user = forms.CharField(initial=email_config.db_user)
-    optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
-    premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
     email_content = forms.CharField(widget=CKEditorWidget())
     email_content = forms.CharField(widget=CKEditorUploadingWidget())
 
+    #Since removed fields
+    # sport = forms.CharField(initial=email_config.sport)
+    # optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
+    # filter_date = forms.DateField(initial=email_config.filter_date)  # Assuming YYYY-MM-DD format
+    # premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
 
     def __init__(self, *args, **kwargs):
         super(EmailConfigForm, self).__init__(*args, **kwargs)

@@ -47,28 +47,32 @@ Need to change it to where it can accept any file. Also have the possibility to 
 The for loop starting at line 181 is going to need some work when the columns start changing. Might need to go into a different kind of DB rather than column based. 
 Data could be prone to change
 
-Is filter date necessary. Need that to be dynamic when looking at the df. 
+Filter date is not necessary until db integrations
 
-Insert an email column to uploaded files
+
+Insert an email column for uploaded files
 def test_func(test, df):
 
 
-    if test == True:
-        df.at[0, 'email'] = '2015samtaylor@gmail.com'
-        df.at[1, 'email'] = 'sammytaylor2006@yahoo.com'
-        df.at[2, 'email'] = 'jerrybons2006@gmail.com'
-        df = df[:2]
-        logging.info('Test argument is True, cutting down frame and sending to personal emails')
-        print('Test argument is True, cutting down frame and sending to personal emails')
-    else:
-        pass
+Currently reading email_test.csv from GCS 
 
-    return(df)
 
-Issue with rendering the uploaded file from Google Cloud in send_emails_view. 
-Figure out how to read that file in, and configure logging in the cosole
-
+Now need to read in a file based on a box checked in the interfact. 
 
 
 Get rid of optional columns, but somehow integrate tags to be able
 to expand the columns out. Might be better hosted in a no sql database. 
+Double back on premade templates elsewhere
+
+Get rid of Filter date, Sport, Optional Iterated Columns, Premade templates
+
+Upload a file with all of your emails. 
+Take the test piece out on the send and confirm it works. 
+Contact column should be a drop down piece that has all of the columns from the
+file that is displayed in the live action
+
+
+ 
+
+
+
