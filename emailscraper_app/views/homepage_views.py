@@ -121,26 +121,45 @@ def send_emails_view(request):
         for key, value in EmailConfigForm.excluded_fields.items():
             email_config[key] = value
 
+         # Get the selected file URL and extract the part you need
+        selected_file_url = request.POST.get('selected_file_url')
+        if selected_file_url.startswith('/serve-file/'):
+            selected_file_url = selected_file_url[len('/serve-file/'):]
+
+        # Remove any trailing slash
+        selected_file_url = selected_file_url.rstrip('/')
+        print(f'Selected file URL: {selected_file_url}')
+
         try:
-            df = read_csv_from_gcs(request, 'uploads/2024/8/2/email_test.csv', pandas_request=True)
+            df = read_csv_from_gcs(request, selected_file_url, pandas_request=True)
+            if df is None:
+                raise ValueError('DataFrame is None. File could not be read.')
             print('Read in file properly')
         except Exception as e:
             print(f'Unable to read file due to {e}')
+            messages.error(request, f'Error reading file: {e}')
+            return redirect('email_config_home')
 
 
-        # Call the blast function from email_send_main.py, df can be configured to be passed in dynamically with the adlibs
-        #currently reads df from views file being a global variable
-        blast(email_config, df, test=True)
+        # Call the blast function with the email configuration and the dataframe
+        try:
+            blast(email_config, df, test=True)
+            messages.success(request, 'Emails sent successfully!')
+        except Exception as e:
+            print(f'Error during email blast: {e}')
+            messages.error(request, f'Error sending emails: {e}')
+            return redirect('email_config_home')
 
-        messages.success(request, 'Emails sent successfully!')
-        
         # Redirect to the homepage URL
         return redirect('email_config_home')
-    
-    else: #on initial page load
+
+    else:
         form = EmailBlastForm()
-        
+
     return render(request, 'emailscraper_app/homepage_base.html', {'form': form})
+
+
+
 
 
 def file_list(request):

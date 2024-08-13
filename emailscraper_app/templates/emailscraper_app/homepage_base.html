@@ -81,7 +81,8 @@ Email Campaign - Home
                     <option>No files uploaded yet.</option>
                 {% endfor %}
             </select>
-            <button id="download-button" class="btn btn-secondary btn-sm mt-1 mb-1">Download</button>
+      
+            <button id="download-button" class="btn btn-secondary btn-sm mt-1 mb-1" style="margin-left: 10px;">Download Current File</button>
             
             {% if previous_files %}
             <div style="margin-left: 10px;">
@@ -95,7 +96,20 @@ Email Campaign - Home
                 </form>            
             </div>
             {% endif %}
+
         </div>
+
+
+        <div style="margin-top: 20px;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <button id="increase-rows" class="btn btn-secondary btn-sm" style="margin-bottom: 5px;">Show More Rows</button>
+                <button id="decrease-rows" class="btn btn-secondary btn-sm" style="margin-bottom: 5px;">Show Fewer Rows</button>
+                <span id="row-limit-display" style="margin: 5px 0;">Showing 10 rows</span>
+            </div>
+        </div>
+        
+        
+       
     </div>
     <div id="file-content" style="margin-top: 20px;"></div>
     <script src="{% static 'js/emailfileupload_form.js' %}" defer></script>
