@@ -30,7 +30,13 @@ def blast(email_config, df, test=False):
     # get_next_50 is what ends this function. It will break once end_point has surpassed.
     while len(df) >= 1:
 
-        next_50 = SendMail.get_next_50(df)
+        print(df.head())
+        print(f'Here is the email config passed into blast func {email_config}')
+
+        next_50 = SendMail.get_next_50(df, email_config)
+
+        print(f'Here is the next_50 frame {next_50.head()}')
+
         try:
             new_point = next_50.index[0]
             end_point = next_50.index[-1]   
@@ -53,6 +59,9 @@ def blast(email_config, df, test=False):
             logging.info('Breaking loop after sending to personal emails due to test')
             print('Breaking loop after sending to personal emails due to test')
             break  # Terminate after one iteration if test=True
+        else:
+            logging.info('Test is false')
+            print('Test is false')
         
         interval_seconds = 30
         # Wait for the specified interval before the next iteration

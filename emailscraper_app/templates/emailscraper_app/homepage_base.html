@@ -9,6 +9,10 @@ Email Campaign - Home
 <div class="container">
     <form action="{% url 'email_config_home' %}" method="post" class="email-configuration-form" enctype="multipart/form-data">
         {% csrf_token %}
+        <!-- Hidden input to store selected file ID, and URL -->
+        <input type="hidden" id="selected-file-id" name="selected_file_id" value="{{ selected_file_id }}">
+        <input type="hidden" id="selected-file-url" name="selected_file_url" value="">
+        
         <div class="flex-container">
             <!-- Email configuration container -->
             <div class="email-config-container">
@@ -42,8 +46,6 @@ Email Campaign - Home
             </div>
         </div>
 
-        <!-- Hidden input field to store the selected file URL -->
-        <input type="hidden" id="selected-file-url" name="selected_file_url">
         <button type="submit" class="save-configuration-button">Save Configuration</button>
         <button type="submit" class="upload-file-button" formaction="{% url 'import-file' %}">Upload Email Recipients</button>
         <button type="submit" class="send-emails-button" formaction="{% url 'email_send' %}">Send Emails</button>
@@ -68,9 +70,13 @@ Email Campaign - Home
 <footer>
     <div style="margin-top: 20px;">
         <h2>Display Uploaded Files</h2>
+
+        <p>Selected file ID from context: {{ selected_file_id }}</p>
+
         <div style="display: flex; align-items: center;">
-            
-            <select id="file-select">
+ 
+            <!-- File selection dropdown -->
+            <!-- <select id="file-select">
                 {% for file_upload in previous_files %}
                     {% if file_upload.file_path %}
                         <option value="{{ file_upload.pk }}" data-url="{% url 'serve_file' file_upload.file_path|urlencode %}">{{ file_upload.file.name }}</option>
@@ -80,8 +86,27 @@ Email Campaign - Home
                 {% empty %}
                     <option>No files uploaded yet.</option>
                 {% endfor %}
+            </select> -->
+
+            <select id="file-select">
+                {% for file_upload in previous_files %}
+                    {% if file_upload.file_path %}
+                        <option 
+                            value="{{ file_upload.pk }}" 
+                            data-url="{% url 'serve_file' file_upload.file_path|urlencode %}"
+                            {% if file_upload.pk == selected_file_id %}selected{% endif %}>
+                            {{ file_upload.file.name }}
+                        </option>
+                    {% else %}
+                        <option value="{{ file_upload.pk }}" disabled>No URL available</option>
+                    {% endif %}
+                {% empty %}
+                    <option>No files uploaded yet.</option>
+                {% endfor %}
             </select>
-      
+
+
+            
             <button id="download-button" class="btn btn-secondary btn-sm mt-1 mb-1" style="margin-left: 10px;">Download Current File</button>
             
             {% if previous_files %}
@@ -96,9 +121,7 @@ Email Campaign - Home
                 </form>            
             </div>
             {% endif %}
-
         </div>
-
 
         <div style="margin-top: 20px;">
             <div style="display: flex; flex-direction: column; align-items: flex-start;">
@@ -108,11 +131,8 @@ Email Campaign - Home
             </div>
         </div>
         
-        
-       
     </div>
     <div id="file-content" style="margin-top: 20px;"></div>
     <script src="{% static 'js/emailfileupload_form.js' %}" defer></script>
 </footer>
 {% endblock footer %}
-

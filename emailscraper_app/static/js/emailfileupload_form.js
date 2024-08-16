@@ -1,7 +1,13 @@
 $(document).ready(function() {
     var maxRows = 10; // Initial row limit
 
-    // Function to update the hidden input field
+    // Function to update the hidden input field with the selected file ID
+    function updateSelectedFileId() {
+        var fileId = $('#file-select').val();
+        $('#selected-file-id').val(fileId);
+    }
+
+    // Function to update the hidden input field with the selected file URL
     function updateSelectedFileUrl() {
         var fileUrl = $('#file-select').find(':selected').data('url');
         $('#selected-file-url').val(fileUrl);
@@ -74,13 +80,15 @@ $(document).ready(function() {
 
     // Handle file selection change
     $('#file-select').change(function() {
-        var fileUrl = $(this).find(':selected').data('url');
-        $('#delete-file-form').attr('action', '/email/' + $(this).val() + '/delete/');
-        
-        // Update the hidden input field with the selected file URL
+        // Update the hidden input fields with the selected file ID and URL
+        updateSelectedFileId();
         updateSelectedFileUrl();
 
+        // Update the form's delete action URL
+        $('#delete-file-form').attr('action', '/email/' + $(this).val() + '/delete/');
+        
         // Fetch and display the file content
+        var fileUrl = $(this).find(':selected').data('url');
         loadFileContent(fileUrl);
     });
 
@@ -104,9 +112,10 @@ $(document).ready(function() {
         }
     });
 
-    // Set the initial value of the hidden input field and load the file content
+    // Set the initial value of the hidden input fields and load the file content
     var initialFileUrl = $('#file-select').find(':selected').data('url');
     if (initialFileUrl) {
+        updateSelectedFileId();
         updateSelectedFileUrl();
         loadFileContent(initialFileUrl);
     }

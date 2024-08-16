@@ -25,17 +25,20 @@ df = KC_schools.filter_emails_by_sport(df, ['Baseball', 'Softball'])
 
 
 
-
 def handle_email_config_form(request, form_data):
     email_config_form = EmailConfigForm(request.POST or None, initial=form_data)
     
     if request.method == 'POST' and email_config_form.is_valid():
-        filter_date = email_config_form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
-        email_config_form.cleaned_data['filter_date'] = filter_date
+        # filter_date = email_config_form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
+        # email_config_form.cleaned_data['filter_date'] = filter_date
 
         form_data.update(email_config_form.cleaned_data)
         request.session['email_config'] = form_data
         print('Form data saved to session:', form_data)
+
+         # Retrieve and save selected file ID from live HTML
+        selected_file_id = request.POST.get('selected_file_id', None)
+        request.session['selected_file_id'] = selected_file_id
 
         messages.success(request, 'Email configuration saved successfully.')
         return True, email_config_form
@@ -43,7 +46,7 @@ def handle_email_config_form(request, form_data):
         print('EmailConfigForm is invalid')
         print(email_config_form.errors)
 
-    return False, email_config_form
+    return(False, email_config_form)
 
 
 def handle_email_file_upload_form(request):
@@ -68,6 +71,9 @@ def email_config_view(request):
     form_data = request.session.get('email_config', {})
     email_config_saved, email_config_form = handle_email_config_form(request, form_data)
     email_file_uploaded, email_file_upload_form = handle_email_file_upload_form(request)
+    
+    selected_file_id = int(request.session.get('selected_file_id', 0))
+    print(f'Here is the selected file id {selected_file_id}')
 
     if email_config_saved or email_file_uploaded:
         return redirect('email_config_home')
@@ -76,33 +82,42 @@ def email_config_view(request):
         if field_name in email_config_form.fields:
             del email_config_form.fields[field_name]
 
-    emails = EmailOption.objects.all()
-    profile_name = request.user.profile.user.username if hasattr(request.user, 'profile') else None
-    first_time_login = request.user.last_login is None
-    welcome_message = f'Welcome to the party, {request.user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
-
+    # Use the separate function to get email context
+    email_context = get_email_context(request.user)
     emails_sent = request.session.get('emails_sent', False)
     previous_files = EmailFileUpload.objects.filter(creator_id=request.user.id)
     
     for file in previous_files:
-        file.file_path = file.file.name  # Use the file's name as the path
+        file.file_path = file.file.name
 
     context = {
-        'email_context': {
-            'welcome_message': welcome_message,
-            'emails_sent': emails_sent,
-        },
+        'email_context': email_context,
         'email_config_form': email_config_form,
         'email_file_upload_form': email_file_upload_form,
         'previous_files': previous_files,
-
-        'emails': emails,
+        'selected_file_id': selected_file_id,
+        'emails': email_context['emails'],  # Pass the emails to the template
     }
+
     return render(request, 'emailscraper_app/homepage_base.html', context)
 
 
 
+def get_email_context(user):
+    emails = EmailOption.objects.all()
+    profile_name = user.profile.user.username if hasattr(user, 'profile') else None
+    first_time_login = user.last_login is None
+    welcome_message = f'Welcome to the party, {user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
     
+    return {
+        'emails': emails,
+        'profile_name': profile_name,
+        'welcome_message': welcome_message,
+    }
+
+
+
+
 
 
 
@@ -123,6 +138,7 @@ def send_emails_view(request):
 
          # Get the selected file URL and extract the part you need
         selected_file_url = request.POST.get('selected_file_url')
+        print(f'Here is the selected file url {selected_file_url}')
         if selected_file_url.startswith('/serve-file/'):
             selected_file_url = selected_file_url[len('/serve-file/'):]
 
@@ -143,7 +159,7 @@ def send_emails_view(request):
 
         # Call the blast function with the email configuration and the dataframe
         try:
-            blast(email_config, df, test=True)
+            blast(email_config, df, test=False)
             messages.success(request, 'Emails sent successfully!')
         except Exception as e:
             print(f'Error during email blast: {e}')
@@ -216,3 +232,4 @@ def serve_image(request):
     
     # Return image data as HTTP response
     return HttpResponse(image_data, content_type='image/jpeg')
+

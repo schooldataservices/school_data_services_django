@@ -44,16 +44,20 @@ class SendMail:
     #Different logic, output.csv is not created yet. It is at the point of blasting the first 5-. 
     #get next 50 is modified with a try except where the except simply gets the first 50. 
     #Attempts to read from the output.csv everytime   
+    @staticmethod
+    def get_next_50(df, email_config):
 
-    def get_next_50(df):
+
+        email_contact = email_config['contact_column']
 
         try:    
             email_history = pd.read_csv(os.getcwd() + '\\output.csv')
 
+            #This always needs to be 'contact_email' to refer to output.csv
             last_email_sent = email_history['contact_email'].iloc[-1]
                 
             # Find the index in df where the 'email' column matches the last_email_sent
-            index_to_start = df[df['email'] == last_email_sent].index.max() + 1
+            index_to_start = df[df[email_contact] == last_email_sent].index.max() + 1
 
             if np.isnan(index_to_start):    #So if index_to_start is nan. Then let df be itself. 
                 print('Could not match last email sent to master frame, proceeding with original frame')
@@ -90,12 +94,13 @@ class SendMail:
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
         EMAIL_PASS = email_config['EMAIL_PASS']
         email_subject_line = email_config['email_subject_line']
+        email_contact = email_config['contact_column']
     
         #establish the template based on the config file template_str
-        premade_templates = email_config['premade_templates']
-        template_name = f"emailscraper_app.modules.Sending_Emails.html_email_strings.{premade_templates}"
-        module = importlib.import_module(template_name)
-        template = module.get_template
+        # premade_templates = email_config['premade_templates']
+        # template_name = f"emailscraper_app.modules.Sending_Emails.html_email_strings.{premade_templates}"
+        # module = importlib.import_module(template_name)
+        # template = module.get_template
 
         #if this template_str is empty, then refer to the contents in the HTML box. 
 
@@ -160,11 +165,11 @@ class SendMail:
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
         EMAIL_PASS = email_config['EMAIL_PASS']
         contact_column = email_config['contact_column']
-        sport = email_config['sport']
+        # sport = email_config['sport']
         email_campaign_name = email_config['email_campaign_name']
         email_subject_line = email_config['email_subject_line']
-        optional_iterated_columns_str = email_config['optional_iterated_columns']
-        optional_iterated_columns = ast.literal_eval(optional_iterated_columns_str)
+        # optional_iterated_columns_str = email_config['optional_iterated_columns']
+        # optional_iterated_columns = ast.literal_eval(optional_iterated_columns_str)
 
         #establish SMTP conn based on variables in config, passed into send function. Lasts throughout send. If fails re-configures within send
         SMTP_CONN = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS) #Established in view click button
@@ -192,31 +197,31 @@ class SendMail:
                 continue
             
             #There four columns are necessary, everything else is for the send. Mark email as processed
-            data = [email_contact, sport, formatted_date]
+            data = [email_contact, formatted_date]
             data_list.append(data)
             processed_emails.add(email_contact)
 
 
-            kwargs = {'sport': sport}
-            if optional_iterated_columns:
-                # Iterate through optional_iterated_columns and add them to kwargs
-                for column_name in optional_iterated_columns:
+            # kwargs = {'sport': sport}
+            # if optional_iterated_columns:
+            #     # Iterate through optional_iterated_columns and add them to kwargs
+            #     for column_name in optional_iterated_columns:
 
-                    if column_name in row: #check if column name exists in the row data
+            #         if column_name in row: #check if column name exists in the row data
 
-                        kwargs[column_name] = row[column_name]
+            #             kwargs[column_name] = row[column_name]
 
-                    else:
-                        print(f'Column {column_name} does not exist in the DataFrame row')
+            #         else:
+            #             print(f'Column {column_name} does not exist in the DataFrame row')
 
                     #optional kwargs get passed into send, which are passed into template. Then are called upon through dict format
 
-            SendMail.send(email_config, email_contact, SMTP_CONN, **kwargs)
+            SendMail.send(email_config, email_contact, SMTP_CONN)
 
         
         #contact_email is how the get_next_50 finds where it left off
         
-        data_list = pd.DataFrame(data_list, columns=['Contact', 'Sport', 'Date_Sent'])
+        data_list = pd.DataFrame(data_list, columns=['Contact', 'Date_Sent'])
 
         data_list.rename(columns = {'Contact': 'contact_email', 'Date_Sent': 'date_sent', 'Sport': 'sport'}, inplace = True)
         data_list['date'] = data_list['date_sent'].astype(str)
