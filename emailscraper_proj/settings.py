@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from .config import EMAIL_HOST_USER, imap_password_sam
+from .config import EMAIL_HOST_USER, imap_password_sam, django_db_password
 import google.auth
 from google.auth import credentials
 from storages.backends.gcloud import GoogleCloudStorage
@@ -99,8 +99,12 @@ WSGI_APPLICATION = "emailscraper_proj.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "django_hosting",
+        "USER": "samuel_taylor",
+        "PASSWORD": django_db_password,
+        "HOST": "192.168.86.44",
+        "PORT": "3306"
     }
 }
 

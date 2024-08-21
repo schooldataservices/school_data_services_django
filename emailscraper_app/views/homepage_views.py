@@ -136,13 +136,13 @@ def send_emails_view(request):
         for key, value in EmailConfigForm.excluded_fields.items():
             email_config[key] = value
 
-         # Get the selected file URL and extract the part you need
+         # Get the selected file URL and extract the part needed
         selected_file_url = request.POST.get('selected_file_url')
         print(f'Here is the selected file url {selected_file_url}')
         if selected_file_url.startswith('/serve-file/'):
             selected_file_url = selected_file_url[len('/serve-file/'):]
 
-        # Remove any trailing slash
+        # Remove any trailing slash to read from GCS
         selected_file_url = selected_file_url.rstrip('/')
         print(f'Selected file URL: {selected_file_url}')
 

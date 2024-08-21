@@ -99,9 +99,11 @@ Take out test argument, see if it is sending rigth
 With the column of 'email' changing to 'email_test' need to get that from the context and cascade it down
 
 Get next 50 needs some work. 
-Needs to be changed, and logged out better to where the messages appear on consoel
+Needs to be changed, and logged out better to where the messages appear on console
 As the name of the contact column changes from 'email_test' to 'email' etc.. 
 This will change the output.csv
 
 Alysia is the last email in both of my frames, therefore it picks up from that 
 point, and there is nothing left on my frames
+
+With DB migrated to mySQL, test out emails sent to table using a model
