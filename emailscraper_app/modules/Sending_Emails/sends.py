@@ -9,9 +9,8 @@ from datetime import datetime
 import pytz
 import time
 import base64
-import importlib
-import ast 
 import warnings
+from emailscraper_app.models import RecordingEmailRecipients
 warnings.filterwarnings('ignore', category=FutureWarning)
 
 
@@ -101,18 +100,19 @@ class SendMail:
         # template_name = f"emailscraper_app.modules.Sending_Emails.html_email_strings.{premade_templates}"
         # module = importlib.import_module(template_name)
         # template = module.get_template
-
         #if this template_str is empty, then refer to the contents in the HTML box. 
 
         #For now over-ride the template here by calling it from email_config in a different variable
         template = email_config['email_content']
-        print(template)
 
 
         msg = EmailMessage()
         msg['From'] = EMAIL_ADDRESS_FROM
         msg['To'] = email_contact
         msg['Subject'] = email_subject_line    #This can be formatted to iterate the subject line based on the send with an f string
+
+
+
 
         #kwargs adds in additional adlibs columns into the template if specified in config variable
         # body = template(**kwargs) 
@@ -156,88 +156,63 @@ class SendMail:
         
 
 
-    def process(df, email_config, test=False):
-
-        print(f"here is the email_config dict passed into process {email_config}")
-
-        #next 50 must be passed in as the df, otherwise it will keep running
+    def process(df, email_config, user, test=True):
+        logging.info(f"Email config dict passed into process: {email_config}")
 
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
         EMAIL_PASS = email_config['EMAIL_PASS']
         contact_column = email_config['contact_column']
-        # sport = email_config['sport']
         email_campaign_name = email_config['email_campaign_name']
         email_subject_line = email_config['email_subject_line']
-        # optional_iterated_columns_str = email_config['optional_iterated_columns']
-        # optional_iterated_columns = ast.literal_eval(optional_iterated_columns_str)
+        creator_id = user.id
 
-        #establish SMTP conn based on variables in config, passed into send function. Lasts throughout send. If fails re-configures within send
-        SMTP_CONN = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS) #Established in view click button
+        # Establish SMTP connection
+        SMTP_CONN = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS)
 
-        #create the test right here with a True False flag. 
-        #Then limit it to two. And send to self
-        data_list = []
+        # Track processed emails to avoid duplicates
         processed_emails = set()
+        email_records = []
 
-        #returns subsidized portion of the df if arg it True
+        # Apply test function if needed
         df = SendMail.test_func(test, df)
 
-        #Limit df itterrows to test
+        # Process rows in DataFrame
         for index, row in df.iterrows():
+            email_contact = row[contact_column]
 
-            #Establish concrete args
-            central_time_zone = pytz.timezone('America/Chicago')
-            now_central = datetime.now(central_time_zone)
-            formatted_date = now_central.strftime("%m/%d/%Y")
-            email_contact = row[contact_column] #should always be 'email' column name
-    
-            # Check if the email has already been processed once
+            # Skip already processed emails
             if email_contact in processed_emails:
                 print(f"Skipping email to {email_contact} as it has already been processed.")
                 continue
             
-            #There four columns are necessary, everything else is for the send. Mark email as processed
-            data = [email_contact, formatted_date]
-            data_list.append(data)
-            processed_emails.add(email_contact)
-
-
-            # kwargs = {'sport': sport}
-            # if optional_iterated_columns:
-            #     # Iterate through optional_iterated_columns and add them to kwargs
-            #     for column_name in optional_iterated_columns:
-
-            #         if column_name in row: #check if column name exists in the row data
-
-            #             kwargs[column_name] = row[column_name]
-
-            #         else:
-            #             print(f'Column {column_name} does not exist in the DataFrame row')
-
-                    #optional kwargs get passed into send, which are passed into template. Then are called upon through dict format
-
+            # Send email
             SendMail.send(email_config, email_contact, SMTP_CONN)
 
-        
-        #contact_email is how the get_next_50 finds where it left off
-        
-        data_list = pd.DataFrame(data_list, columns=['Contact', 'Date_Sent'])
+            # Prepare record for bulk insert
+            central_time_zone = pytz.timezone('America/Chicago')
+            now_central = datetime.now(central_time_zone)
+            formatted_date = now_central.strftime("%Y-%m-%d %H:%M:%S")
 
-        data_list.rename(columns = {'Contact': 'contact_email', 'Date_Sent': 'date_sent', 'Sport': 'sport'}, inplace = True)
-        data_list['date'] = data_list['date_sent'].astype(str)
+            email_record = RecordingEmailRecipients(
+                creator_id=user,
+                email_recipient=email_contact,
+                date_sent=formatted_date,
+                subject=email_subject_line,
+                position=contact_column,
+                from_email=EMAIL_ADDRESS_FROM,
+                email_campaign_tag=email_campaign_name
+            )
+            email_records.append(email_record)
 
-        #Adding in additional columns from the config class
-        data_list['subject'] = email_subject_line
-        data_list['position'] = contact_column
-        data_list['from'] = EMAIL_ADDRESS_FROM
-        data_list['email_campaign_tag'] = email_campaign_name
-        data_list['date'] = now_central.strftime("%Y-%m-%d %H:%M:%S")
+            # Mark email as processed
+            processed_emails.add(email_contact)
 
-        #This is present in case the process breaks it knows where to resume
-        data_list.to_csv('output.csv', index=False)
+        # Bulk insert records into the database
+        if email_records:
+            RecordingEmailRecipients.objects.bulk_create(email_records)
+            logging.info(f"Bulk inserted {len(email_records)} email records.")
 
-        return(data_list)
-
+        return processed_emails  # Or return any relevant information
 
 
 

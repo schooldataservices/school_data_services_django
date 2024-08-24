@@ -3,8 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from google.cloud import storage
+from django.contrib.auth.models import User
 from ..forms import EmailBlastForm, EmailConfigForm, EmailFileUploadForm
-from ..models import EmailOption, EmailFileUpload
+from ..models import EmailSendsMetaData, EmailFileUpload
 from emailscraper_app.views.uploading_file_views import read_csv_from_gcs
 
 import pandas as pd
@@ -72,8 +73,9 @@ def email_config_view(request):
     email_config_saved, email_config_form = handle_email_config_form(request, form_data)
     email_file_uploaded, email_file_upload_form = handle_email_file_upload_form(request)
     
+    #For determnining what file shows up in the dropdown on page reload
     selected_file_id = int(request.session.get('selected_file_id', 0))
-    print(f'Here is the selected file id {selected_file_id}')
+    
 
     if email_config_saved or email_file_uploaded:
         return redirect('email_config_home')
@@ -82,7 +84,7 @@ def email_config_view(request):
         if field_name in email_config_form.fields:
             del email_config_form.fields[field_name]
 
-    # Use the separate function to get email context
+    # Use the separate function to get email fcontext
     email_context = get_email_context(request.user)
     emails_sent = request.session.get('emails_sent', False)
     previous_files = EmailFileUpload.objects.filter(creator_id=request.user.id)
@@ -104,10 +106,10 @@ def email_config_view(request):
 
 
 def get_email_context(user):
-    emails = EmailOption.objects.all()
+    emails = EmailSendsMetaData.objects.all()
     profile_name = user.profile.user.username if hasattr(user, 'profile') else None
     first_time_login = user.last_login is None
-    welcome_message = f'Welcome to the party, {user.username}!' if first_time_login else f'Welcome back, {profile_name}!'
+    welcome_message = f'Welcome to the party, {profile_name}!' if first_time_login else f'Welcome back, {profile_name}!'
     
     return {
         'emails': emails,
@@ -117,18 +119,31 @@ def get_email_context(user):
 
 
 
+def record_email_metadata(request, email_config):
+    """
+    Create and save an EmailOption instance to record email metadata.
+    """
+    user = request.user.username if request.user.is_authenticated else ''
 
+    email_metadata = EmailSendsMetaData(
+        username=user,
+        campaign = email_config.get('email_campaign_name'),
+        subject=email_config.get('email_subject_line'),
+        sender_email=email_config.get('EMAIL_ADDRESS_FROM', ''),
+        message_body=email_config.get('email_content', ''),
+    ) #created_at, and updated_at handled automatically
+
+    email_metadata.save()
+    print(f'Email metadata saved: {email_metadata}')
 
 
 
 
 def send_emails_view(request):
 
-    #here is the email_config dict passed into process {'email_content': '<p>dfsadafsddassdfs</p>', 'EMAIL_PASS': 'feqdwowrmaqthjkx', 'db_pass': 'Pretty11', 'db_user': 'admin', 'table_name': 'email_history', 'server': 'emailcampaign.c9vhoi6ncot7.us-east-1.rds.amazonaws.com', 'database': 'emailcampaign'}
 
     email_config = request.session.get('email_config') #get the variables from the session, if saved it will be overwritten
     print(f'Here is the email config from the session: {email_config}')
-    print('Send emails view has been called')
 
     if request.method == 'POST':
         
@@ -159,8 +174,10 @@ def send_emails_view(request):
 
         # Call the blast function with the email configuration and the dataframe
         try:
-            blast(email_config, df, test=False)
+            blast(email_config, df, request.user, test=True)
             messages.success(request, 'Emails sent successfully!')
+            print(f'Here is the email_config in the try block {email_config}')
+            record_email_metadata(request, email_config)
         except Exception as e:
             print(f'Error during email blast: {e}')
             messages.error(request, f'Error sending emails: {e}')

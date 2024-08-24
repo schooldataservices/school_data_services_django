@@ -1,5 +1,5 @@
 from django import forms
-from .models import EmailOption, EmailFileUpload
+from .models import EmailSendsMetaData, EmailFileUpload
 from config import email_config
 import pandas as pd
 from ckeditor.widgets import CKEditorWidget
@@ -11,7 +11,7 @@ from ckeditor_uploader.widgets import CKEditorUploadingWidget
 # Forms can automatically generate HTML forms based on the defined fields, handle form validation, and sanitize user input.
 
 class EmailBlastForm(forms.Form):
-    email_options = forms.ModelChoiceField(queryset=EmailOption.objects.all())
+    email_options = forms.ModelChoiceField(queryset=EmailSendsMetaData.objects.all())
 
 
 #Completely depends on config  
@@ -56,15 +56,13 @@ class EmailConfigForm(forms.Form):
 
 
 class EmailFileUploadForm(forms.ModelForm):
-    body_rtf_2 = forms.CharField(widget=CKEditorUploadingWidget())
-    body_rtf_3 = forms.CharField(widget=CKEditorUploadingWidget())
+    # body_rtf_2 = forms.CharField(widget=CKEditorUploadingWidget())
+    # body_rtf_3 = forms.CharField(widget=CKEditorUploadingWidget())
 
     class Meta:
 
         model = EmailFileUpload
-        fields = ['file_tag', 'file', 'creator_id', 'column_names', 'delimiter', 'body_rtf_2', 'body_rtf_3']
-
-
+        fields = ['file_tag', 'file', 'creator_id', 'column_names', 'delimiter']
 
 
 
@@ -73,37 +71,6 @@ class EmailFileForm(forms.ModelForm):
         model = EmailFileUpload
         fields = ('file', 'file_tag', 'delimiter')
 
-
-                
-
-# class EmailFileForm(forms.ModelForm):
-#     class Meta:
-#         model = EmailFileUpload
-#         fields = ('file', 'file_tag', 'delimiter')
-
-#     def save(self, commit=True):
-
-#         print('Save triggered')
-
-#         instance = super().save(commit=False)
-#         uploaded_file = instance.file
-#         delimiter = instance.delimiter
-        
-#         # Parse the uploaded file using pandas
-#         try:
-#             df = pd.read_csv(uploaded_file, delimiter=delimiter)
-#             print(df.head())
-#         except pd.errors.ParserError as e:
-#             raise forms.ValidationError(f"Error parsing file: {e}")
-#             print('Did not read csv')
-
-#         # Extract column names and save them to the model
-#         instance.column_names = ','.join(df.columns)
-
-#         if commit:
-#             instance.save()
-
-#         return instance
 
 
 

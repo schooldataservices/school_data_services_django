@@ -107,3 +107,7 @@ Alysia is the last email in both of my frames, therefore it picks up from that
 point, and there is nothing left on my frames
 
 With DB migrated to mySQL, test out emails sent to table using a model
+Remove get_next_50 temporarily
+
+
+Sent emails need to go to the db

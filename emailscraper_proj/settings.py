@@ -223,6 +223,7 @@ CKEDITOR_CONFIGS = {
 }
 
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -230,20 +231,32 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.getcwd(), 'Logs', 'Email_Sender.log'),
+            'level': 'INFO',  # Adjust to the level you need
+            'formatter': 'verbose',
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
     },
     'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
             'propagate': True,
         },
         'emailscraper_app': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
             'propagate': False,
         },
     },
