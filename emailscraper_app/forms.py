@@ -17,28 +17,23 @@ class EmailBlastForm(forms.Form):
 #Completely depends on config  
 class EmailConfigForm(forms.Form):
 
-    excluded_fields = {'EMAIL_PASS' : email_config.EMAIL_PASS,
-                       'db_pass' : email_config.db_pass,
-                       'db_user': email_config.db_user,
-                       'table_name': email_config.table_name,
-                       'server': email_config.server,
-                       'database': email_config.database}
-   
-                
+    excluded_fields = {'EMAIL_PASS' : email_config.EMAIL_PASS}
+         
     EMAIL_ADDRESS_FROM = forms.EmailField(initial=email_config.EMAIL_ADDRESS_FROM)
     EMAIL_PASS = forms.CharField(widget=forms.HiddenInput(), initial=email_config.EMAIL_PASS)  # Assuming it's a password field
-    server = forms.CharField(widget=forms.HiddenInput(), initial=email_config.server)
-    database = forms.CharField(initial=email_config.database)
-    table_name = forms.CharField(initial=email_config.table_name)
     email_subject_line = forms.CharField(initial=email_config.email_subject_line)
     email_campaign_name = forms.CharField(initial=email_config.email_campaign_name)
     contact_column = forms.CharField(initial=email_config.contact_column)
-    db_pass = forms.CharField(widget=forms.HiddenInput(), initial = email_config.db_pass)  # Assuming it's a password field
-    db_user = forms.CharField(initial=email_config.db_user)
-    email_content = forms.CharField(widget=CKEditorWidget())
     email_content = forms.CharField(widget=CKEditorUploadingWidget())
 
+
     #Since removed fields
+    # server = forms.CharField(widget=forms.HiddenInput(), initial=email_config.server)
+    # database = forms.CharField(initial=email_config.database)
+    # table_name = forms.CharField(initial=email_config.table_name)
+    # db_pass = forms.CharField(widget=forms.HiddenInput(), initial = email_config.db_pass)  # Assuming it's a password field
+    # db_user = forms.CharField(initial=email_config.db_user)
+    # email_content = forms.CharField(widget=CKEditorWidget())
     # sport = forms.CharField(initial=email_config.sport)
     # optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
     # filter_date = forms.DateField(initial=email_config.filter_date)  # Assuming YYYY-MM-DD format
@@ -56,8 +51,6 @@ class EmailConfigForm(forms.Form):
 
 
 class EmailFileUploadForm(forms.ModelForm):
-    # body_rtf_2 = forms.CharField(widget=CKEditorUploadingWidget())
-    # body_rtf_3 = forms.CharField(widget=CKEditorUploadingWidget())
 
     class Meta:
 

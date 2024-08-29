@@ -20,10 +20,14 @@ class SendMail:
 
     def get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS):
         # Establish the SMTP connection
-        smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        smtp.login(EMAIL_ADDRESS_FROM, EMAIL_PASS)
-        logging.info('SMTP connection created')
-        return(smtp)
+        try:
+            smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            smtp.login(EMAIL_ADDRESS_FROM, EMAIL_PASS)
+            logging.info('SMTP connection created')
+            return(smtp)
+        except Exception as e:
+            logging.error('Unable to establish SMTP connection due to {e}')
+ 
     
     def pass_in_png(png_path):
             # Read the PNG file as binary data and encode it g base64
@@ -87,13 +91,32 @@ class SendMail:
 
     def send(email_config, email_contact, SMTP_CONN,  **kwargs):
 
-        print(f"here is the email_config dict passed in {email_config}")
-
         #This can not be configured as a dict, because of SMTP conn and template func
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
         EMAIL_PASS = email_config['EMAIL_PASS']
         email_subject_line = email_config['email_subject_line']
-        email_contact = email_config['contact_column']
+        contact_column = email_config['contact_column']
+        template = email_config['email_content']
+
+           # Log critical values
+        logging.info(f"EMAIL_ADDRESS_FROM: {EMAIL_ADDRESS_FROM}")
+        logging.info(f"email_contact (recipient): {email_contact}")
+        logging.info(f"contact_column: {contact_column}")
+        logging.info(f"email_subject_line: {email_subject_line}")
+        logging.info(f"Email content (template): {template}")
+
+
+        # Check for None or invalid values
+        if any(v is None for v in [EMAIL_ADDRESS_FROM, email_contact, email_subject_line, template, SMTP_CONN]):
+            logging.error("One or more required parameters are None. Aborting send.")
+            return
+
+        if not template.strip():
+            logging.error("Template content is empty. Aborting send.")
+            return
+        
+      
+
     
         #establish the template based on the config file template_str
         # premade_templates = email_config['premade_templates']
@@ -101,10 +124,8 @@ class SendMail:
         # module = importlib.import_module(template_name)
         # template = module.get_template
         #if this template_str is empty, then refer to the contents in the HTML box. 
-
         #For now over-ride the template here by calling it from email_config in a different variable
-        template = email_config['email_content']
-
+      
 
         msg = EmailMessage()
         msg['From'] = EMAIL_ADDRESS_FROM
@@ -112,20 +133,25 @@ class SendMail:
         msg['Subject'] = email_subject_line    #This can be formatted to iterate the subject line based on the send with an f string
 
 
+        # logging.info(f"Sending email: From={msg['From']}, To={msg['To']}, Subject={msg['Subject']}, Body={msg.get_content()}")
 
 
-        #kwargs adds in additional adlibs columns into the template if specified in config variable
-        # body = template(**kwargs) 
-        body = template
+          # Set the content as HTML
+        try:
+            msg.set_content(template, subtype='html')
+            logging.info("Content successfully set")
+        except Exception as e:
+            logging.error(f"Failed to set email content: {str(e)}")
+            return
 
-        # Set the content as HTML
-        msg.set_content(body, subtype='html')
 
+        
         try:
             SMTP_CONN.send_message(msg)
+            logging.info(f'Message has been sent to {EMAIL_ADDRESS_FROM}')
 
-        except smtplib.SMTPConnectError as e:
-            print(f'SMTP Connection Error: {e}')
+        except smtplib.SMTPConnectError as e: #For resetting the connection
+            logging.info(f'SMTP Connection Error: {e}')
             time.sleep(10)
 
             SMTP_CONN_2 = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS)
@@ -137,26 +163,35 @@ class SendMail:
             # Handle the specific exception
             print(f"Recipient error for {email_contact}: {e}")
 
+        except Exception as e:
+            logging.error('The emails are failing to send due to {e}')
 
 
-    def test_func(test, df):
+
+    def test_func(test, df, contact_column):
 
 
         if test == True:
-            df.at[0, 'email'] = '2015samtaylor@gmail.com'
-            df.at[1, 'email'] = 'sammytaylor2006@yahoo.com'
-            df.at[2, 'email'] = 'jerrybons2006@gmail.com'
+            df.at[0, contact_column] = '2015samtaylor@gmail.com'
+            df.at[1, contact_column] = 'sammytaylor2006@yahoo.com'
+            df.at[2, contact_column] = 'jerrybons2006@gmail.com'
             df = df[:2]
-            logging.info('Test argument is True, cutting down frame and sending to personal emails')
-            print('Test argument is True, cutting down frame and sending to personal emails')
+            logging.info(f'Test argument is True, cutting down frame and sending to personal emails, and sending off of the {contact_column}')
         else:
             pass
 
         return(df)
         
 
+    def provide_formatted_date():
+        central_time_zone = pytz.timezone('America/Chicago')
+        now_central = datetime.now(central_time_zone)
+        formatted_date = now_central.strftime("%Y-%m-%d %H:%M:%S")
+        return(formatted_date)
 
-    def process(df, email_config, user, test=True):
+
+
+    def process(df, email_config, test):
         logging.info(f"Email config dict passed into process: {email_config}")
 
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
@@ -164,7 +199,7 @@ class SendMail:
         contact_column = email_config['contact_column']
         email_campaign_name = email_config['email_campaign_name']
         email_subject_line = email_config['email_subject_line']
-        creator_id = user.id
+        # creator_id = user.id
 
         # Establish SMTP connection
         SMTP_CONN = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS)
@@ -174,7 +209,7 @@ class SendMail:
         email_records = []
 
         # Apply test function if needed
-        df = SendMail.test_func(test, df)
+        df = SendMail.test_func(test, df, contact_column)
 
         # Process rows in DataFrame
         for index, row in df.iterrows():
@@ -182,28 +217,31 @@ class SendMail:
 
             # Skip already processed emails
             if email_contact in processed_emails:
-                print(f"Skipping email to {email_contact} as it has already been processed.")
+                logging.info(f"Skipping email to {email_contact} as it has already been processed.")
                 continue
             
             # Send email
-            SendMail.send(email_config, email_contact, SMTP_CONN)
+            try:
+                SendMail.send(email_config, email_contact, SMTP_CONN)
+                logging.info('Calling SendMail.send method')
 
-            # Prepare record for bulk insert
-            central_time_zone = pytz.timezone('America/Chicago')
-            now_central = datetime.now(central_time_zone)
-            formatted_date = now_central.strftime("%Y-%m-%d %H:%M:%S")
+                #Only append record to email_records if the send is succesful
+                email_record = RecordingEmailRecipients(
+                    # creator_id=user,
+                    email_recipient=email_contact,
+                    date_sent=SendMail.provide_formatted_date(),
+                    subject=email_subject_line,
+                    contact_column=contact_column,
+                    from_email=EMAIL_ADDRESS_FROM,
+                    email_campaign_tag=email_campaign_name
+                )
+                email_records.append(email_record)
 
-            email_record = RecordingEmailRecipients(
-                creator_id=user,
-                email_recipient=email_contact,
-                date_sent=formatted_date,
-                subject=email_subject_line,
-                position=contact_column,
-                from_email=EMAIL_ADDRESS_FROM,
-                email_campaign_tag=email_campaign_name
-            )
-            email_records.append(email_record)
 
+            except Exception as e:
+                logging.error(f'Unable to send SendMail.send method due to {e}')
+
+        
             # Mark email as processed
             processed_emails.add(email_contact)
 

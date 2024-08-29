@@ -50,9 +50,9 @@ def blast(email_config, df, user, test=True):
         #     print('Reached the end_point limit of 1500. Exited the loop.')
         #     break
         
-        # SMTP conn populates directly in process
+        # SMTP conn populates directly in process, & if test is True it will only send two emails to personal accounts
         # email_history = SendMail.process(next_50, email_config, test)
-        email_history = SendMail.process(df, email_config, user, test)
+        email_history = SendMail.process(df, email_config, test) 
 
         if test:
             logging.info('Breaking loop after sending to personal emails due to test')
@@ -70,6 +70,4 @@ def blast(email_config, df, user, test=True):
             logging.info('Issue with the sleep')
             print('Issue with the sleep')
 
-#If test ARG is True it will keep sending to personal email
-#& output.csv must not exist at the beginning of new runs
-# blast(email_config, df, test=True)
+

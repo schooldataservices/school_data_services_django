@@ -109,5 +109,30 @@ point, and there is nothing left on my frames
 With DB migrated to mySQL, test out emails sent to table using a model
 Remove get_next_50 temporarily
 
-
 Sent emails need to go to the db
+
+test=False or true is scattered about 
+
+
+#Need to record the emails sent in blast function to a table. Created the model. 
+#Then reference the emails being passed in one by one. 
+#Just need username and subject to be able to match up
+
+# Need to improve logging on email sends. 
+
+#IN RecordingEmailRecipients table the email_recipient is wrong or it is just not working right on the 
+#send which affects it. 
+RecordingEmailRecipients() got unexpected keyword arguments: 'position'
+
+
+For the test func it was not able to chagne the col due to col naming change.
+Log this out  
+
+
+
+Test is in blast function. (Make a check box on home page)
+process is within blast. Therefore blast should trickle down to process
+
+
+
+Only send records to RecordingEmailRecipients if the send is succesful going through
