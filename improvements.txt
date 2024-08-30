@@ -82,18 +82,6 @@ Refer to TN GCS
 
 Somehow integrate f strings into the text box that takes the columns. 
 
-{'EMAIL_ADDRESS_FROM': '2015samtaylor@gmail.com', 
-'EMAIL_PASS': 'feqdwowrmaqthjkx', 
-'server': 'emailcampaign.c9vhoi6ncot7.us-east-1.rds.amazonaws.com', 
-'database': 'emailcampaign', 
-'table_name': 'email_history', 
-'email_subject_line': 'Local Supplier for Baseball Apparel',
- 'email_campaign_name': 'Local Supplier Baseball',
-  'contact_column': 'email_test',
-   'db_pass': 'Pretty11', 
-   'db_user': 'admin', 
-   'email_content':
-
 Take out test argument, see if it is sending rigth
 
 With the column of 'email' changing to 'email_test' need to get that from the context and cascade it down
