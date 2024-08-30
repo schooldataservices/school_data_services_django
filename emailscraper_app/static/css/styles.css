@@ -8,7 +8,15 @@
     border: none; /* Remove button border */
     border-radius: 5px; /* Apply border radius to button */
     cursor: pointer; /* Change cursor to pointer on hover */
-    margin: 10px 5px; /* Add consistent margin to buttons for spacing */
+    margin: 10px 0px; /* Add consistent margin to buttons for spacing */
+}
+
+.email-configuration-form {
+    padding: 0;
+    margin-bottom: 20px; /* Add some margin below the form */
+    display: flex; /* Use flexbox for the form */
+    flex-direction: column; /* Arrange form fields vertically */
+    align-items: flex-start; /* Center align the form fields */
 }
 
 .save-configuration-button {
@@ -36,20 +44,13 @@
 }
 
 
-.email-configuration-form {
-    margin-bottom: 20px; /* Add some margin below the form */
-    display: flex; /* Use flexbox for the form */
-    flex-direction: row; /* Arrange form fields vertically */
-    align-items: left; /* Center align the form fields */
-}
-
 .form-inline {
     margin-bottom: 20px; /* Add some margin between the form and other elements */
 }
 
-.form-field {
-    margin-bottom: 15px; /* Add margin between form fields */
-}
+/* .form-field { */
+    /* margin-bottom: 15px; Add margin between form fields */
+/* } */
 
 .error-message {
     color: red; /* Style error messages in red */
@@ -98,33 +99,38 @@
 
 .container {
     display: flex;
-    justify-content: left; /* Center align the form */
-    align-items: center; /* Center align vertically */
+    justify-content: left; 
+    align-items: center; 
     margin: 0;
 }
 
 .flex-container {
     display: flex;
- 
+    justify-content: space-between; /* Ensure space is evenly distributed */
+    align-items: flex-start; /* Align items at the top */
+    flex-direction: row; /* Ensure the containers are aligned horizontally */
 }
-
-.email-content-container,
-.email-config-container{
-    flex: 1; /* Take up equal space */
-    padding: 10px; /* Add padding for spacing */
-}
-
 
 
 .email-config-container {
-    order: 1; /* Make it appear before the email-content-container */
-    margin-right: 300px;
+    flex: 1;
+    padding-right: 20px; /* Adjust padding to align properly with the content container */
+    margin-bottom: 0; /* Remove bottom margin to bring buttons closer */
+    order: 2; /* Place this container after email-content-container */
 }
 
+/* Email content container */
 .email-content-container {
-    order: 2; /* Make it appear after the email-config-container */
-    margin-left: auto;
+    flex: 1;
+    order: 1; /* Place this container before email-config-container */
+    margin-right: 15px; /* Add a light margin to the right to create space from the email-config-container */
 }
+
+/* Button container */
+.button-container {
+    margin-top: 20px; /* Space between fields and buttons */
+}
+
 
 /*Textbox*/
 .ck-editor__editable {
@@ -138,7 +144,46 @@
 }
 
 
+.login-container {
+    display: flex;
+    justify-content: center; /* Centers the content horizontally */
+    align-items: center; /* Centers the content vertically */
+    height: 100vh; /* Takes full height of the viewport */
+    flex-direction: column; /* Ensure everything is stacked vertically */
+}
 
+.form-signin {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.text-center {
+    text-align: center;
+    width: 100%; /* Ensures the width spans the entire container */
+    margin-top: 10px; /* Adds space above this section */
+}
 
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 500px; /* Limits the width of the container */
+}
 
+.form-register {
+    width: 100%;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+fieldset.form-group {
+    margin-bottom: 20px;
+}

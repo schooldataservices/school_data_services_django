@@ -183,11 +183,6 @@ STATICFILES_DIRS = [
 ]
 
 
-# 'emailscraper_django', 'css'
-
-#Base dir
-# C:\Users\samuel.taylor\OneDrive - Green Dot Public Schools\Desktop\Git_Directory\CP\CustomPlanet_Work\django_testing\emailscraper_django
-
 
 if DEBUG:
 

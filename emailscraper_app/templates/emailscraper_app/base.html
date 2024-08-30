@@ -12,6 +12,10 @@
     <!-- Title and Custom CSS -->
     <title>{% block title %}My Website{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    
+    {% block extra_css %}
+    <!-- Additional CSS files can be added here -->
+    {% endblock %}
 </head>
 <body>
 

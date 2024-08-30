@@ -1,8 +1,8 @@
-{% extends 'emailscraper_app/base.html' %}
+{% extends 'emailscraper_app/base.html' %} 
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="content-section">
-    <form method="POST" enctype="multipart/form-data">
+<div class="content-section text-center login-container">
+    <form method="POST" enctype="multipart/form-data" class="form-signin">
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Log In</legend>
@@ -11,16 +11,14 @@
         <div class="form-group"> 
             <button class="btn btn-outline-info" type="submit">Login</button>
             <small class="text-muted ml-2">
-                <a href="{%url 'password_reset' %}">Forgot Password</a>
+                <a href="{% url 'password_reset' %}">Forgot Password</a>
             </small>
         </div>
     </form>
-    <div class="border-top pt-3">
+    <div class="border-top pt-3 text-center">
         <small class="text-muted">
-            Need An Account <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
+            Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
         </small>
     </div>
 </div>
 {% endblock content %}
-
-

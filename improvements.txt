@@ -66,8 +66,7 @@ Double back on premade templates elsewhere
 
 Get rid of Filter date, Sport, Optional Iterated Columns, Premade templates
 
-Upload a file with all of your emails. 
-Take the test piece out on the send and confirm it works. 
+
 Contact column should be a drop down piece that has all of the columns from the
 file that is displayed in the live action
 
@@ -87,43 +86,27 @@ Take out test argument, see if it is sending rigth
 With the column of 'email' changing to 'email_test' need to get that from the context and cascade it down
 
 Get next 50 needs some work. 
+-------------------------------
 Needs to be changed, and logged out better to where the messages appear on console
-As the name of the contact column changes from 'email_test' to 'email' etc.. 
-This will change the output.csv
 
 Alysia is the last email in both of my frames, therefore it picks up from that 
 point, and there is nothing left on my frames
 
-With DB migrated to mySQL, test out emails sent to table using a model
+Reform get_next_50 to reference the last sent email in emailsendsmetadata that matches up on the 
+creator_id and sender_email
+
 Remove get_next_50 temporarily
-
-Sent emails need to go to the db
-
-test=False or true is scattered about 
+------------------------------
 
 
-#Need to record the emails sent in blast function to a table. Created the model. 
-#Then reference the emails being passed in one by one. 
-#Just need username and subject to be able to match up
-
-# Need to improve logging on email sends. 
-
-#IN RecordingEmailRecipients table the email_recipient is wrong or it is just not working right on the 
-#send which affects it. 
-RecordingEmailRecipients() got unexpected keyword arguments: 'position'
 
 
-For the test func it was not able to chagne the col due to col naming change.
-Log this out  
 
-Need an FK between emailsendsmetadata, and RecordingEmailRecipients
+
+
 
 Test is in blast function. (Make a check box on home page)
 process is within blast. Therefore blast should trickle down to process
-
-
-
-Only send records to RecordingEmailRecipients if the send is succesful going through
 
 
 
@@ -134,3 +117,18 @@ Essentially a sure way to group these effectively.
 
 
 #emailsendsmetadata needs a creator_id
+
+
+Create popout navigation panel on the left side
+Create a campaign tab that leads to performance of all emails. 
+Create calendar view for campaign or email sends
+
+Need an interface to be able to filter down specific customers from said connected db
+
+Create a queue where the emails are sending and then re-direct to a given page. 
+
+
+Fix how text boxes span across the entire page
+
+
+Save Configuration buttons should be aligned vertiucally
