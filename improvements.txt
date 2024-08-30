@@ -128,7 +128,7 @@ RecordingEmailRecipients() got unexpected keyword arguments: 'position'
 For the test func it was not able to chagne the col due to col naming change.
 Log this out  
 
-
+Need an FK between emailsendsmetadata, and RecordingEmailRecipients
 
 Test is in blast function. (Make a check box on home page)
 process is within blast. Therefore blast should trickle down to process
@@ -136,3 +136,13 @@ process is within blast. Therefore blast should trickle down to process
 
 
 Only send records to RecordingEmailRecipients if the send is succesful going through
+
+
+
+If I am going to have Email Campaign Names 
+I need a solution for all the tags people could type in. 
+
+Essentially a sure way to group these effectively. 
+
+
+#emailsendsmetadata needs a creator_id

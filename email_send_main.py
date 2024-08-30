@@ -22,7 +22,7 @@ if not os.path.exists(logpath_creation):
 
 # ---------------------------
 
-def blast(email_config, df, user, test=True):
+def blast(email_config, df, user, test):
 
     print('Blast has been called')
     # Get the next 50 emails iteratively and send every 60 seconds with a new SMTP connection
@@ -52,7 +52,7 @@ def blast(email_config, df, user, test=True):
         
         # SMTP conn populates directly in process, & if test is True it will only send two emails to personal accounts
         # email_history = SendMail.process(next_50, email_config, test)
-        email_history = SendMail.process(df, email_config, test) 
+        email_history = SendMail.process(df, email_config, user, test) 
 
         if test:
             logging.info('Breaking loop after sending to personal emails due to test')

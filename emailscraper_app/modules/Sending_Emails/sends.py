@@ -191,7 +191,7 @@ class SendMail:
 
 
 
-    def process(df, email_config, test):
+    def process(df, email_config, user, test):
         logging.info(f"Email config dict passed into process: {email_config}")
 
         EMAIL_ADDRESS_FROM = email_config['EMAIL_ADDRESS_FROM']
@@ -199,7 +199,6 @@ class SendMail:
         contact_column = email_config['contact_column']
         email_campaign_name = email_config['email_campaign_name']
         email_subject_line = email_config['email_subject_line']
-        # creator_id = user.id
 
         # Establish SMTP connection
         SMTP_CONN = SendMail.get_smtp_connection(EMAIL_ADDRESS_FROM, EMAIL_PASS)
@@ -227,7 +226,7 @@ class SendMail:
 
                 #Only append record to email_records if the send is succesful
                 email_record = RecordingEmailRecipients(
-                    # creator_id=user,
+                    creator_id=user,
                     email_recipient=email_contact,
                     date_sent=SendMail.provide_formatted_date(),
                     subject=email_subject_line,
@@ -236,6 +235,7 @@ class SendMail:
                     email_campaign_tag=email_campaign_name
                 )
                 email_records.append(email_record)
+                print(email_record)
 
 
             except Exception as e:

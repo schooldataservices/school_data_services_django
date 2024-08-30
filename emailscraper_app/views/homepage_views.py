@@ -30,8 +30,6 @@ def handle_email_config_form(request, form_data):
     email_config_form = EmailConfigForm(request.POST or None, initial=form_data)
     
     if request.method == 'POST' and email_config_form.is_valid():
-        # filter_date = email_config_form.cleaned_data['filter_date'].strftime('%Y-%m-%d')
-        # email_config_form.cleaned_data['filter_date'] = filter_date
 
         form_data.update(email_config_form.cleaned_data)
         request.session['email_config'] = form_data
@@ -42,7 +40,7 @@ def handle_email_config_form(request, form_data):
         request.session['selected_file_id'] = selected_file_id
 
         messages.success(request, 'Email configuration saved successfully.')
-        return True, email_config_form
+        return(True, email_config_form)
     else:
         print('EmailConfigForm is invalid')
         print(email_config_form.errors)
@@ -126,6 +124,7 @@ def record_email_metadata(request, email_config):
     user = request.user.username if request.user.is_authenticated else ''
 
     email_metadata = EmailSendsMetaData(
+        creator_id = request.user,
         username=user,
         campaign = email_config.get('email_campaign_name'),
         subject=email_config.get('email_subject_line'),
@@ -138,7 +137,7 @@ def record_email_metadata(request, email_config):
 
 
 
-
+@login_required
 def send_emails_view(request):
 
 
@@ -174,9 +173,8 @@ def send_emails_view(request):
 
         # Call the blast function with the email configuration and the dataframe
         try:
-            blast(email_config, df, request.user, test=True)
+            blast(email_config, df, request.user, test=True)          #make sure email_pass is coming across as encrypted or hiddne. 
             messages.success(request, 'Emails sent successfully!')
-            print(f'Here is the email_config in the try block {email_config}')
             record_email_metadata(request, email_config)
         except Exception as e:
             print(f'Error during email blast: {e}')

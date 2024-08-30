@@ -15,6 +15,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class EmailSendsMetaData(models.Model):
+    creator_id = models.ForeignKey(User, on_delete = models.SET_DEFAULT, default=1, db_column='creator_id')
     username = models.CharField(max_length=255)
     campaign = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)
@@ -39,7 +40,7 @@ class EmailFileUpload(models.Model):
     file_tag = models.CharField(max_length=150)
     file = models.FileField(upload_to=upload_to)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    creator_id = models.ForeignKey(User, on_delete = models.CASCADE, db_column='creator_id') # maps to the User model's primary key).
+    creator_id = models.ForeignKey(User, on_delete = models.SET_DEFAULT, default=1, db_column='creator_id') # maps to the User model's primary key, is user deleted, set defauly val to 00 in EmailFileUpload table
     column_names = models.TextField(blank=True)
     delimiter = models.CharField(max_length=2, default=',')    
 
@@ -58,7 +59,7 @@ class EmailFileUpload(models.Model):
 
 class RecordingEmailRecipients(models.Model):
 
-    creator_id = models.ForeignKey(User, on_delete= models.CASCADE, db_column='creator_id')
+    creator_id = models.ForeignKey(User, on_delete = models.SET_DEFAULT, default=1, db_column='creator_id')
     email_recipient = models.EmailField()
     date_sent = models.DateTimeField()
     subject = models.CharField(max_length=255)
