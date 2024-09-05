@@ -1,5 +1,5 @@
 from django import forms
-from .models import EmailSendsMetaData, EmailFileUpload
+from .models import EmailSendsMetaData, EmailFileUpload, Customers
 from config import email_config
 import pandas as pd
 from ckeditor.widgets import CKEditorWidget
@@ -25,19 +25,6 @@ class EmailConfigForm(forms.Form):
     email_campaign_name = forms.CharField(initial=email_config.email_campaign_name)
     contact_column = forms.CharField(initial=email_config.contact_column)
     email_content = forms.CharField(widget=CKEditorUploadingWidget())
-
-
-    #Since removed fields
-    # server = forms.CharField(widget=forms.HiddenInput(), initial=email_config.server)
-    # database = forms.CharField(initial=email_config.database)
-    # table_name = forms.CharField(initial=email_config.table_name)
-    # db_pass = forms.CharField(widget=forms.HiddenInput(), initial = email_config.db_pass)  # Assuming it's a password field
-    # db_user = forms.CharField(initial=email_config.db_user)
-    # email_content = forms.CharField(widget=CKEditorWidget())
-    # sport = forms.CharField(initial=email_config.sport)
-    # optional_iterated_columns = forms.CharField(initial=email_config.optional_iterated_columns, required=False)
-    # filter_date = forms.DateField(initial=email_config.filter_date)  # Assuming YYYY-MM-DD format
-    # premade_templates = forms.CharField(initial=email_config.premade_templates)  #template string is passed into an f string to dictate the import
 
     def __init__(self, *args, **kwargs):
         super(EmailConfigForm, self).__init__(*args, **kwargs)
@@ -69,4 +56,13 @@ class EmailFileForm(forms.ModelForm):
 
 class EmailContentForm(forms.Form):
     email_content = forms.CharField(widget=CKEditorUploadingWidget(), label='Email Content')
-                
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, Row, Column, ButtonHolder, Submit
+            
+class CustomersForm(forms.ModelForm):
+    class Meta:
+        model = Customers
+        fields = '__all__'
+
+

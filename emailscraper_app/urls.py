@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import homepage_views
+from .views import CRM_views
 from .views.uploading_file_views import (EmailListView,
                                         EmailDetailView, 
                                         EmailCreateView,
@@ -7,6 +8,7 @@ from .views.uploading_file_views import (EmailListView,
                                         EmailDeleteView,
                                         serve_gcs_file
                                         )
+
 
 
 
@@ -31,7 +33,7 @@ urlpatterns = [
     path('file_uploads/', homepage_views.file_list, name='file_list'),
     path('upload_image_text_box/', homepage_views.upload_image_text_box, name='upload_image_text_box'),
     path('temp/', homepage_views.email_content_view, name='temp'),
-
+    path('create-customer/', CRM_views.customer_create_view, name='create-customer')
 ]
 
 

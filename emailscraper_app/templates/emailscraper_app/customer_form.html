@@ -1,0 +1,100 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/customer_form.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Create a New Customer</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Container for all form fields -->
+        <div class="form-row">
+            <!-- Container for left-aligned fields -->
+            <div class="form-column left-column">
+                <div class="form-group">
+                    {{ form.contact.label_tag }}
+                    {{ form.contact }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.company.label_tag }}
+                    {{ form.company }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.department.label_tag }}
+                    {{ form.department }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.salutation.label_tag }}
+                    {{ form.salutation }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                </div>
+
+
+                <div class="form-group">
+                    {{ form.mobile.label_tag }}
+                    {{ form.mobile }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+            </div>
+
+            <!-- Container for right-aligned fields -->
+            <div class="form-column right-column">
+                <div class="form-group">
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                </div>
+                <div class="form-group">
+                    {{ form.city.label_tag }}
+                    {{ form.city }}
+                </div>
+                <div class="form-group">
+                    {{ form.state.label_tag }}
+                    {{ form.state }}
+                </div>
+                <div class="form-group">
+                    {{ form.ZIP.label_tag }}
+                    {{ form.ZIP }}
+                </div>
+                <div class="form-group">
+                    {{ form.county.label_tag }}
+                    {{ form.county }}
+                </div>
+                <div class="form-group">
+                    {{ form.fax.label_tag }}
+                    {{ form.fax }}
+                </div>
+                <div class="form-group">
+                    {{ form.web_site.label_tag }}
+                    {{ form.web_site }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            {{ form.notes.label_tag }}
+            {{ form.notes }}
+        </div>
+
+        <!-- Additional sections or columns can be added here -->
+
+        <button type="submit" class="btn btn-primary">Save Customer</button>
+    </form>
+{% endblock content %}

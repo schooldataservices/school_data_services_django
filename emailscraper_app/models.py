@@ -69,3 +69,37 @@ class RecordingEmailRecipients(models.Model):
 
     def __str__(self):
         return f"Email to {self.email_recipient} on {self.date_sent}"
+    
+    
+
+class Customers(models.Model):
+    creator_id = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, db_column='creator_id')
+    contact = models.CharField(max_length=150)  
+    company = models.CharField(max_length=150) 
+    title = models.CharField(max_length=100, blank=True, null=True) 
+    department = models.CharField(max_length=100, blank=True, null=True)  
+    salutation = models.CharField(max_length=50, blank=True, null=True) 
+    phone = models.CharField(max_length=20, blank=True, null=True) 
+    mobile = models.CharField(max_length=20, blank=True, null=True) 
+    email = models.EmailField(blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True) 
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)  
+    ZIP = models.CharField(max_length=10, blank=True, null=True)  
+    county = models.CharField(max_length=100, blank=True, null=True)  
+    fax = models.CharField(max_length=20, blank=True, null=True) 
+    web_site = models.CharField(max_length=150, blank=True, null=True) 
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['email', 'creator_id'],
+                name='unique_email_creator'
+            ),
+        ]
+
+    def __str__(self):
+        return self.company  # This will return the company name as the string representation of the object
+
+

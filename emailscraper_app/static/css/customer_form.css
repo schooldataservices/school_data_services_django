@@ -1,0 +1,44 @@
+/* Container for the row of columns */
+.form-row {
+    display: flex; /* Use flexbox to align columns side by side */
+    gap: 1rem; /* Space between columns */
+    margin-bottom: 1rem;
+}
+
+/* Container for individual columns */
+.form-column {
+    display: flex;
+    flex-direction: column; /* Stack items vertically within the column */
+    flex: 1; /* Allow columns to take available space */
+}
+
+/* Optional: Specific styling for left and right columns if needed */
+.left-column {
+    max-width: 50%; /* Limit width of the left column */
+}
+
+.right-column {
+    max-width: 50%; /* Limit width of the right column */
+}
+
+/* Style for form groups inside columns */
+.form-group {
+    margin-bottom: 1rem; /* Space between form fields */
+}
+
+/* Ensure form elements take full width of their container */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
