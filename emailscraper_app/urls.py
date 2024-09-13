@@ -12,8 +12,6 @@ from .views.uploading_file_views import (EmailListView,
 
 
 
-
-
 # URLs define the mapping between URL patterns and view functions or classes.
 # Django's URL dispatcher routes incoming HTTP requests to the appropriate view based on the requested URL.
 
@@ -33,10 +31,10 @@ urlpatterns = [
     path('file_uploads/', homepage_views.file_list, name='file_list'),
     path('upload_image_text_box/', homepage_views.upload_image_text_box, name='upload_image_text_box'),
     path('temp/', homepage_views.email_content_view, name='temp'),
-    path('create-customer/', CRM_views.customer_create_view, name='create-customer')
+    path('create-customer/', CRM_views.customer_create_view, name='create-customer'),
+    path('search-contacts/', CRM_views.search_contacts, name='search-contacts'),
+    path('get-contact-details/', CRM_views.get_contact_details, name='get-contact-details'),
 ]
-
-
 
 
 # path('send-emails/', send_emails_view, name='send_emails_view')

@@ -132,3 +132,8 @@ Fix how text boxes span across the entire page
 
 
 Save Configuration buttons should be aligned vertiucally
+
+-------------------------------------
+
+When creating new contact have it still show on the page
+

@@ -56,17 +56,52 @@
     color: red; /* Style error messages in red */
 }
 
-/* Messages styles */
 .messages {
-    background-color: #d4edda ; /* Light green background */
-    border-color: #c3e6cb ; /* Green border */
-    color: #155724 ; /* Dark green text color */
-    padding: 10px ;
-    margin-bottom: 15px ;
+    padding: 10px;
+    margin-bottom: 15px;
     border: 1px solid transparent;
     border-radius: .25rem;
+    color: #000; /* Default text color */
 }
 
+/* Success message */
+.alert-success {
+    background-color: #d4edda; /* Light green background */
+    border-color: #c3e6cb; /* Green border */
+    color: #155724; /* Dark green text color */
+}
+
+/* Error message */
+.alert-danger {
+    background-color: #f8d7da; /* Light red background */
+    border-color: #f5c6cb; /* Red border */
+    color: #721c24; /* Dark red text color */
+}
+
+/* Warning message */
+.alert-warning {
+    background-color: #fff3cd; /* Light yellow background */
+    border-color: #ffeeba; /* Yellow border */
+    color: #856404; /* Dark yellow text color */
+}
+
+/* Info message */
+.alert-info {
+    background-color: #d1ecf1; /* Light blue background */
+    border-color: #bee5eb; /* Blue border */
+    color: #0c5460; /* Dark blue text color */
+}
+
+/* Ensure message list items are styled properly */
+.messages ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.messages li {
+    margin-bottom: 0.5rem; /* Spacing between messages */
+}
 
 /* Navigation bar styles */
 .navbar {

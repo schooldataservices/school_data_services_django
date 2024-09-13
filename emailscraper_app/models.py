@@ -73,7 +73,7 @@ class RecordingEmailRecipients(models.Model):
     
 
 class Customers(models.Model):
-    creator_id = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, db_column='creator_id')
+    creator_id = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1000000, db_column='creator_id')
     contact = models.CharField(max_length=150)  
     company = models.CharField(max_length=150) 
     title = models.CharField(max_length=100, blank=True, null=True) 
@@ -81,7 +81,7 @@ class Customers(models.Model):
     salutation = models.CharField(max_length=50, blank=True, null=True) 
     phone = models.CharField(max_length=20, blank=True, null=True) 
     mobile = models.CharField(max_length=20, blank=True, null=True) 
-    email = models.EmailField(blank=True, null=True)
+    email = models.EmailField(blank=False, null=False)
     address = models.CharField(max_length=255, blank=True, null=True) 
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)  

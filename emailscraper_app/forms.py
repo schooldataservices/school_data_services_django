@@ -57,12 +57,10 @@ class EmailFileForm(forms.ModelForm):
 class EmailContentForm(forms.Form):
     email_content = forms.CharField(widget=CKEditorUploadingWidget(), label='Email Content')
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Row, Column, ButtonHolder, Submit
+
             
 class CustomersForm(forms.ModelForm):
     class Meta:
         model = Customers
-        fields = '__all__'
-
+        exclude = ['creator_id']
 

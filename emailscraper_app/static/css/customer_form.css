@@ -4,7 +4,7 @@ h1 {
     font-size: 1.5rem; /* Adjust the font size as needed */
     font-weight: bold; /* Optional: You can change the weight or any other styling */
     text-align: left;
-    margin-left: 90px;
+    margin-left: 110px;
     margin-bottom: 50px;
     margin-top: 20px;
 }
@@ -20,6 +20,7 @@ h1 {
     display: flex;
     flex-direction: column;
     flex: 1;
+    margin-left: 35px;
 }
 
 /* Left and right columns */
@@ -56,6 +57,7 @@ h1 {
     width: 35%; /* Make notes box take full width */
     height: 100px; /* Adjust height if needed */
     flex: none; /* Ensure it expands to available width */
+    margin-left: 0px;
 }
 
 /* Button styling */
