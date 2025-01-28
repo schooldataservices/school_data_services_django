@@ -152,7 +152,8 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap4'
 
-LOGIN_REDIRECT_URL = 'email_config_home'
+#First time users re-routed to this
+LOGIN_REDIRECT_URL = 'landing_page'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -163,7 +164,7 @@ EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = imap_password_sam
 
 GS_CREDENTIALS, project_id = google.auth.load_credentials_from_file(
-    r'C:\Users\samuel.taylor\OneDrive - Green Dot Public Schools\Desktop\Git_Directory\CP\CustomPlanet_Work\django_testing\emailscraper_django\django-hosting-427421-9398c1e22567.json'
+    r'C:\Users\becky\Desktop\Git_Directory\Django_Email_Hub\django-hosting-427421-72dd7e5957fe.json'
 )
 GD_PROJECT_ID = project_id
 GS_BUCKET_NAME = 'django_hosting'

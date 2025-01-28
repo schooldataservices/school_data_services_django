@@ -1,6 +1,11 @@
 from django import forms
 from .models import EmailSendsMetaData, EmailFileUpload, Customers
-from config import email_config
+
+# import sys
+# import os  # Add the parent directory (emailscraper_proj) to the sys.path to make it importable
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'emailscraper_proj')))
+
+from .email_setup import *
 import pandas as pd
 from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -14,25 +19,26 @@ class EmailBlastForm(forms.Form):
     email_options = forms.ModelChoiceField(queryset=EmailSendsMetaData.objects.all())
 
 
-#Completely depends on config  
+
+
+
 class EmailConfigForm(forms.Form):
-
-    excluded_fields = {'EMAIL_PASS' : email_config.EMAIL_PASS}
-         
-    EMAIL_ADDRESS_FROM = forms.EmailField(initial=email_config.EMAIL_ADDRESS_FROM)
-    EMAIL_PASS = forms.CharField(widget=forms.HiddenInput(), initial=email_config.EMAIL_PASS)  # Assuming it's a password field
-    email_subject_line = forms.CharField(initial=email_config.email_subject_line)
-    email_campaign_name = forms.CharField(initial=email_config.email_campaign_name)
-    contact_column = forms.CharField(initial=email_config.contact_column)
+    # Other fields...
+    
+    # Priority Status Dropdown
+    PRIORITY_CHOICES = [
+        ('urgent', 'Urgent'),
+        ('medium', 'Medium'),
+        ('low', 'Low'),
+    ]
+    priority_status = forms.ChoiceField(choices=PRIORITY_CHOICES, label='Priority Status', required=True)
     email_content = forms.CharField(widget=CKEditorUploadingWidget())
-
-    def __init__(self, *args, **kwargs):
-        super(EmailConfigForm, self).__init__(*args, **kwargs)
-        # Exclude specified fields and mark them as not required
-
-        for field_name in EmailConfigForm.excluded_fields:
-            if field_name in self.fields:
-                self.fields[field_name].required = False
+    
+    # Date and Time Picker
+    schedule_time = forms.DateTimeField(
+        widget=forms.TextInput(attrs={'class': 'datetimepicker', 'placeholder': 'Select Date and Time'}),
+        required=True
+    )
 
 
 

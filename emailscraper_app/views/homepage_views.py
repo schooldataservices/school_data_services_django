@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from ..forms import EmailBlastForm, EmailConfigForm, EmailFileUploadForm
 from ..models import EmailSendsMetaData, EmailFileUpload
 from emailscraper_app.views.uploading_file_views import read_csv_from_gcs
+from django.views.generic import TemplateView
 
 import pandas as pd
 from io import StringIO
@@ -15,9 +16,9 @@ from config import *
 from emailscraper_app.modules.Sending_Emails import KC_schools
 from email_send_main import blast
 
-df = KC_schools.read_in()
-df = KC_schools.filter_emails_by_sport(df, ['Baseball', 'Softball'])
 
+def landing_page(request):
+    return render(request, 'emailscraper_app/landing_page.html')
 
 
 # views are Python functions or classes that receive HTTP requests and return HTTP responses.
@@ -47,59 +48,6 @@ def handle_email_config_form(request, form_data):
 
     return(False, email_config_form)
 
-
-def handle_email_file_upload_form(request):
-    email_file_upload_form = EmailFileUploadForm(request.POST or None, request.FILES or None)
-    
-    if request.method == 'POST' and email_file_upload_form.is_valid():
-        email_file_upload_form.save()
-        messages.success(request, 'Email file uploaded successfully.')
-        return True, email_file_upload_form
-    else:
-        print('EmailFileUploadForm is invalid')
-        print(email_file_upload_form.errors)
-
-    return False, email_file_upload_form
-
-
-
-@login_required
-def email_config_view(request):
-    excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
-    
-    form_data = request.session.get('email_config', {})
-    email_config_saved, email_config_form = handle_email_config_form(request, form_data)
-    email_file_uploaded, email_file_upload_form = handle_email_file_upload_form(request)
-    
-    #For determnining what file shows up in the dropdown on page reload
-    selected_file_id = int(request.session.get('selected_file_id', 0))
-    
-
-    if email_config_saved or email_file_uploaded:
-        return redirect('email_config_home')
-    
-    for field_name in excluded_fields:
-        if field_name in email_config_form.fields:
-            del email_config_form.fields[field_name]
-
-    # Use the separate function to get email fcontext
-    email_context = get_email_context(request.user)
-    emails_sent = request.session.get('emails_sent', False)
-    previous_files = EmailFileUpload.objects.filter(creator_id=request.user.id)
-    
-    for file in previous_files:
-        file.file_path = file.file.name
-
-    context = {
-        'email_context': email_context,
-        'email_config_form': email_config_form,
-        'email_file_upload_form': email_file_upload_form,
-        'previous_files': previous_files,
-        'selected_file_id': selected_file_id,
-        'emails': email_context['emails'],  # Pass the emails to the template
-    }
-
-    return render(request, 'emailscraper_app/homepage_base.html', context)
 
 
 
@@ -134,61 +82,6 @@ def record_email_metadata(request, email_config):
 
     email_metadata.save()
     print(f'Email metadata saved: {email_metadata}')
-
-
-
-@login_required
-def send_emails_view(request):
-
-
-    email_config = request.session.get('email_config') #get the variables from the session, if saved it will be overwritten
-    print(f'Here is the email config from the session: {email_config}')
-
-    if request.method == 'POST':
-        
-        #add in the db configurations, server, db info
-        for key, value in EmailConfigForm.excluded_fields.items():
-            email_config[key] = value
-
-         # Get the selected file URL and extract the part needed
-        selected_file_url = request.POST.get('selected_file_url')
-        print(f'Here is the selected file url {selected_file_url}')
-        if selected_file_url.startswith('/serve-file/'):
-            selected_file_url = selected_file_url[len('/serve-file/'):]
-
-        # Remove any trailing slash to read from GCS
-        selected_file_url = selected_file_url.rstrip('/')
-        print(f'Selected file URL: {selected_file_url}')
-
-        try:
-            df = read_csv_from_gcs(request, selected_file_url, pandas_request=True)
-            if df is None:
-                raise ValueError('DataFrame is None. File could not be read.')
-            print('Read in file properly')
-        except Exception as e:
-            print(f'Unable to read file due to {e}')
-            messages.error(request, f'Error reading file: {e}')
-            return redirect('email_config_home')
-
-
-        # Call the blast function with the email configuration and the dataframe
-        try:
-            blast(email_config, df, request.user, test=True)          #make sure email_pass is coming across as encrypted or hiddne. 
-            messages.success(request, 'Emails sent successfully!')
-            record_email_metadata(request, email_config)
-        except Exception as e:
-            print(f'Error during email blast: {e}')
-            messages.error(request, f'Error sending emails: {e}')
-            return redirect('email_config_home')
-
-        # Redirect to the homepage URL
-        return redirect('email_config_home')
-
-    else:
-        form = EmailBlastForm()
-
-    return render(request, 'emailscraper_app/homepage_base.html', {'form': form})
-
 
 
 
@@ -248,3 +141,138 @@ def serve_image(request):
     # Return image data as HTTP response
     return HttpResponse(image_data, content_type='image/jpeg')
 
+
+#-----------------------------Particular to Email Blast-------------------------------------------------------
+
+@login_required
+def email_config_view(request):
+    excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
+    
+    form_data = request.session.get('email_config', {})
+    email_config_saved, email_config_form = handle_email_config_form(request, form_data)
+    email_file_uploaded, email_file_upload_form = handle_email_file_upload_form(request)
+    
+    #For determnining what file shows up in the dropdown on page reload
+    selected_file_id = int(request.session.get('selected_file_id', 0))
+    
+
+    if email_config_saved or email_file_uploaded:
+        return redirect('email_config_home')
+    
+    for field_name in excluded_fields:
+        if field_name in email_config_form.fields:
+            del email_config_form.fields[field_name]
+
+    # Use the separate function to get email context
+    email_context = get_email_context(request.user)
+    emails_sent = request.session.get('emails_sent', False)
+    previous_files = EmailFileUpload.objects.filter(creator_id=request.user.id)
+    
+    for file in previous_files:
+        file.file_path = file.file.name
+
+    context = {
+        'email_context': email_context,
+        'email_config_form': email_config_form,
+        'email_file_upload_form': email_file_upload_form,
+        'previous_files': previous_files,
+        'selected_file_id': selected_file_id,
+        'emails': email_context['emails'],  # Pass the emails to the template
+    }
+
+    return render(request, 'emailscraper_app/homepage_base.html', context)
+
+def handle_email_file_upload_form(request):
+    email_file_upload_form = EmailFileUploadForm(request.POST or None, request.FILES or None)
+    
+    if request.method == 'POST' and email_file_upload_form.is_valid():
+        email_file_upload_form.save()
+        messages.success(request, 'Email file uploaded successfully.')
+        return True, email_file_upload_form
+    else:
+        print('EmailFileUploadForm is invalid')
+        print(email_file_upload_form.errors)
+
+    return False, email_file_upload_form
+
+
+def email_config_requirements(request):
+    if request.method == 'POST':
+        form = EmailConfigForm(request.POST)
+        if form.is_valid():
+            # Access the selected priority status and schedule time
+            priority_status = form.cleaned_data['priority_status']
+            schedule_time = form.cleaned_data['schedule_time']
+            
+            # You can now store this in the session or database as needed
+            # For example, store it in the session
+            request.session['priority_status'] = priority_status
+            request.session['schedule_time'] = schedule_time.isoformat()  # Save in ISO format
+
+            # After the form is saved, redirect to another view or show a success message
+            messages.success(request, f"Campaign scheduled for {schedule_time}.")
+            return redirect('success_url')  # Or wherever you want to redirect
+
+    else:
+        form = EmailConfigForm(initial={'priority_status': 'medium'})  # You can set default values
+
+    return render(request, 'emailscraper_app/landing_page.html', {'form': form})
+
+
+
+@login_required
+def send_emails_view(request):
+
+      # Check if the priority_status exists in the session
+    priority_status = request.session.get('priority_status', None)
+
+    if not priority_status:
+        # If no priority status is selected, prevent proceeding
+        messages.error(request, "You must select a priority status before sending emails.")
+        return redirect('email_config_home')  # Redirect to the email configuration page
+
+
+    email_config = request.session.get('email_config') #get the variables from the session, if saved it will be overwritten
+    print(f'Here is the email config from the session: {email_config}')
+
+    if request.method == 'POST':
+        
+
+         # Provide prior upload files from GCS
+        selected_file_url = request.POST.get('selected_file_url')
+        print(f'Here is the selected file url {selected_file_url}')
+        if selected_file_url.startswith('/serve-file/'):
+            selected_file_url = selected_file_url[len('/serve-file/'):]
+
+        # Remove any trailing slash to read from GCS
+        selected_file_url = selected_file_url.rstrip('/')
+        print(f'Selected file URL: {selected_file_url}')
+
+        try:
+            df = read_csv_from_gcs(request, selected_file_url, pandas_request=True)
+            if df is None:
+                raise ValueError('DataFrame is None. File could not be read.')
+            print('Read in file properly')
+        except Exception as e:
+            print(f'Unable to read file due to {e}')
+            messages.error(request, f'Error reading file: {e}')
+            return redirect('email_config_home')
+
+
+        # Call the blast function with the email configuration and the dataframe
+        try:
+            blast(email_config, df, request.user, test=True)          #make sure email_pass is coming across as encrypted or hidden. 
+            messages.success(request, 'Emails sent successfully!')
+            record_email_metadata(request, email_config)
+        except Exception as e:
+            print(f'Error during email blast: {e}')
+            messages.error(request, f'Error sending emails: {e}')
+            return redirect('email_config_home')
+
+        # Redirect to the homepage URL
+        return redirect('email_config_home')
+
+    else:
+        form = EmailBlastForm()
+
+    return render(request, 'emailscraper_app/homepage_base.html', {'form': form})

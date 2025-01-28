@@ -1,0 +1,42 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load static %}
+
+{% block title %}
+  Welcome to the Email Campaign Hub
+{% endblock title %}
+
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/homepage_base.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+  <h1>Taylored Data Solutions</h1>
+  <p>Data Flow Made Easy.</p>
+
+  <!-- You can display the form or other necessary content here -->
+  <form action="{% url 'landing_page' %}" method="post" class="email-configuration-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="email-config-container">
+      {% for field in email_config_form %}
+        {% if field.widget.input_type != 'hidden' %}
+          <p class="form-field">
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.errors %}
+              <span class="error-message">{{ field.errors }}</span>
+            {% endif %}
+          </p>
+        {% endif %}
+      {% endfor %}
+      <button type="submit" class="save-configuration-button">Start Campaign</button>
+    </div>
+  </form>
+{% endblock content %}
+
+{% block footer %}
+  <footer>
+    <div>
+      <p>Start your email campaign today!</p>
+    </div>
+  </footer>
+{% endblock footer %}
