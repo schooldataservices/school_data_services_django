@@ -3,17 +3,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from google.cloud import storage
-from django.contrib.auth.models import User
-from ..forms import EmailBlastForm, EmailConfigForm, EmailFileUploadForm
+from ..forms import EmailBlastForm, EmailFileUploadForm
 from ..models import EmailSendsMetaData, EmailFileUpload
 from emailscraper_app.views.uploading_file_views import read_csv_from_gcs
-from django.views.generic import TemplateView
+
 
 import pandas as pd
-from io import StringIO
-import requests
+from datetime import datetime
 from config import *
-from emailscraper_app.modules.Sending_Emails import KC_schools
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 from email_send_main import blast
 
 
@@ -27,41 +26,30 @@ def landing_page(request):
 
 
 
-def handle_email_config_form(request, form_data):
-    email_config_form = EmailConfigForm(request.POST or None, initial=form_data)
+# def handle_email_config_form(request, form_data):
+#     email_config_form = EmailConfigForm(request.POST or None, initial=form_data) #populate form, otherwise None
     
-    if request.method == 'POST' and email_config_form.is_valid():
+#     if request.method == 'POST' and email_config_form.is_valid():
 
-        form_data.update(email_config_form.cleaned_data)
-        request.session['email_config'] = form_data
-        print('Form data saved to session:', form_data)
+#         form_data.update(email_config_form.cleaned_data)
+#         request.session['email_config'] = form_data
+#         print('Form data saved to session:', form_data)
 
-         # Retrieve and save selected file ID from live HTML
-        selected_file_id = request.POST.get('selected_file_id', None)
-        request.session['selected_file_id'] = selected_file_id
+#          # Retrieve and save selected file ID from live HTML
+#         selected_file_id = request.POST.get('selected_file_id', None)
+#         request.session['selected_file_id'] = selected_file_id
 
-        messages.success(request, 'Email configuration saved successfully.')
-        return(True, email_config_form)
-    else:
-        print('EmailConfigForm is invalid')
-        print(email_config_form.errors)
+#         messages.success(request, 'Email configuration saved successfully.')
+#         return(True, email_config_form)
+#     else:
+#         print('EmailConfigForm is invalid')
+#         print(email_config_form.errors)
 
-    return(False, email_config_form)
-
-
+    # return(False, email_config_form)
 
 
-def get_email_context(user):
-    emails = EmailSendsMetaData.objects.all()
-    profile_name = user.profile.user.username if hasattr(user, 'profile') else None
-    first_time_login = user.last_login is None
-    welcome_message = f'Welcome to the party, {profile_name}!' if first_time_login else f'Welcome back, {profile_name}!'
-    
-    return {
-        'emails': emails,
-        'profile_name': profile_name,
-        'welcome_message': welcome_message,
-    }
+
+
 
 
 
@@ -102,17 +90,17 @@ def file_list(request):
     return render(request, 'emailscraper_app/file_list.html', context)
 
 
-def upload_image_text_box(request):
-    # Your existing code to initialize the form
-    email_config_form = EmailConfigForm()
+# def upload_image_text_box(request):
+#     # Your existing code to initialize the form
+#     email_config_form = EmailConfigForm()
 
-    # Check if the 'email_content' field should use CKEditor widget
-    use_ckeditor = True  # Determine this based on your conditions
+#     # Check if the 'email_content' field should use CKEditor widget
+#     use_ckeditor = True  # Determine this based on your conditions
 
-    return render(request, 'emailscraper_app/upload_image_text_box.html', {
-        'email_config_form': email_config_form,
-        'use_ckeditor': use_ckeditor,  # Pass the flag to the template
-    })
+#     return render(request, 'emailscraper_app/upload_image_text_box.html', {
+#         'email_config_form': email_config_form,
+#         'use_ckeditor': use_ckeditor,  # Pass the flag to the template
+#     })
 
 
   
@@ -142,81 +130,47 @@ def serve_image(request):
     return HttpResponse(image_data, content_type='image/jpeg')
 
 
+
+def format_datetime_fields(data):
+    """
+    Recursively format any datetime objects in a dictionary or list into strings.
+    Ensures safe rendering in templates and JSON serialization.
+    """
+    if isinstance(data, dict):
+        return {key: format_datetime_fields(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [format_datetime_fields(item) for item in data]
+    elif isinstance(data, datetime):
+        return data.strftime('%Y-%m-%d %H:%M:%S')
+    return data
+
+
+
 #-----------------------------Particular to Email Blast-------------------------------------------------------
 
-@login_required
-def email_config_view(request):
-    excluded_fields = ['EMAIL_PASS', 'db_pass', 'db_user', 'table_name', 'server', 'database']
-    
-    form_data = request.session.get('email_config', {})
-    email_config_saved, email_config_form = handle_email_config_form(request, form_data)
-    email_file_uploaded, email_file_upload_form = handle_email_file_upload_form(request)
-    
-    #For determnining what file shows up in the dropdown on page reload
-    selected_file_id = int(request.session.get('selected_file_id', 0))
-    
-
-    if email_config_saved or email_file_uploaded:
-        return redirect('email_config_home')
-    
-    for field_name in excluded_fields:
-        if field_name in email_config_form.fields:
-            del email_config_form.fields[field_name]
-
-    # Use the separate function to get email context
-    email_context = get_email_context(request.user)
-    emails_sent = request.session.get('emails_sent', False)
-    previous_files = EmailFileUpload.objects.filter(creator_id=request.user.id)
-    
-    for file in previous_files:
-        file.file_path = file.file.name
-
-    context = {
-        'email_context': email_context,
-        'email_config_form': email_config_form,
-        'email_file_upload_form': email_file_upload_form,
-        'previous_files': previous_files,
-        'selected_file_id': selected_file_id,
-        'emails': email_context['emails'],  # Pass the emails to the template
-    }
-
-    return render(request, 'emailscraper_app/homepage_base.html', context)
-
-def handle_email_file_upload_form(request):
-    email_file_upload_form = EmailFileUploadForm(request.POST or None, request.FILES or None)
-    
-    if request.method == 'POST' and email_file_upload_form.is_valid():
-        email_file_upload_form.save()
-        messages.success(request, 'Email file uploaded successfully.')
-        return True, email_file_upload_form
-    else:
-        print('EmailFileUploadForm is invalid')
-        print(email_file_upload_form.errors)
-
-    return False, email_file_upload_form
 
 
-def email_config_requirements(request):
-    if request.method == 'POST':
-        form = EmailConfigForm(request.POST)
-        if form.is_valid():
-            # Access the selected priority status and schedule time
-            priority_status = form.cleaned_data['priority_status']
-            schedule_time = form.cleaned_data['schedule_time']
+# def email_config_requirements(request):
+#     if request.method == 'POST':
+#         form = EmailConfigForm(request.POST)
+#         if form.is_valid():
+#             # Access the selected priority status and schedule time
+#             priority_status = form.cleaned_data['priority_status']
+#             schedule_time = form.cleaned_data['schedule_time']
             
-            # You can now store this in the session or database as needed
-            # For example, store it in the session
-            request.session['priority_status'] = priority_status
-            request.session['schedule_time'] = schedule_time.isoformat()  # Save in ISO format
+#             # You can now store this in the session or database as needed
+#             # For example, store it in the session
+#             request.session['priority_status'] = priority_status
+#             request.session['schedule_time'] = schedule_time.isoformat()  # Save in ISO format
 
-            # After the form is saved, redirect to another view or show a success message
-            messages.success(request, f"Campaign scheduled for {schedule_time}.")
-            return redirect('success_url')  # Or wherever you want to redirect
+#             # After the form is saved, redirect to another view or show a success message
+#             messages.success(request, f"Campaign scheduled for {schedule_time}.")
+#             return redirect('success_url')  # Or wherever you want to redirect
 
-    else:
-        form = EmailConfigForm(initial={'priority_status': 'medium'})  # You can set default values
+#     else:
+#         form = EmailConfigForm(initial={'priority_status': 'medium'})  # You can set default values
 
-    return render(request, 'emailscraper_app/landing_page.html', {'form': form})
+#     return render(request, 'emailscraper_app/landing_page.html', {'form': form})
 
 
 

@@ -103,3 +103,32 @@ class Customers(models.Model):
         return self.company  # This will return the company name as the string representation of the object
 
 
+
+class RequestConfig(models.Model):
+    # Priority Status choices
+    PRIORITY_CHOICES = [
+        ('urgent', 'Urgent'),
+        ('medium', 'Medium'),
+        ('low', 'Low'),
+    ]
+
+    creator = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,  # Deletes requests if user is deleted
+        related_name='request_configs',  # Allows reverse lookup
+        null=True,  # Temporarily allow NULL values for migration
+        blank=True  # Allow empty values when creating a form
+    )
+
+    priority_status = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='medium',
+    )
+    email_content = models.TextField()
+    schedule_time = models.DateTimeField()
+    date_submitted = models.DateTimeField(auto_now_add=True) 
+    completion_status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Email Configuration: {self.priority_status} |Request Completion Date {self.schedule_time} | Created by {self.creator.username} @ {self.date_submitted} "

@@ -1,5 +1,5 @@
 from django import forms
-from .models import EmailSendsMetaData, EmailFileUpload, Customers
+from .models import EmailSendsMetaData, EmailFileUpload, Customers, RequestConfig
 
 # import sys
 # import os  # Add the parent directory (emailscraper_proj) to the sys.path to make it importable
@@ -20,26 +20,23 @@ class EmailBlastForm(forms.Form):
 
 
 
+class RequestConfigForm(forms.ModelForm):
+    class Meta:
+        model = RequestConfig
+        fields = ['priority_status', 'schedule_time', 'email_content', 'completion_status']
 
-
-class EmailConfigForm(forms.Form):
-    # Other fields...
-    
-    # Priority Status Dropdown
-    PRIORITY_CHOICES = [
-        ('urgent', 'Urgent'),
-        ('medium', 'Medium'),
-        ('low', 'Low'),
-    ]
-    priority_status = forms.ChoiceField(choices=PRIORITY_CHOICES, label='Priority Status', required=True)
-    email_content = forms.CharField(widget=CKEditorUploadingWidget())
-    
-    # Date and Time Picker
-    schedule_time = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'class': 'datetimepicker', 'placeholder': 'Select Date and Time'}),
-        required=True
+    priority_status = forms.ChoiceField(
+        choices=RequestConfig.PRIORITY_CHOICES,  # Ensure this matches your model choices
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        error_messages={'required': 'Priority status is required.'}
     )
 
+    schedule_time = forms.DateTimeField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'datetimepicker form-control', 'placeholder': 'Select a date'}),
+        error_messages={'required': 'Select the desired completion date.'}
+    )
 
 
 

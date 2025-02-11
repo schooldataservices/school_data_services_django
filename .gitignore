@@ -4,3 +4,4 @@ Logs/
 *.pyc
 media/
 *.json
+*.ipynb

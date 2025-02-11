@@ -1,0 +1,152 @@
+
+.ck-editor__editable {
+    resize: both !important;  /* Enable both horizontal and vertical resizing */
+    height: auto !important;  /* Allow the editor to resize vertically */
+    max-height: none !important;  /* Remove any maximum height constraints */
+    min-height: 300px !important; /* Optional: Set a minimum height */
+}
+
+
+
+.submit-button:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
+
+
+.submit-button {
+    background-color: #007bff; /* Set button background color */
+    color: #fff; /* Set button text color */
+}
+
+.email-content-container {
+    order: -1; /* Move it to the top */
+}
+
+
+.email-config-container {
+    display: flex;  /* Enables flexbox layout */
+    flex-direction: row;  /* Align items side by side */
+    gap: 10px; /* Adds spacing between the elements */
+    order: 1;
+}
+
+/* For CKEditor width */
+.email-config-container .form-group {
+    flex: 1; /* Ensures both fields take equal space */
+    max-width: 300px; /* Set a limit to prevent excessive spacing */
+}
+
+
+/* Apply to all form groups not just nested */
+label {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Prevent styles from applying to the radio buttons */
+#id_priority_status label {
+    font-weight: normal;
+    text-decoration: none;
+}
+
+
+/* Button styles */
+.submit-button
+{
+    width: 100px; /* Set the width of the button */
+    height: 60px; /* Set the height of the button */
+    font-size: 16px; /* Set button font size */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Apply border radius to button */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin: 10px 5px; /* Add consistent margin to buttons for spacing */
+}
+
+
+table { 
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td { 
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th { 
+    background-color: #f4f4f4;
+}
+
+tr:nth-child(even) { 
+    background-color: #f9f9f9; 
+}
+
+tr:hover { 
+    background-color: #f1f1f1; 
+}
+
+.block-footer {
+    margin-top: 100px; 
+}
+
+
+/* Style the filters container */
+#filtersContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#filtersContainer .form-group {
+    flex: 1; /* Ensures both fields take equal space */
+    max-width: 300px; /* Set a limit to prevent excessive spacing */
+}
+
+#filtersContainer select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    width: 250px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+#filtersContainer select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+#filtersContainer select option {
+    padding: 10px;
+}
+
+#filtersContainer select option[value="all"] {
+    font-style: italic;
+    color: #888;
+}
+
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+    #filtersContainer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #filtersContainer select {
+        width: 100%;
+    }
+}
+
+
+/* Need to make the label fonts, spacing, and alignment singular
+Only display the first 10 rows on initial load, and have text at bottom saying so */

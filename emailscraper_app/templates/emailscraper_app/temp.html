@@ -1,0 +1,156 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+{% block content %}
+  <h1>Submit Request</h1>
+  
+  <!-- Display success message if available -->
+  {% if success_message %}
+    <div class="alert alert-success">
+      {{ success_message }}
+    </div>
+  {% endif %}
+
+  {% if error_message %}
+    <div class="alert alert-danger">
+        {{ error_message }}
+    </div>
+ {% endif %}
+  
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="email-content-container">
+      <!-- Email Content Field -->
+      <div class="form-group">
+        <label for="id_email_content">Request Content</label>
+        <textarea name="email_content" id="editor" class="form-control">{{ form.email_content.value }}</textarea>
+        {% if form.email_content.errors %}
+          <span class="error-message">{{ form.email_content.errors }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="text-danger">
+        {{ form.schedule_time.errors }}
+    </div>
+
+    <div class="email-config-container">
+        <!-- Priority Status Field -->
+        <div class="form-group">
+            <label for="id_priority_status">Priority Status</label>
+            <select name="priority_status" id="id_priority_status" class="form-control" required>
+                <option value="" disabled selected>Select Priority</option>
+                {% for choice in form.priority_status.field.choices %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <!-- Schedule Time Field -->
+        <div class="form-group">
+            <label for="id_schedule_time">Select the Desired Completion Date</label>
+            <input type="text" name="schedule_time" id="id_schedule_time" class="datetimepicker form-control" required>
+        </div>
+    </div>
+    
+
+    <div class="button-container">
+        
+        <button type="submit" class="submit-button" >Submit Request</button>
+    </div>
+  </form>
+
+{% endblock %}
+
+
+{% block footer %}
+<div class="block-footer"></div> 
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <!-- Figure out why css styling goes away when I move to the css file -->
+    <script> 
+        // CKEditor Integration
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                ckfinder: {
+                    uploadUrl: '{% url "ckeditor_upload" %}',
+                },
+                height: 'auto',
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
+    <button id="toggleTableButton">Show Historical Requests</button>
+
+    <div id="historicalRequestsContainer" style="display: none;">
+        <!-- <h1>Historical Requests</h1> -->
+        
+        <div id="filtersContainer">
+            <div class="form-group">
+                <label for="priorityFilter">Filter by Priority:</label>
+                <select id="priorityFilter">
+                    <option value="all">All</option>
+                    {% for priority in unique_priorities %}
+                        <option value="{{ priority }}">{{ priority }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="dateFilter">Filter by Scheduled Time:</label>
+                <select id="dateFilter">
+                    <option value="all">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="last7days">Last 7 Days</option>
+                    <option value="thismonth">This Month</option>
+                </select>
+            </div>
+        </div>
+        
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date Submitted</th>
+                    <th>Priority</th>
+                    <th>Schedule Time</th>
+                    <th>Email Content</th>
+                    <th>Completion Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for config in request_configs %}
+                    <tr>
+                        <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ config.priority_status }}</td>
+                        <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ config.email_content }}</td>
+                        <td id="status-cell-{{ config.id }}">
+                            <!-- Initially, display the current status -->
+                            {{ config.completion_status|yesno:"Completed,Pending" }}
+                            <!-- Checkbox to toggle the completion status -->
+                            <input type="checkbox" class="completion-status-toggle" data-id="{{ config.id }}" {% if config.completion_status %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock footer %}
+
+{% block extra_js %}
+   <!-- Initialize Flatpickr for Date and Time input -->
+   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+   <script src="{% static 'js/request_page.js' %}?v=2"></script>
+
+{% endblock extra_js %}

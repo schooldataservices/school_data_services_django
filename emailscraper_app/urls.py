@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import homepage_views
 from .views import CRM_views
+from .views import request_page_view
 from .views.uploading_file_views import (EmailListView,
                                         EmailDetailView, 
                                         EmailCreateView,
@@ -26,17 +27,21 @@ urlpatterns = [
     path('serve-file/<path:file_path>/', serve_gcs_file, name='serve_file'),
     path('email/<int:pk>/update/', EmailUpdateView.as_view(), name='email-update'),
     path('email/<int:pk>/delete/', EmailDeleteView.as_view(), name='email-delete'),
-    path('old_landing_page/', homepage_views.email_config_view, name='email_config_home'),
+    # path('old_landing_page/', request_page_view.request_config_view, name='request_config_home'),
     path('', homepage_views.landing_page, name='landing_page'),
-     path('submit-requests', homepage_views.email_config_view, name='request_page'),
+     path('submit-requests/', request_page_view.create_request_config, name='submit-requests'),
     path('send-emails/', homepage_views.send_emails_view, name='email_send'),
     path('file-uploads/', homepage_views.file_list, name='file_list'),
-    path('upload_image_text_box/', homepage_views.upload_image_text_box, name='upload_image_text_box'),
+    # path('upload_image_text_box/', homepage_views.upload_image_text_box, name='upload_image_text_box'),
     path('temp/', homepage_views.email_content_view, name='temp'),
     path('create-customer/', CRM_views.customer_create_view, name='create-customer'),
     path('search-contacts/', CRM_views.search_contacts, name='search-contacts'),
     path('get-contact-details/', CRM_views.get_contact_details, name='get-contact-details'),
+    path('update-completion-status/<int:config_id>/', request_page_view.update_completion_status, name='update_completion_status'),
 ]
+
+
+    # path('success/', request_page_view.success_view, name='success'),
 
 
 # path('send-emails/', send_emails_view, name='send_emails_view')

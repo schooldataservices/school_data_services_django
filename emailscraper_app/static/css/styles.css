@@ -1,5 +1,5 @@
 /* Button styles */
-.save-configuration-button, 
+.submit-button, 
 .send-emails-button, 
 .upload-file-button {
     width: 150px; /* Set the width of the button */
@@ -19,7 +19,7 @@
     align-items: flex-start; /* Center align the form fields */
 }
 
-.save-configuration-button {
+.submit-button {
     background-color: #007bff; /* Set button background color */
     color: #fff; /* Set button text color */
 }
@@ -34,7 +34,7 @@
     color: white;
 }
 
-.save-configuration-button:hover {
+.submit-button:hover {
     background-color: #0056b3; /* Change background color on hover */
 }
 
@@ -132,52 +132,6 @@
 }
 
 
-.container {
-    display: flex;
-    justify-content: left; 
-    align-items: center; 
-    margin: 0;
-}
-
-.flex-container {
-    display: flex;
-    justify-content: space-between; /* Ensure space is evenly distributed */
-    align-items: flex-start; /* Align items at the top */
-    flex-direction: row; /* Ensure the containers are aligned horizontally */
-}
-
-
-.email-config-container {
-    flex: 1;
-    padding-right: 20px; /* Adjust padding to align properly with the content container */
-    margin-bottom: 0; /* Remove bottom margin to bring buttons closer */
-    order: 2; /* Place this container after email-content-container */
-}
-
-/* Email content container */
-.email-content-container {
-    flex: 1;
-    order: 1; /* Place this container before email-config-container */
-    margin-right: 15px; /* Add a light margin to the right to create space from the email-config-container */
-}
-
-/* Button container */
-.button-container {
-    margin-top: 20px; /* Space between fields and buttons */
-}
-
-
-/*Textbox*/
-.ck-editor__editable {
-    min-height: 800px;
-    max-height: 800px;
-    min-width: 960px;
-}
-/*Toolbar*/
-.ck-editor__top {
-    min-width: 960px;
-}
-
 
 .login-container {
     display: flex;
@@ -217,8 +171,4 @@
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-fieldset.form-group {
-    margin-bottom: 20px;
 }

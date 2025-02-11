@@ -1,20 +1,3 @@
-/* Button styles */
-.save-configuration-button, 
-.send-emails-button, 
-.upload-file-button {
-    width: 150px; /* Set the width of the button */
-    height: 60px; /* Set the height of the button */
-    font-size: 16px; /* Set button font size */
-    border: none; /* Remove button border */
-    border-radius: 5px; /* Apply border radius to button */
-    cursor: pointer; /* Change cursor to pointer on hover */
-    margin: 10px 5px; /* Add consistent margin to buttons for spacing */
-}
-
-.save-configuration-button {
-    background-color: #007bff; /* Set button background color */
-    color: #fff; /* Set button text color */
-}
 
 .upload-file-button {
     background-color: #007bff; /* Set button background color */
@@ -22,15 +5,6 @@
 }
 
 .send-emails-button {
-    background-color: #4CAF50; /* Green */
-    color: white;
-}
-
-.save-configuration-button:hover {
-    background-color: #0056b3; /* Change background color on hover */
-}
-
-.send-emails-button:hover {
     background-color: #4CAF50; /* Green */
     color: white;
 }
@@ -94,51 +68,5 @@
 .navbar li a:hover {
     background-color: #111; 
 }
-
-
-.container {
-    display: flex;
-    justify-content: left; /* Center align the form */
-    align-items: center; /* Center align vertically */
-    margin: 0;
-}
-
-.flex-container {
-    display: flex;
- 
-}
-
-.email-content-container,
-.email-config-container{
-    flex: 1; /* Take up equal space */
-    padding: 10px; /* Add padding for spacing */
-}
-
-
-
-.email-config-container {
-    order: 1; /* Make it appear before the email-content-container */
-    margin-right: 300px;
-}
-
-.email-content-container {
-    order: 2; /* Make it appear after the email-config-container */
-    margin-left: auto;
-}
-
-/*Textbox*/
-.ck-editor__editable {
-    min-height: 800px;
-    max-height: 800px;
-    min-width: 960px;
-}
-/*Toolbar*/
-.ck-editor__top {
-    min-width: 960px;
-}
-
-
-
-
 
 

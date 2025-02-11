@@ -189,7 +189,11 @@ if DEBUG:
 
     MIDDLEWARE += (
         'debug_toolbar.middleware.DebugToolbarMiddleware',
+        'django.middleware.cache.UpdateCacheMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.cache.FetchFromCacheMiddleware',
     )
+    CACHE_MIDDLEWARE_SECONDS = 0
     INSTALLED_APPS += (
         'debug_toolbar',
     )
