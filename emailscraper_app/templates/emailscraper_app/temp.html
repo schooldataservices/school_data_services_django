@@ -69,7 +69,6 @@
 
 {% endblock %}
 
-
 {% block footer %}
 <div class="block-footer"></div> 
 
@@ -89,14 +88,14 @@
             });
     </script>
 
-    <button id="toggleTableButton">Show Historical Requests</button>
+    <button id="toggleTableButton" style="margin-bottom: 100px;">Show Historical Requests</button>
 
     <div id="historicalRequestsContainer" style="display: none;">
         <!-- <h1>Historical Requests</h1> -->
         
         <div id="filtersContainer">
             <div class="form-group">
-                <label for="priorityFilter">Filter by Priority:</label>
+                <label for="priorityFilter">Filter by Priority</label>
                 <select id="priorityFilter">
                     <option value="all">All</option>
                     {% for priority in unique_priorities %}
@@ -106,7 +105,7 @@
             </div>
             
             <div class="form-group">
-                <label for="dateFilter">Filter by Scheduled Time:</label>
+                <label for="dateFilter">Filter by Desired Completion Date</label>
                 <select id="dateFilter">
                     <option value="all">All Dates</option>
                     <option value="today">Today</option>
@@ -114,36 +113,20 @@
                     <option value="thismonth">This Month</option>
                 </select>
             </div>
+
+            <div class="form-group">
+                <label for="completionFilter">Filter by Completion Status</label>
+                <select id="completionFilter">
+                    <option value="all">All</option>
+                    <option value="true">Completed</option>
+                    <option value="false">Pending</option>
+                </select>
+            </div>
         </div>
         
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Date Submitted</th>
-                    <th>Priority</th>
-                    <th>Schedule Time</th>
-                    <th>Email Content</th>
-                    <th>Completion Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for config in request_configs %}
-                    <tr>
-                        <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
-                        <td>{{ config.priority_status }}</td>
-                        <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
-                        <td>{{ config.email_content }}</td>
-                        <td id="status-cell-{{ config.id }}">
-                            <!-- Initially, display the current status -->
-                            {{ config.completion_status|yesno:"Completed,Pending" }}
-                            <!-- Checkbox to toggle the completion status -->
-                            <input type="checkbox" class="completion-status-toggle" data-id="{{ config.id }}" {% if config.completion_status %}checked{% endif %}>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div id="requestListContainer">
+            {% include 'emailscraper_app/request_list.html' %}
+        </div>
     </div>
 
 {% endblock footer %}
@@ -152,5 +135,5 @@
    <!-- Initialize Flatpickr for Date and Time input -->
    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
    <script src="{% static 'js/request_page.js' %}?v=2"></script>
-
+   <script src="{% static 'js/pagination.js' %}"></script>
 {% endblock extra_js %}

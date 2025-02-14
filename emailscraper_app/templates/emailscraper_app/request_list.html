@@ -1,0 +1,48 @@
+<!-- filepath: /c:/Users/becky/Desktop/Git_Directory/Django_Email_Hub/emailscraper_app/templates/emailscraper_app/request_list.html -->
+<div id="pagination-info">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} (Total results: {{ page_obj.paginator.count }})
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Date Submitted</th>
+            <th>Priority</th>
+            <th>Desired Completion Date</th>
+            <th>Email Content</th>
+            <th>Completion Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for config in page_obj %}
+            <tr>
+                <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ config.priority_status }}</td>
+                <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ config.email_content|safe }}</td>
+                <td id="status-cell-{{ config.id }}">
+                    <!-- Initially, display the current status -->
+                    {{ config.completion_status|yesno:"Completed,Pending" }}
+                    <!-- Checkbox to toggle the completion status -->
+                    <input type="checkbox" class="completion-status-toggle" data-id="{{ config.id }}" {% if config.completion_status %}checked{% endif %}>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination controls -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="#" class="page-link" data-page="{{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="#" class="page-link" data-page="{{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>

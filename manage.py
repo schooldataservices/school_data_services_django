@@ -20,3 +20,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+#write me an example django model that has a field called email

@@ -11,13 +11,6 @@
     margin: 10px 0px; /* Add consistent margin to buttons for spacing */
 }
 
-.email-configuration-form {
-    padding: 0;
-    margin-bottom: 20px; /* Add some margin below the form */
-    display: flex; /* Use flexbox for the form */
-    flex-direction: column; /* Arrange form fields vertically */
-    align-items: flex-start; /* Center align the form fields */
-}
 
 .submit-button {
     background-color: #007bff; /* Set button background color */

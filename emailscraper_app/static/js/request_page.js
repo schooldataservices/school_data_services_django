@@ -12,48 +12,76 @@ document.getElementById("toggleTableButton").addEventListener("click", function(
 
 // Priority Filter Logic
 document.getElementById("priorityFilter").addEventListener("change", function() {
+    console.log("Priority filter changed to:", this.value);
     applyFilters();
 });
 
 // Date Filter Logic
 document.getElementById("dateFilter").addEventListener("change", function() {
+    console.log("Date filter changed to:", this.value);
     applyFilters();
 });
+
+// Completion Filter Logic
+document.getElementById("completionFilter").addEventListener("change", function() {
+    console.log("Completion filter changed to:", this.value);
+    applyFilters();
+});
+
 
 function applyFilters() {
     let selectedPriority = document.getElementById("priorityFilter").value.toLowerCase();
     let selectedDate = document.getElementById("dateFilter").value.toLowerCase();
+    let selectedCompletion = document.getElementById("completionFilter").value.toLowerCase();
     let rows = document.querySelectorAll("table tbody tr");
 
-    rows.forEach(row => {
-        let priority = row.children[1].textContent.toLowerCase();  // Priority in second column
-        let dateSubmitted = new Date(row.children[0].textContent); // Date in first column (assumed format 'Feb. 5, 2025, 7:50 p.m.')
-        let scheduleTime = new Date(row.children[2].textContent); // Schedule Time in third column (assumed format '2025-01-31 12:00:00')
+    console.log("Applying filters: ", { selectedPriority, selectedDate, selectedCompletion });
 
-        // Apply Date Filtering Logic
-        let dateMatch = true;
-        if (selectedDate === "today") {
-            let today = new Date();
-            today.setHours(0, 0, 0, 0);
-            dateMatch = scheduleTime.toDateString() === today.toDateString();
-        } else if (selectedDate === "last7days") {
-            let last7Days = new Date();
-            last7Days.setDate(last7Days.getDate() - 7);
-            dateMatch = scheduleTime >= last7Days;
-        } else if (selectedDate === "thismonth") {
-            let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-            dateMatch = scheduleTime >= firstDayOfMonth;
+    rows.forEach(row => {
+        let priorityElement = row.children[1]; // Priority column
+        let dateElement = row.children[0]; // Date Submitted column
+        let scheduleElement = row.children[2]; // Schedule Time column
+        let completionElement = row.children[4]; // Completion Status column
+
+        if (!priorityElement || !dateElement || !scheduleElement || !completionElement) return;
+
+        let priority = priorityElement.textContent.trim().toLowerCase();
+        let scheduleTime = new Date(scheduleElement.textContent.trim());
+        let completionStatus = completionElement.textContent.trim().toLowerCase();
+
+        if (isNaN(scheduleTime)) {
+            console.warn("Invalid date:", scheduleElement.textContent);
+            return;
         }
 
-        // Apply the filters for both priority and date
-        if ((selectedPriority === "all" || priority === selectedPriority) && dateMatch) {
-            row.style.display = "";  // Show the row
+        let completionValue = completionStatus.includes("completed") ? "true" : "false";
+
+        let dateMatch = isDateMatch(selectedDate, scheduleTime);
+        let statusMatch = selectedCompletion === "all" || completionValue === selectedCompletion;
+
+        if ((selectedPriority === "all" || priority === selectedPriority) && dateMatch && statusMatch) {
+            row.style.display = "";
         } else {
-            row.style.display = "none";  // Hide the row
+            row.style.display = "none";
         }
     });
 }
 
+function isDateMatch(selectedDate, scheduleTime) {
+    if (selectedDate === "today") {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return scheduleTime.toDateString() === today.toDateString();
+    } else if (selectedDate === "last7days") {
+        let last7Days = new Date();
+        last7Days.setDate(last7Days.getDate() - 7);
+        return scheduleTime >= last7Days;
+    } else if (selectedDate === "thismonth") {
+        let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        return scheduleTime >= firstDayOfMonth;
+    }
+    return true;
+}
 
 // Initialize Flatpickr for Date and Time input
 flatpickr(".datetimepicker", {
@@ -64,47 +92,44 @@ flatpickr(".datetimepicker", {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    const statusCheckboxes = document.querySelectorAll('.completion-status-toggle'); // All completion status checkboxes
+    const statusCheckboxes = document.querySelectorAll('.completion-status-toggle');
 
     statusCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            const requestId = checkbox.getAttribute('data-id');  // Get the config ID from the checkbox's data-id attribute
-            const isChecked = checkbox.checked;  // Get the checkbox state (checked or unchecked)
+            const requestId = checkbox.getAttribute('data-id');
+            const isChecked = checkbox.checked;
 
-            // Send the AJAX request to update the completion status
+            console.log(`Updating completion status for request ID: ${requestId}, Checked: ${isChecked}`);
+
             fetch(`/update-completion-status/${requestId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken()  // CSRF token for security
+                    'X-CSRFToken': getCSRFToken()
                 },
                 body: JSON.stringify({
                     'completion_status': isChecked,
-                    'config_id': requestId  // Include the ID of the config you're updating
+                    'config_id': requestId
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update the status text or style to reflect the change
                     const statusCell = document.querySelector(`#status-cell-${requestId}`);
                     if (statusCell) {
-                        statusCell.innerHTML = isChecked ? "Completed" : "Pending";  // Example of updating text
+                        statusCell.innerHTML = isChecked ? "Completed" : "Pending";
                     }
                     console.log('Status updated successfully');
                 } else {
                     console.error('Error updating status');
-                    // Optionally handle the error case (e.g., display an alert)
                 }
             })
             .catch(error => console.error('Error:', error));
         });
     });
 
-    // Helper function to get the CSRF token
     function getCSRFToken() {
         const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
         return csrfToken ? csrfToken[1] : '';
     }
 });
-
