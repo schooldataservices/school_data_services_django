@@ -1,16 +1,22 @@
+/* Set the default background color for all pages */
+body {
+    background-color: #324d70; /* Light gray background color */
+    color: #faf8f8; /* Default text color */
+}
+
 /* Button styles */
 .submit-button, 
 .send-emails-button, 
-.upload-file-button {
+.upload-file-button, 
+.login-button {
     width: 150px; /* Set the width of the button */
-    height: 60px; /* Set the height of the button */
+    height: 40px; /* Set the height of the button */
     font-size: 16px; /* Set button font size */
     border: none; /* Remove button border */
     border-radius: 5px; /* Apply border radius to button */
     cursor: pointer; /* Change cursor to pointer on hover */
-    margin: 10px 0px; /* Add consistent margin to buttons for spacing */
+    margin: 10px 5px; /* Add consistent margin to buttons for spacing */
 }
-
 
 .submit-button {
     background-color: #007bff; /* Set button background color */
@@ -27,6 +33,11 @@
     color: white;
 }
 
+.login-button {
+    background-color: #6c757d; /* Set button background color */
+    color: #fff; /* Set button text color */
+}
+
 .submit-button:hover {
     background-color: #0056b3; /* Change background color on hover */
 }
@@ -36,14 +47,13 @@
     color: white;
 }
 
+.login-button:hover {
+    background-color: #5a6268; /* Change background color on hover */
+}
 
 .form-inline {
     margin-bottom: 20px; /* Add some margin between the form and other elements */
 }
-
-/* .form-field { */
-    /* margin-bottom: 15px; Add margin between form fields */
-/* } */
 
 .error-message {
     color: red; /* Style error messages in red */
@@ -102,7 +112,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333; /* Background color of the navbar */
+    background-color: #182e4b; /* Background color of the navbar */
     display: flex;
     justify-content: space-evenly;
 }
@@ -119,26 +129,54 @@
     text-decoration: none; /* Remove underline from the links */
 }
 
-/* Change the background color of the links when hovered */
-.navbar li a:hover {
-    background-color: #111; 
+
+/* Prevent profile image from changing color on hover */
+.nav-link img {
+    transition: none; /* Disable transition effects */
+}
+
+.nav-link:hover img {
+    filter: none; /* Remove any filter effects */
+    background-color: transparent; /* Ensure background color remains transparent */
+}
+
+/* Dropdown menu styles */
+.dropdown-menu {
+    display: none; /* Hide by default */
+    position: absolute; /* Position it absolutely */
+    z-index: 2000; /* Ensure it is above other elements */
+    background-color: white; /* Ensure it has a background color */
+    border: 1px solid #ccc; /* Add a border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+}
+
+.dropdown-menu.show {
+    display: block !important; /* Force show when dropdown is active */
 }
 
 
+.navbar {
+    height: 150px; /* Increase the height of the navbar */
+}
 
-.login-container {
+/* Register page styles */
+.register-container {
     display: flex;
     justify-content: center; /* Centers the content horizontally */
     align-items: center; /* Centers the content vertically */
-    height: 100vh; /* Takes full height of the viewport */
     flex-direction: column; /* Ensure everything is stacked vertically */
+    margin: 0 auto;
+    max-width: 500px; /* Limits the width of the container */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.form-signin {
+.form-register {
     width: 100%;
-    max-width: 400px;
     padding: 15px;
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -149,19 +187,150 @@
     margin-top: 10px; /* Adds space above this section */
 }
 
-.register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 0 auto;
-    max-width: 500px; /* Limits the width of the container */
+.submit-button {
+    background-color: #007bff; /* Set button background color */
+    color: #fff; /* Set button text color */
+    width: 150px; /* Set the width of the button */
+    height: 40px; /* Set the height of the button */
+    font-size: 16px; /* Set button font size */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Apply border radius to button */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin: 10px 0px; /* Add consistent margin to buttons for spacing */
 }
 
-.form-register {
-    width: 100%;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.submit-button:hover {
+    background-color: #0056b3; /* Change background color on hover */
 }
+
+/* Specific label styles for form-register and form-signin */
+.form-register label,
+.form-signin label,
+.form-register legend,
+.form-signin legend,
+.register-container h2,
+.form-signin h2 {
+    color: #333; /* Set the text color to a dark color */
+    font-weight: bold; /* Make the text bold */
+    margin-bottom: 5px; /* Add some margin below the label */
+    display: block; /* Ensure the label takes up the full width */
+}
+
+/* Required field asterisk */
+.asteriskField {
+    color: red; /* Set the color of the asterisk to red */
+}
+
+/* Center the form fields in the middle of the page */
+.form-wrapper {
+    max-width: 400px; /* Set a maximum width for the form */
+    margin: 0 auto; /* Center the form horizontally */
+    padding: 20px; /* Add some padding around the form */
+    background-color: #ffffff; /* Set a background color for the form */
+    border-radius: 8px; /* Add rounded corners to the form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+}
+
+/* Specific styles for form fields */
+.form-register .form-group,
+.form-signin .form-group {
+    margin-bottom: 15px; /* Add margin between form fields */
+}
+
+.form-register .form-control,
+.form-signin .form-control {
+    width: 100%; /* Ensure the input boxes take up the full width of their container */
+    padding: 10px; /* Add padding for better appearance */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Add rounded corners */
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+/* Align the profile page content to the left */
+.profile-page-container {
+    display: flex;
+    justify-content: center; /* Align the content to the left */
+    align-items: center; /* Align the content to the top */
+    flex-direction: column; /* Stack the content vertically */
+    min-height: 100vh; /* Ensure the container takes up the full height of the viewport */
+}
+
+/* Add spacing between Profile Info and the profile picture */
+.profile-info {
+    margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+/* Specific styles for login form fields */
+.login-form-wrapper #div_id_username, 
+.login-form-wrapper #div_id_password,
+.profile-form-wrapper #div_id_username, 
+.profile-form-wrapper #div_id_password,
+.profile-form-wrapper #div_id_email {
+    max-width: 400px; /* Set a maximum width for the input boxes */
+    margin: 0 auto; /* Center the input boxes horizontally */
+}
+
+.login-form-wrapper #div_id_username .form-control, 
+.login-form-wrapper #div_id_password .form-control,
+.profile-form-wrapper #div_id_username .form-control, 
+.profile-form-wrapper #div_id_password .form-control,
+.profile-form-wrapper #div_id_email .form-control {
+    width: 100%; /* Ensure the input boxes take up the full width of their container */
+    padding: 10px; /* Add padding for better appearance */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Add rounded corners */
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+/* Ensure form fields are aligned properly */
+.profile-form-wrapper .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align the form fields to the left */
+    margin-bottom: 20px; /* Increase the margin between form fields */
+    padding-bottom: 10px; /* Add padding to the bottom of form fields */
+}
+
+
+/* Ensure form control elements have enough padding */
+.profile-form-wrapper .form-control {
+    padding: 10px; /* Add padding for better appearance */
+    width: 100%; /* Ensure the input boxes take up the full width of their container */
+    max-width: 400px; /* Set a maximum width for the input boxes */
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+/* Align the update button to the left */
+.profile-form-wrapper .form-group {
+    display: flex;
+    justify-content: flex-start; /* Align the button to the left */
+}
+
+/* Center the update button */
+.profile-form-wrapper .form-group.text-center {
+    display: flex;
+    justify-content: center; /* Center the button horizontally */
+}
+
+/* Ensure form control elements have enough padding */
+.profile-form-wrapper .form-control {
+    padding: 10px; /* Add padding for better appearance */
+    width: 100%; /* Ensure the input boxes take up the full width of their container */
+}
+
+/* Text secondary color specific to profile-form */
+.media-body .text-secondary {
+    color: #d8d8d8 !important; /* Example color, adjust as needed */
+}
+
+/* Form text and muted text color specific to profile-form */
+.profile-form .form-text.text-muted {
+    color: #d8d8d8 !important; /* Example color, adjust as needed */
+}
+
+/* Add margin-bottom to the media element */
+.media {
+    margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+

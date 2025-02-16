@@ -1,21 +1,20 @@
-{% extends 'emailscraper_app/base.html' %}
+{% extends "emailscraper_app/base.html" %}
 {% load crispy_forms_tags %}
+
+{% block title %}
+Register
+{% endblock title %}
+
 {% block content %}
-<div class="content-section register-container">
+<div class="register-container">
+    <h2 class="text-center">Register</h2>
     <form method="POST" class="form-register">
         {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Register Below</legend>
-            {{ form|crispy }}
-        </fieldset>
-        <div class="form-group"> 
-            <button class="btn btn-outline-info" type="submit">Sign Up</button>
+        {{ form|crispy }}
+        <div class="button-container">
+            <button type="submit" class="btn btn-primary submit-button">Register</button>
+            <a href="{% url 'login' %}" class="btn btn-secondary login-button">Login</a>
         </div>
     </form>
-    <div class="border-top pt-3 text-center">
-        <small class="text-muted">
-            Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
-        </small>
-    </div>
 </div>
 {% endblock content %}

@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     attachCheckboxListeners();
+    attachEditableContentListeners();
+    attachDeleteButtonListeners();
 });
 
 function fetchPage(page) {
@@ -47,6 +49,8 @@ function fetchPage(page) {
             });
         });
         attachCheckboxListeners();
+        attachEditableContentListeners();
+        attachDeleteButtonListeners();
     });
 }
 
@@ -81,6 +85,73 @@ function attachCheckboxListeners() {
                     console.log('Status updated successfully');
                 } else {
                     console.error('Error updating status');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+}
+
+function attachEditableContentListeners() {
+    const editableEmailContents = document.querySelectorAll('.editable-email-content');
+
+    editableEmailContents.forEach(cell => {
+        let timeoutId;
+        cell.addEventListener('input', function() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                const requestId = cell.getAttribute('data-id');
+                const newContent = cell.innerHTML;
+
+                console.log(`Auto-saving email content for request ID: ${requestId}, New Content: ${newContent}`);
+
+                fetch(`/update-email-content/${requestId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    body: JSON.stringify({
+                        'email_content': newContent
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Email content auto-saved successfully');
+                    } else {
+                        console.error('Error auto-saving email content');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }, 1000); // Adjust the delay as needed
+        });
+    });
+}
+
+function attachDeleteButtonListeners() {
+    const deleteButtons = document.querySelectorAll('.delete-request');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const requestId = button.getAttribute('data-id');
+
+            console.log(`Deleting request ID: ${requestId}`);
+
+            fetch(`/delete-request/${requestId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Request deleted successfully');
+                    fetchPage(1); // Refresh the page to reflect the deletion
+                } else {
+                    console.error('Error deleting request');
                 }
             })
             .catch(error => console.error('Error:', error));

@@ -8,6 +8,8 @@ from ..models import RequestConfig
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
+from datetime import datetime, timedelta
+from django.views.decorators.http import require_POST, require_http_methods
 
 def handle_email_file_upload_form(request):
     email_file_upload_form = EmailFileUploadForm(request.POST or None, request.FILES or None)
@@ -36,8 +38,15 @@ def get_prior_requests_context(request):
     if completion_filter and completion_filter != 'all':
         request_configs = request_configs.filter(completion_status=(completion_filter == 'true'))
     if date_filter and date_filter != 'all':
-        # Apply date filter logic here (e.g., filter by today, last 7 days, this month)
-        pass
+        if date_filter == 'today':
+            today = datetime.now().date()
+            request_configs = request_configs.filter(schedule_time__date=today)
+        elif date_filter == 'last7days':
+            last_7_days = datetime.now().date() - timedelta(days=7)
+            request_configs = request_configs.filter(schedule_time__date__gte=last_7_days)
+        elif date_filter == 'thismonth':
+            first_day_of_month = datetime.now().replace(day=1)
+            request_configs = request_configs.filter(schedule_time__date__gte=first_day_of_month)
 
     # Extract distinct priority statuses
     unique_priorities = set(request_configs.values_list("priority_status", flat=True))
@@ -67,7 +76,7 @@ def get_prior_requests_context(request):
 
 @login_required
 def create_request_config(request):
-    context = get_prior_requests_context(request)  # Load email configurations & welcome message no matter what by user
+    context = get_prior_requests_context(request)  # For ajax requests with pagination, and filters
 
     if isinstance(context, JsonResponse):
         return context
@@ -100,17 +109,44 @@ def create_request_config(request):
 
 # View for dynamic AJAX changing of button changes
 @login_required
+@require_POST
 def update_completion_status(request, config_id):
-    if request.method == 'POST':
-        # Get the status from the request body
+    # Get the status from the request body
+    data = json.loads(request.body)
+    completion_status = data.get('completion_status')
+    
+    # Get the config and update the status using AJAX
+    try:
+        config = RequestConfig.objects.get(id=config_id)
+        config.completion_status = completion_status
+        config.save()
+        return JsonResponse({'success': True})
+    except RequestConfig.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Config not found'})
+
+@login_required
+@require_POST
+def update_email_content(request, config_id):
+    try:
         data = json.loads(request.body)
-        completion_status = data.get('completion_status')
-        
-        # Get the config and update the status using AJAX
-        try:
-            config = RequestConfig.objects.get(id=config_id)
-            config.completion_status = completion_status
-            config.save()
-            return JsonResponse({'success': True})
-        except RequestConfig.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'Config not found'})
+        email_content = data.get('email_content')
+        config = RequestConfig.objects.get(id=config_id, creator=request.user)
+        config.email_content = email_content
+        config.save()
+        return JsonResponse({'success': True})
+    except RequestConfig.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Config not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_request(request, config_id):
+    try:
+        config = RequestConfig.objects.get(id=config_id, creator=request.user)
+        config.delete()
+        return JsonResponse({'success': True})
+    except RequestConfig.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Config not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

@@ -5,6 +5,7 @@
 <table>
     <thead>
         <tr>
+            <th></th> <!-- Empty header for the delete icon column -->
             <th>Date Submitted</th>
             <th>Priority</th>
             <th>Desired Completion Date</th>
@@ -15,10 +16,15 @@
     <tbody>
         {% for config in page_obj %}
             <tr>
+                <td>
+                    <button class="delete-request" data-id="{{ config.id }}">
+                        <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                    </button>
+                </td>
                 <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ config.priority_status }}</td>
                 <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
-                <td>{{ config.email_content|safe }}</td>
+                <td contenteditable="true" class="editable-email-content" data-id="{{ config.id }}">{{ config.email_content|safe }}</td>
                 <td id="status-cell-{{ config.id }}">
                     <!-- Initially, display the current status -->
                     {{ config.completion_status|yesno:"Completed,Pending" }}
@@ -37,12 +43,14 @@
             <a href="#" class="page-link" data-page="{{ page_obj.previous_page_number }}">previous</a>
         {% endif %}
 
+        {% if page_obj.has_next %}
+        <a href="#" class="page-link" data-page="{{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+
         <span class="current">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
 
-        {% if page_obj.has_next %}
-            <a href="#" class="page-link" data-page="{{ page_obj.next_page_number }}">next</a>
-        {% endif %}
+      
     </span>
 </div>

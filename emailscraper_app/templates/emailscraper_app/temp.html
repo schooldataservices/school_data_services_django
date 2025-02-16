@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Submit Request</h1>
+  <h1 style="margin-bottom: 30px;">Submit Request</h1>
   
   <!-- Display success message if available -->
   {% if success_message %}
@@ -29,7 +29,7 @@
     <div class="email-content-container">
       <!-- Email Content Field -->
       <div class="form-group">
-        <label for="id_email_content">Request Content</label>
+        <!-- <label for="id_email_content">Request Content</label> -->
         <textarea name="email_content" id="editor" class="form-control">{{ form.email_content.value }}</textarea>
         {% if form.email_content.errors %}
           <span class="error-message">{{ form.email_content.errors }}</span>
@@ -137,3 +137,6 @@
    <script src="{% static 'js/request_page.js' %}?v=2"></script>
    <script src="{% static 'js/pagination.js' %}"></script>
 {% endblock extra_js %}
+
+
+<!-- Desired completion date filter needs work -->

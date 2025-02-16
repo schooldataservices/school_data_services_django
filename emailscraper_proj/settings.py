@@ -169,14 +169,15 @@ GS_CREDENTIALS, project_id = google.auth.load_credentials_from_file(
 GD_PROJECT_ID = project_id
 GS_BUCKET_NAME = 'django_hosting'
 
-
-DEFAULT_FILE_STORAGE = 'emailscraper_proj.settings.CustomGoogleCloudStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_DEFAULT_ACL = 'publicRead'
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 
 STATICFILES_DIRS = [
