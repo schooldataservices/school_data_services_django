@@ -1,6 +1,7 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <!-- <p>Welcome back, {{ user.username }}!</p> -->
     <div class="profile-page-container">
         <div class="content-section profile-form-wrapper">
             <div class="media">
@@ -22,10 +23,8 @@
                         {{ u_form.email|as_crispy_field }}
                     </div>
                     <div class="form-group">
-                        {{ p_form.image.label_tag }}<br>
-                        <input type="file" name="image" id="id_image">
+                        {{ p_form.image|as_crispy_field }}
                     </div>
-                    <!-- Add other form fields here -->
                 </fieldset>
                 <div class="form-group"> 
                     <button type="submit" class="btn btn-primary submit-button">Update</button>

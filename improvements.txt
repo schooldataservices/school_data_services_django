@@ -1,8 +1,0 @@
-
-
-Create a submit request page that is behind a login. 
-
-Utilize the text box and have it route directly to personal email 
-
-Display the submit request on the landing page. If it is clicked without being logged in, then re-direct to login page or register for a profile. 
-

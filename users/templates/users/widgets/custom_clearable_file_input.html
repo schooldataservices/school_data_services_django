@@ -1,0 +1,9 @@
+{% if widget.is_initial %}
+    <div>
+        <span>Currently: {{ widget.value }}</span><br>
+        <input type="file" name="{{ widget.name }}" id="{{ widget.attrs.id }}" {% include "django/forms/widgets/attrs.html" %}>
+    </div>
+{% else %}
+    <label for="{{ widget.attrs.id }}">{{ widget.attrs.initial_text }}</label>
+    <input type="file" name="{{ widget.name }}" id="{{ widget.attrs.id }}" {% include "django/forms/widgets/attrs.html" %}>
+{% endif %}

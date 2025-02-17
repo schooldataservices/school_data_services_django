@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils.html import escape
 from django.contrib import messages
 from django.http import JsonResponse
-from ..forms import  RequestConfigForm, EmailFileUploadForm
+from ..forms import  RequestConfigForm
 from django.template.loader import render_to_string
 from ..models import RequestConfig
 from django.contrib.auth.decorators import login_required
@@ -10,19 +10,9 @@ from django.core.paginator import Paginator
 import json
 from datetime import datetime, timedelta
 from django.views.decorators.http import require_POST, require_http_methods
+from ..utils import send_request_email  # Import the new function
 
-def handle_email_file_upload_form(request):
-    email_file_upload_form = EmailFileUploadForm(request.POST or None, request.FILES or None)
-    
-    if request.method == 'POST' and email_file_upload_form.is_valid():
-        email_file_upload_form.save()
-        messages.success(request, 'Email file uploaded successfully.')
-        return True, email_file_upload_form
-    else:
-        print('EmailFileUploadForm is invalid')
-        print(email_file_upload_form.errors)
 
-    return False, email_file_upload_form
 
 
 def get_prior_requests_context(request):
@@ -88,6 +78,9 @@ def create_request_config(request):
             request_config = form.save(commit=False)
             request_config.creator = request.user  # Set the logged-in user as the creator
             request_config.save()
+
+            # Send email using the new function
+            send_request_email(request_config, request.user)
 
             # Update context to reflect the new data
             context = get_prior_requests_context(request)

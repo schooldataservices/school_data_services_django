@@ -78,7 +78,10 @@ ROOT_URLCONF = "emailscraper_proj.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, 'users/templates'),  # Ensure this includes the correct directories
+            os.path.join(BASE_DIR, 'emailscraper_app/templates'),  # Include other template directories if needed
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -154,7 +157,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap4'
 
 #First time users re-routed to this
 LOGIN_REDIRECT_URL = 'landing_page'
-LOGIN_URL = 'login'
+LOGIN_URL = 'login'  # Ensure this points to your custom login view
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

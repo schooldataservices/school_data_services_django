@@ -4,6 +4,7 @@ body {
     color: #faf8f8; /* Default text color */
 }
 
+
 /* Button styles */
 .submit-button, 
 .send-emails-button, 
@@ -125,7 +126,6 @@ body {
     display: block;
     color: white; /* Text color of the links */
     text-align: center;
-    padding: 14px 8px; /* Padding around the link text */
     text-decoration: none; /* Remove underline from the links */
 }
 
@@ -154,9 +154,8 @@ body {
     display: block !important; /* Force show when dropdown is active */
 }
 
-
 .navbar {
-    height: 150px; /* Increase the height of the navbar */
+    height: 130px; /* Increase the height of the navbar */
 }
 
 /* Register page styles */
@@ -291,8 +290,7 @@ body {
     padding-bottom: 10px; /* Add padding to the bottom of form fields */
 }
 
-
-/* Ensure form control elements have enough padding */
+/* Ensure form control elements have enough padding and consistent width */
 .profile-form-wrapper .form-control {
     padding: 10px; /* Add padding for better appearance */
     width: 100%; /* Ensure the input boxes take up the full width of their container */
@@ -331,6 +329,11 @@ body {
 /* Add margin-bottom to the media element */
 .media {
     margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+/* Set text color for elements within the ck ck-content class */
+.ck.ck-content p {
+    color: #000; /* Set the text color to black or any other color that contrasts with the background */
 }
 
 

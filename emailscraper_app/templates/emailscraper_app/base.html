@@ -39,7 +39,7 @@
 
 <!-- Navigation bar -->
 <nav>
-    <ul class="navbar">
+    <ul class="navbar" style="display: flex; flex-direction: column;">
         {% if user.is_authenticated %}
             <li><a href="{% url 'landing_page' %}">Home</a></li>
             <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
@@ -51,6 +51,7 @@
                 </a>
             </li>
         {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'landing_page' %}">Home</a></li>
             <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
             <li><a href="{% url 'register' %}">Register</a></li>
@@ -63,7 +64,10 @@
 <div id="profileDropdownMenu" class="dropdown-menu" aria-labelledby="profileDropdown">
     <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
     <a class="dropdown-item" href="{% url 'login' %}">Login</a>
-    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="dropdown-item">Logout</button>
+    </form>
 </div>
 
 <!-- Content block -->

@@ -20,15 +20,17 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
-from emailscraper_app.views.homepage_views import email_content_view, serve_image
+from emailscraper_app.views.homepage_views import serve_image
 import debug_toolbar
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('users/', include('users.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),  # Include Django auth URLs
     path('register/', user_views.register, name='register'),
     path('profile/', user_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'), #class based views, built in
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'), #will not handle templates, must be implemented
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'), #class based views, built in
+    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'), #will not handle templates, must be implemented
     path('password-reset/', 
          auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), 
          name='password_reset'), 
@@ -44,14 +46,14 @@ urlpatterns = [
     path('', include('emailscraper_app.urls')),
     path('serve-image/', serve_image, name='serve_image'),
 
-    #Ckeditor stuff
-    path('email-content/', email_content_view, name='email_content'),
     path('ckeditor/', include('ckeditor_uploader.urls'))
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:
+   
+
     urlpatterns += [
         path('__debug__/', include(debug_toolbar.urls)),
     ]
