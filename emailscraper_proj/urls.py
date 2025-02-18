@@ -30,7 +30,7 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('profile/', user_views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'), #class based views, built in
-    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'), #will not handle templates, must be implemented
+    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'), 
     path('password-reset/', 
          auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), 
          name='password_reset'), 

@@ -1,6 +1,5 @@
 from django import forms
 from .models import RequestConfig
-from .email_setup import *
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
@@ -23,12 +22,13 @@ class RequestConfigForm(forms.ModelForm):
         error_messages={'required': 'Select the desired completion date.'}
     )
 
+    email_content = forms.CharField(
+        widget=CKEditorUploadingWidget(),
+        label='Email Content',
+        required=True,
+        error_messages={'required': 'Email content is required.'}
+    )
 
-
-
-
-class EmailContentForm(forms.Form):
-    email_content = forms.CharField(widget=CKEditorUploadingWidget(), label='Email Content')
 
 
 

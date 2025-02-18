@@ -5,6 +5,7 @@ from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
 from emailscraper_app.views.homepage_views import serve_image
+from emailscraper_app.views.uploading_file_views import custom_ckeditor_upload
 import debug_toolbar
 
 urlpatterns = [
@@ -27,7 +28,10 @@ urlpatterns = [
          name='password_reset_complete'), 
     path('', include('emailscraper_app.urls')),
     path('serve-image/', serve_image, name='serve_image'),
+    
+    path('serve-image/', serve_image, name='serve_image'),
 
+    path('ckeditor/upload/', custom_ckeditor_upload, name='ckeditor_upload'),  # Custom upload view
     path('ckeditor/', include('ckeditor_uploader.urls'))
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

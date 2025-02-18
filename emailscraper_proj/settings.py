@@ -17,11 +17,11 @@ import google.auth
 from google.auth import credentials
 from storages.backends.gcloud import GoogleCloudStorage
 
-#test
-class CustomGoogleCloudStorage(GoogleCloudStorage):
-    def path(self, name):
-        # Construct the path to the file in Google Cloud Storage
-        return f"https://storage.googleapis.com/{self.bucket_name}/{name}"
+
+# class CustomGoogleCloudStorage(GoogleCloudStorage):
+#     def path(self, name):
+#         # Construct the path to the file in Google Cloud Storage
+#         return f"https://storage.googleapis.com/{self.bucket_name}/{name}"
 
 
 
@@ -173,14 +173,12 @@ GD_PROJECT_ID = project_id
 GS_BUCKET_NAME = 'django_hosting'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_DEFAULT_ACL = 'publicRead'
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = None
 
 
 STATICFILES_DIRS = [
@@ -208,7 +206,9 @@ if DEBUG:
 
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_STORAGE_BACKEND = "storages.backends.gcloud.GoogleCloudStorage"
 
 CKEDITOR_CONFIGS = {
     'default': {
@@ -220,9 +220,10 @@ CKEDITOR_CONFIGS = {
             ['RemoveFormat', 'Source'],
             ['Image'],  # Add the Image button to the toolbar
         ],
-        'extraPlugins': 'uploadimage',  # Add the necessary plugins
-        'filebrowserUploadUrl': f'{MEDIA_URL}ckeditor/upload/',
-        'filebrowserBrowseUrl': f'{MEDIA_URL}ckeditor/browse/',
+        'extraPlugins': ','.join(['uploadimage', 'image2']),
+        "removePlugins": "image",  # Prevents conflicts with image2 plugin
+        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'filebrowserUploadMethod': 'form',
     }
 }
 

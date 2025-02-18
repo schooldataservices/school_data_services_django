@@ -7,6 +7,10 @@ from django.http import HttpResponse, Http404
 from django.core.files.storage import default_storage
 import pandas as pd
 from io import StringIO
+from ckeditor_uploader.views import upload
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -51,4 +55,7 @@ def read_csv_from_gcs(request, file_path, pandas_request):
 
 
 
-
+@method_decorator(csrf_exempt, name='dispatch')
+@login_required
+def custom_ckeditor_upload(request):
+    return upload(request)

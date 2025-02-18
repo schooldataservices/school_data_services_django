@@ -3,6 +3,7 @@
 
 {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/ckeditor_custom.css' %}">
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
@@ -29,7 +30,7 @@
     <div class="email-content-container">
       <!-- Email Content Field -->
       <div class="form-group">
-        <!-- <label for="id_email_content">Request Content</label> -->
+        <!-- Pulls in CKeditor via EmailContentForm -->
         <textarea name="email_content" id="editor" class="form-control">{{ form.email_content.value }}</textarea>
         {% if form.email_content.errors %}
           <span class="error-message">{{ form.email_content.errors }}</span>
@@ -79,9 +80,11 @@
         ClassicEditor
             .create(document.querySelector('#editor'), {
                 ckfinder: {
-                    uploadUrl: '{% url "ckeditor_upload" %}',
-                },
-                height: 'auto',
+                    uploadUrl: '{% url "ckeditor_upload" %}',  // Correct upload URL
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }},
+                    height: 'auto'
             })
             .catch(error => {
                 console.error(error);

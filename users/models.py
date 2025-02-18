@@ -1,27 +1,39 @@
 from django.db import models
 from django.contrib.auth.models import User
+from storages.backends.gcloud import GoogleCloudStorage
 from PIL import Image
-
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return f'profile_pics/user_{instance.user.id}/{filename}'
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(upload_to='profile_pics', storage=GoogleCloudStorage())
 
     def __str__(self):
         return f'{self.user.username} Profile'
 
     def save(self, *args, **kwargs):
+        # Save the original image first
         super().save(*args, **kwargs)
 
-        img = Image.open(self.image.path)
+        # Open the image using PIL
+        img = Image.open(self.image)
 
+        # Resize the image if necessary
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
             img.thumbnail(output_size)
-            img.save(self.image.path)
+
+            # Save the resized image to a BytesIO object
+            img_io = BytesIO()
+            img.save(img_io, format=img.format)
+            img_content = ContentFile(img_io.getvalue(), self.image.name)
+
+            # Save the resized image back to the model
+            self.image.save(self.image.name, img_content, save=False)
+
+        # Save the model again to ensure the resized image is saved
+        super().save(*args, **kwargs)
 
 
 

@@ -34,7 +34,7 @@ class RequestConfig(models.Model):
         choices=PRIORITY_CHOICES,
         default='medium',
     )
-    email_content = models.TextField()
+    email_content = RichTextUploadingField()
     schedule_time = models.DateTimeField()
     date_submitted = models.DateTimeField(auto_now_add=True) 
     completion_status = models.BooleanField(default=False)
