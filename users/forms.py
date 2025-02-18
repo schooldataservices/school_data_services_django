@@ -23,6 +23,7 @@ class UserRegisterForm(UserCreationForm):
 #From that will work with a specific db model
 
 class UserUpdateForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
 
     class Meta:
@@ -34,7 +35,7 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['image']
         widgets = {
-            'image': CustomClearableFileInput(attrs={'initial_text': 'Profile pic link'}),
+            'image': CustomClearableFileInput(attrs={'initial_text': 'Profile picture'}),
         }
 
 

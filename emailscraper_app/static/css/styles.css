@@ -159,7 +159,7 @@ body {
 }
 
 /* Register page styles */
-.register-container {
+.register-container, .profile-page-container {
     display: flex;
     justify-content: center; /* Centers the content horizontally */
     align-items: center; /* Centers the content vertically */
@@ -208,6 +208,8 @@ body {
 .form-register legend,
 .form-signin legend,
 .register-container h2,
+.profile-page-container label,
+.profile-page-container h2,
 .form-signin h2 {
     color: #333; /* Set the text color to a dark color */
     font-weight: bold; /* Make the text bold */
@@ -261,47 +263,18 @@ body {
 
 /* Specific styles for login form fields */
 .login-form-wrapper #div_id_username, 
-.login-form-wrapper #div_id_password,
-.profile-form-wrapper #div_id_username, 
-.profile-form-wrapper #div_id_password,
-.profile-form-wrapper #div_id_email {
+.login-form-wrapper #div_id_password{
     max-width: 400px; /* Set a maximum width for the input boxes */
     margin: 0 auto; /* Center the input boxes horizontally */
 }
 
 .login-form-wrapper #div_id_username .form-control, 
-.login-form-wrapper #div_id_password .form-control,
-.profile-form-wrapper #div_id_username .form-control, 
-.profile-form-wrapper #div_id_password .form-control,
-.profile-form-wrapper #div_id_email .form-control {
+.login-form-wrapper #div_id_password .form-control{
     width: 100%; /* Ensure the input boxes take up the full width of their container */
     padding: 10px; /* Add padding for better appearance */
     border: 1px solid #ccc; /* Add a border */
     border-radius: 4px; /* Add rounded corners */
     box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
-}
-
-/* Ensure form fields are aligned properly */
-.profile-form-wrapper .form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align the form fields to the left */
-    margin-bottom: 20px; /* Increase the margin between form fields */
-    padding-bottom: 10px; /* Add padding to the bottom of form fields */
-}
-
-/* Ensure form control elements have enough padding and consistent width */
-.profile-form-wrapper .form-control {
-    padding: 10px; /* Add padding for better appearance */
-    width: 100%; /* Ensure the input boxes take up the full width of their container */
-    max-width: 400px; /* Set a maximum width for the input boxes */
-    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
-}
-
-/* Align the update button to the left */
-.profile-form-wrapper .form-group {
-    display: flex;
-    justify-content: flex-start; /* Align the button to the left */
 }
 
 /* Center the update button */
@@ -310,21 +283,42 @@ body {
     justify-content: center; /* Center the button horizontally */
 }
 
-/* Ensure form control elements have enough padding */
+/* Ensure form control elements have enough padding and consistent width */
 .profile-form-wrapper .form-control {
     padding: 10px; /* Add padding for better appearance */
-    width: 100%; /* Ensure the input boxes take up the full width of their container */
+    width: 175%; /* Ensure the input boxes take up the full width of their container */
+    max-width: 600px; /* Set a maximum width for the input boxes */
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
 }
 
-/* Text secondary color specific to profile-form */
-.media-body .text-secondary {
-    color: #d8d8d8 !important; /* Example color, adjust as needed */
+/* Style for the legend element */
+.profile-form-wrapper legend {
+    font-size: 1.5em; /* Increase the font size */
+    font-weight: bold; /* Make the text bold */
+    color: #333; /* Set the text color */
+    border-bottom: 2px solid #ccc; /* Add a bottom border */
+    padding-bottom: 10px; /* Add padding below the text */
+    margin-bottom: 20px; /* Add margin below the legend */
 }
 
 /* Form text and muted text color specific to profile-form */
 .profile-form .form-text.text-muted {
     color: #d8d8d8 !important; /* Example color, adjust as needed */
 }
+
+.profile-form .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+/* Text secondary color specific to profile-form */
+.media-body .text-secondary {
+    color: #000000fb !important; /* Example color, adjust as needed */
+}
+
 
 /* Add margin-bottom to the media element */
 .media {
@@ -335,5 +329,3 @@ body {
 .ck.ck-content p {
     color: #000; /* Set the text color to black or any other color that contrasts with the background */
 }
-
-

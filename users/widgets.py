@@ -6,5 +6,5 @@ class CustomClearableFileInput(ClearableFileInput):
 
     def format_value(self, value):
         if self.is_initial(value):
-            return mark_safe(f'<a href="{value.url}">Profile pic link</a>')
+            return mark_safe(f'<a href="{value.url}">Profile picture</a>')
         return super().format_value(value)
