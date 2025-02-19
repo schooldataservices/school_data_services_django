@@ -3,7 +3,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserUpdateForm, ProfileUpdateForm
+from .forms import UserUpdateForm, ProfileUpdateForm, UserRegisterForm
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from ckeditor_uploader.views import upload
 
 def login_view(request):
     if request.method == 'POST':
@@ -25,16 +28,28 @@ def logout_view(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
+
+        print("Raw form data:", request.POST)
+
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            username = form.cleaned_data.get('username') #form.cleaned_data is a dictionary
-            messages.success(request, f'{username}, your account has been created, and you are now able to log in') #fill out a form and redirect to a new page
-            return redirect('landing_page')
+            try:
+                user = form.save()
+                print(f"User created: {user.username}")
+            except Exception as e:
+                print(f"Error while saving user: {e}")
+                return HttpResponse(f"Error: {e}", status=500)
+
+            messages.success(request, f'Account created for {user.username}!')
+            return redirect('login')
+        else:
+            print("Form is not valid:", form.errors)
+
     else:
-        form = UserCreationForm()
+        form = UserRegisterForm()
+
     return render(request, 'users/register.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -55,3 +70,16 @@ def profile(request):
     }
 
     return render(request, 'users/profile.html', context)
+
+@csrf_exempt
+def custom_ckeditor_upload(request):
+    print("custom_ckeditor_upload view called")
+    if request.user.is_authenticated:
+        print(f"Authenticated user: {request.user.username}")
+        return upload(request)
+    else:
+        print("Unauthorized upload attempt")
+        print(f"Request user: {request.user}")
+        print(f"Request method: {request.method}")
+        print(f"Request headers: {request.headers}")
+        return HttpResponse("Unauthorized", status=401)

@@ -16,12 +16,13 @@ from .config import EMAIL_HOST_USER, imap_password_sam, django_db_password
 import google.auth
 from google.auth import credentials
 from storages.backends.gcloud import GoogleCloudStorage
+from google.cloud import storage
 
-
-# class CustomGoogleCloudStorage(GoogleCloudStorage):
-#     def path(self, name):
-#         # Construct the path to the file in Google Cloud Storage
-#         return f"https://storage.googleapis.com/{self.bucket_name}/{name}"
+# Custom Google Cloud Storage class
+class CustomGoogleCloudStorage(GoogleCloudStorage):
+    def path(self, name):
+        # Construct the path to the file in Google Cloud Storage
+        return f"https://storage.googleapis.com/{self.bucket_name}/{name}"
 
 
 
@@ -78,10 +79,7 @@ ROOT_URLCONF = "emailscraper_proj.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            os.path.join(BASE_DIR, 'users/templates'),  # Ensure this includes the correct directories
-            os.path.join(BASE_DIR, 'emailscraper_app/templates'),  # Include other template directories if needed
-        ],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -150,13 +148,6 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'emailscraper_app', 'static'),  # Path to app-level static files
-    # Add other directories if needed
-]
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -164,7 +155,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap4'
 
 #First time users re-routed to this
 LOGIN_REDIRECT_URL = 'landing_page'
-LOGIN_URL = 'login'  # Ensure this points to your custom login view
+LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -179,9 +170,28 @@ GS_CREDENTIALS, project_id = google.auth.load_credentials_from_file(
 GD_PROJECT_ID = project_id
 GS_BUCKET_NAME = 'django_hosting'
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+DEFAULT_FILE_STORAGE = 'emailscraper_proj.settings.CustomGoogleCloudStorage'
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-MEDIA_ROOT = None
+MEDIA_ROOT = None  # Ensure MEDIA_ROOT is set to None
+
+# Ensure the default image exists in the Google Cloud Storage bucket
+def check_default_image_in_gcs(bucket_name, file_name, credentials, project_id):
+    client = storage.Client(credentials=credentials, project=project_id)
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    print(f"Checking for file {file_name} in bucket {bucket_name}")
+    if not blob.exists():
+        raise FileNotFoundError(f"Default image not found in Google Cloud Storage at {file_name}")
+    else:
+        print(f"File {file_name} found in bucket {bucket_name}")
+
+DEFAULT_IMAGE_NAME = 'profile_pics/default.jpg'
+check_default_image_in_gcs(GS_BUCKET_NAME, DEFAULT_IMAGE_NAME, GS_CREDENTIALS, GD_PROJECT_ID)
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
+STATIC_URL = '/static/'
 
 
 STATICFILES_DIRS = [
@@ -209,23 +219,21 @@ if DEBUG:
 
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_ALLOW_NONIMAGE_FILES = False
-CKEDITOR_STORAGE_BACKEND = "storages.backends.gcloud.GoogleCloudStorage"
 
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
-            'heading', '|',
-            'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
-            'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
-            'undo', 'redo', 'uploadImage', 'uploadFile', 'imageResize'
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source'],
+            ['Image'],  # Add the Image button to the toolbar
         ],
-        'extraPlugins': 'uploadimage,imageresize',  # Add the necessary plugins
+        'extraPlugins': 'uploadimage',  # Add the necessary plugins
         'filebrowserUploadUrl': f'{MEDIA_URL}ckeditor/upload/',
         'filebrowserBrowseUrl': f'{MEDIA_URL}ckeditor/browse/',
-        'height': 'auto'  # Set the height to auto
     }
 }
 

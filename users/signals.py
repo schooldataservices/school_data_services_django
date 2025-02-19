@@ -5,13 +5,18 @@ from .models import Profile
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
-
     if created:
-        Profile.objects.create(user=instance)
+        print(f"Creating profile for user: {instance.username}")  # Debugging information
+        profile = Profile.objects.create(user=instance)
+
+        # Explicitly save the default image if not set
+        if not profile.image:  # This checks if the image field is empty
+            profile.image = "profile_pics/default.jpg"
+            profile.save()  # Save the change
 
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 #Rather than going through admin page, once a user is created through initial Django form it will be passed 
-#to the created User profiles. 
+#to the created User profiles.
