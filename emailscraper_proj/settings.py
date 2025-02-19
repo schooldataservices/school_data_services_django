@@ -150,6 +150,13 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'emailscraper_app', 'static'),  # Path to app-level static files
+    # Add other directories if needed
+]
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -174,10 +181,6 @@ GS_BUCKET_NAME = 'django_hosting'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
-STATIC_URL = '/static/'
 MEDIA_ROOT = None
 
 
@@ -214,16 +217,15 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source'],
-            ['Image'],  # Add the Image button to the toolbar
+            'heading', '|',
+            'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+            'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
+            'undo', 'redo', 'uploadImage', 'uploadFile', 'imageResize'
         ],
-        'extraPlugins': ','.join(['uploadimage', 'image2']),
-        "removePlugins": "image",  # Prevents conflicts with image2 plugin
-        'filebrowserUploadUrl': '/ckeditor/upload/',
-        'filebrowserUploadMethod': 'form',
+        'extraPlugins': 'uploadimage,imageresize',  # Add the necessary plugins
+        'filebrowserUploadUrl': f'{MEDIA_URL}ckeditor/upload/',
+        'filebrowserBrowseUrl': f'{MEDIA_URL}ckeditor/browse/',
+        'height': 'auto'  # Set the height to auto
     }
 }
 
