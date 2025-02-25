@@ -14,22 +14,6 @@ def landing_page(request):
 
 
 
-def serve_image(request):
-    bucket_name = 'django_hosting'
-    image_name = 'default.jpg'
-    
-    # Initialize Google Cloud Storage client
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(image_name)
-    
-    # Download image data
-    image_data = blob.download_as_bytes()
-    
-    # Return image data as HTTP response
-    return HttpResponse(image_data, content_type='image/jpeg')
-
-
 
 def format_datetime_fields(data):
     """

@@ -1,4 +1,3 @@
-// filepath: /c:/Users/becky/Desktop/Git_Directory/Django_Email_Hub/emailscraper_app/static/js/pagination.js
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.page-link').forEach(function(link) {
         link.addEventListener('click', function(event) {

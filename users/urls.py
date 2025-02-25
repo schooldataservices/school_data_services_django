@@ -1,42 +1,25 @@
-from django.contrib import admin
-from django.conf import settings
-from django.conf.urls.static import static
-from django.urls import path, include
+from django.urls import path
 from users import views as user_views
 from django.contrib.auth import views as auth_views
-from emailscraper_app.views.homepage_views import serve_image
-from users.views import custom_ckeditor_upload
-import debug_toolbar
+from . import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path('register/', user_views.register, name='register'),
     path('profile/', user_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
+    path('login/', user_views.login_view, name='login'),  # Ensure this is the custom login view
+    path('logout/', auth_views.LogoutView.as_view(next_page='landing_page'), name='logout'),
     path('password-reset/', 
-         auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), 
+         auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), 
          name='password_reset'), 
-    path('password-reset/done', 
-         auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), 
+    path('password-reset/done/', 
+         auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), 
          name='password_reset_done'), 
     path('password-reset-confirm/<uidb64>/<token>/', 
-         auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), 
+         auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), 
          name='password_reset_confirm'), 
     path('password-reset-complete/', 
-         auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
+         auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
          name='password_reset_complete'), 
-    path('', include('emailscraper_app.urls')),
-    path('serve-image/', serve_image, name='serve_image'),
-
-    path('ckeditor/upload/', custom_ckeditor_upload, name='ckeditor_upload'),  # Custom upload view
-    path('ckeditor/', include('ckeditor_uploader.urls'))
-    
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-if settings.DEBUG:
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
-
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('ckeditor/upload/', user_views.custom_ckeditor_upload, name='custom_ckeditor_upload'),  # Custom CKEditor upload view
+    path('activate/<uidb64>/<token>/', views.activate, name='activate')
+]

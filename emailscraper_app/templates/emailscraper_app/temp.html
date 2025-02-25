@@ -79,7 +79,7 @@
             ClassicEditor
                 .create(document.querySelector('#editor'), {
                     ckfinder: {
-                        uploadUrl: '{% url "ckeditor_upload" %}',  // Custom upload URL
+                        uploadUrl: '{% url "custom_ckeditor_upload" %}',  // Custom upload URL
                         headers: {
                             'X-CSRFToken': '{{ csrf_token }}'
                         }
@@ -90,7 +90,7 @@
                 })
                 .catch(error => {
                     console.error(error);
-                });
+                });  
         });
     </script>
 

@@ -24,7 +24,11 @@
                 <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ config.priority_status }}</td>
                 <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
-                <td contenteditable="true" class="editable-email-content" data-id="{{ config.id }}">{{ config.email_content|safe }}</td>
+                <td contenteditable="true" class="editable-email-content" data-id="{{ config.id }}">
+                    {% autoescape off %}
+                    {{ config.email_content }}
+                    {% endautoescape %}
+                </td>
                 <td id="status-cell-{{ config.id }}">
                     <!-- Initially, display the current status -->
                     {{ config.completion_status|yesno:"Completed,Pending" }}

@@ -12,31 +12,24 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from .config import EMAIL_HOST_USER, imap_password_sam, django_db_password
-import google.auth
-from google.auth import credentials
-from storages.backends.gcloud import GoogleCloudStorage
-from google.cloud import storage
-
-# Custom Google Cloud Storage class
-class CustomGoogleCloudStorage(GoogleCloudStorage):
-    def path(self, name):
-        # Construct the path to the file in Google Cloud Storage
-        return f"https://storage.googleapis.com/{self.bucket_name}/{name}"
-
+from config import EMAIL_HOST_USER, imap_password_sam, django_db_password, django_secret_key, GS_JSON_PATH, GS_BUCKET_NAME
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(f'Here is the base dir {BASE_DIR}')
 
+# Ensure the Logs directory exists
+LOGS_DIR = os.path.join(BASE_DIR, 'Logs')
+if not os.path.exists(LOGS_DIR):
+    os.makedirs(LOGS_DIR)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-)do_a(klkmb0yol0!m3a7s^@+_1pjnxd41)byup57kvd!_z5ye"
+SECRET_KEY = django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # You must set settings.ALLOWED_HOSTS if DEBUG is False.
@@ -49,8 +42,8 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "emailscraper_app.apps.EmailscraperAppConfig",
-    "ckeditor",
-    "ckeditor_uploader",
+    # "ckeditor",
+    # "ckeditor_uploader",
     "storages",
     "users.apps.UsersConfig",
     "crispy_forms",
@@ -61,7 +54,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "emailscraper_app" #if default conventions
 ]
 
 MIDDLEWARE = [
@@ -156,6 +148,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS='bootstrap4'
 #First time users re-routed to this
 LOGIN_REDIRECT_URL = 'landing_page'
 LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_URL = 'login'
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -164,41 +159,17 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = imap_password_sam
 
-GS_CREDENTIALS, project_id = google.auth.load_credentials_from_file(
-    r'C:\Users\becky\Desktop\Git_Directory\Django_Email_Hub\django-hosting-427421-72dd7e5957fe.json'
-)
-GD_PROJECT_ID = project_id
-GS_BUCKET_NAME = 'django_hosting'
-
-
-DEFAULT_FILE_STORAGE = 'emailscraper_proj.settings.CustomGoogleCloudStorage'
-MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-MEDIA_ROOT = None  # Ensure MEDIA_ROOT is set to None
-
-# Ensure the default image exists in the Google Cloud Storage bucket
-def check_default_image_in_gcs(bucket_name, file_name, credentials, project_id):
-    client = storage.Client(credentials=credentials, project=project_id)
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(file_name)
-    print(f"Checking for file {file_name} in bucket {bucket_name}")
-    if not blob.exists():
-        raise FileNotFoundError(f"Default image not found in Google Cloud Storage at {file_name}")
-    else:
-        print(f"File {file_name} found in bucket {bucket_name}")
-
-DEFAULT_IMAGE_NAME = 'profile_pics/default.jpg'
-check_default_image_in_gcs(GS_BUCKET_NAME, DEFAULT_IMAGE_NAME, GS_CREDENTIALS, GD_PROJECT_ID)
-
-
+# At a project level in case it needs to be duplicated. 
+GS_JSON_PATH = GS_JSON_PATH #from import
+GS_BUCKET_NAME = GS_BUCKET_NAME #gcs_storage.py custom storage reads this in
+MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/' 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = 'users.gcs_storage_utils.gcs_storage.CustomGoogleCloudStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 STATIC_URL = '/static/'
-
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'emailscraper_app', 'static'), #path to css and js
 ]
-
-
 
 if DEBUG:
 
@@ -218,25 +189,26 @@ if DEBUG:
     }
 
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_RESTRICT_BY_USER = True
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Custom',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source'],
-            ['Image'],  # Add the Image button to the toolbar
-        ],
-        'extraPlugins': 'uploadimage',  # Add the necessary plugins
-        'filebrowserUploadUrl': f'{MEDIA_URL}ckeditor/upload/',
-        'filebrowserBrowseUrl': f'{MEDIA_URL}ckeditor/browse/',
-    }
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': ','.join([
+            'uploadimage',  # the upload image feature
+        ]),
+        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'filebrowserUploadMethod': 'form',
+    },
 }
 
+# Ensure the Logs directory exists
+LOGS_DIR = os.path.join(BASE_DIR, 'Logs')
+if not os.path.exists(LOGS_DIR):
+    os.makedirs(LOGS_DIR)
 
 
 LOGGING = {
@@ -248,7 +220,7 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.FileHandler',
-            'filename': os.path.join(os.getcwd(), 'Logs', 'Email_Sender.log'),
+            'filename': os.path.join(LOGS_DIR, 'django_hosting.log'),
             'level': 'INFO',  # Adjust to the level you need
             'formatter': 'verbose',
         },

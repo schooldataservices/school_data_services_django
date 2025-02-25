@@ -329,3 +329,57 @@ body {
 .ck.ck-content p {
     color: #000; /* Set the text color to black or any other color that contrasts with the background */
 }
+
+
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 600px; /* Adjust the max-width as needed */
+    padding: 20px;
+}
+
+.centered-container form {
+    width: 100%; /* Ensure the form takes up the full width of the container */
+    text-align: left; /* Align text to the left within the form */
+}
+
+.centered-container form p,
+.centered-container form ul,
+.centered-container form label,
+.centered-container form input,
+.centered-container form button {
+    text-align: left; /* Align text to the left for form elements */
+    width: 100%; /* Ensure form elements take up the full width of the container */
+}
+
+.centered-container form ul {
+    padding-left: 20px; /* Add padding to the left for the list */
+}
+
+.centered-container form button {
+    text-align: center; /* Center the button text */
+}
+
+.editable-email-content img {
+    max-width: 100%; /* Ensure images are responsive */
+    height: auto; /* Maintain aspect ratio */
+    width: auto; /* Maintain original width if specified */
+}
+
+.errorlist {
+    color: red;
+    list-style-type: none;
+    padding: 0;
+}
+
+.errorlist li {
+    color: red;
+}
+
+.errorlist.nonfield {
+    color: red;
+}

@@ -1,9 +1,10 @@
 {% if widget.is_initial %}
     <div>
-        <span style="color: rgb(12, 11, 11); font-weight: bold;">Currently: {{ widget.value }}</span>
+        <span style="color: rgb(12, 11, 11); font-weight: bold;">Currently: {{ widget.value }}</span><br>
+        <label for="{{ widget.attrs.id }}" class="custom-label">Change:</label>
         <input type="file" name="{{ widget.name }}" id="{{ widget.attrs.id }}" {% include "django/forms/widgets/attrs.html" %}>
     </div>
 {% else %}
-    <label for="{{ widget.attrs.id }}">{{ widget.attrs.initial_text }}</label>
+    <label for="{{ widget.attrs.id }}" class="custom-label">Image</label>
     <input type="file" name="{{ widget.name }}" id="{{ widget.attrs.id }}" {% include "django/forms/widgets/attrs.html" %}>
 {% endif %}
