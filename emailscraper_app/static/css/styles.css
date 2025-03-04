@@ -372,14 +372,33 @@ body {
 
 .errorlist {
     color: red;
-    list-style-type: none;
+    list-style-type: none; /* Remove default list styling */
     padding: 0;
 }
 
-.errorlist li {
-    color: red;
+/* Specific styling for non-field errors */
+.errorlist.nonfield {
+    margin-top: 20px;
+    background-color: #f8d7da; /* Light red background */
+    border: 1px solid #f5c6cb; /* Red border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the box */
 }
 
-.errorlist.nonfield {
-    color: red;
+/* Style each error message */
+.errorlist li {
+    margin-bottom: 10px; /* Add spacing between error messages */
+    display: flex;
+    align-items: center;
+}
+
+/* Icon for error messages */
+.error-icon {
+    margin-right: 10px; /* Space between icon and text */
+    color: #721c24; /* Dark red color for icon */
+}
+
+/* Error message text */
+.error-text {
+    color: #721c24; /* Dark red color for text */
 }

@@ -42,7 +42,14 @@ class ProfileUpdateForm(forms.ModelForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
-        print(f"confirm_login_allowed called for user: {user.username}")
+
+        print('Calling confirm login allowed')
+
+        print(f"User info - Username: {user.username}, Email: {user.email}, Is Active: {user.is_active}, Last Login: {user.last_login}")
+
+
+
+        # print(f"confirm_login_allowed called for user: {user.username}")
         if not user.is_active:
             print("User is inactive")
             raise forms.ValidationError(

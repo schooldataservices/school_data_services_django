@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.conf import settings
+from django import forms
 from .gcs_storage import upload_to_gcs
 from .tokens import account_activation_token
 from bs4 import BeautifulSoup
@@ -19,35 +20,34 @@ from django.contrib.auth.models import User
 
 @csrf_protect
 def login_view(request):
-    print("login_view called")
     if request.method == 'POST':
-        print("POST request received")
         form = CustomAuthenticationForm(request, data=request.POST)
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
-        if user is not None:
-            try:
-                form.confirm_login_allowed(user)
-                login(request, user)
-                return redirect('landing_page')
-            except form.ValidationError as e:
-                form.add_error(None, e)
-                print("Added inactive account error")
-        else:
-            form.add_error(None, "Please enter a correct username and password. Note that both fields may be case-sensitive.")
-            print("Added incorrect credentials error")
         
-        if form.is_valid():
-            print("Form is valid")
+        #All newly created users should initially comes across as inactive, before their email is activated
+
+        if user is not None:    
+            try:
+                # Confirm if the user is allowed to log in (check if they are active)
+                form.confirm_login_allowed(user)
+                login(request, user)  # If no error is raised, log the user in
+                return redirect('landing_page')
+
+
+            except forms.ValidationError as e:
+                form.add_error(None, e)  # Add validation error to the form
+                print("Added inactive account error")
+
         else:
-            print("Form is not valid")
-            print("Form errors:", form.errors)
-            print("Form data:", form.data)
+            form.add_error(None, "Please activate your account via email before logging in")
+        
     else:
-        print("GET request received")
         form = CustomAuthenticationForm()
+
     return render(request, 'users/login.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)
@@ -59,7 +59,7 @@ def register(request):
         if form.is_valid():
             try:
                 user = form.save(commit=False)
-                user.is_active = False  # Deactivate account until it is confirmed
+                user.is_active = False  # Deactivate account until email is confirmed
                 user.save()
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
@@ -90,9 +90,11 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
-        return render(request, 'registration/activation_success.html')
+        # login(request, user) Do not log in user automatically. Route them to login page
+        messages.success(request, 'Your account has been activated successfully!')
+        return redirect('login')
     else:
+        messages.error(request, 'The activation link is invalid or has expired.')
         return render(request, 'registration/activation_invalid.html')
 
 @login_required
