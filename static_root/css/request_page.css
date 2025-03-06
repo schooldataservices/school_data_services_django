@@ -1,0 +1,155 @@
+.ck-editor__editable {
+    resize: both !important;  /* Enable both horizontal and vertical resizing */
+    height: auto !important;  /* Allow the editor to resize vertically */
+    max-height: none !important;  /* Remove any maximum height constraints */
+    min-height: 300px !important; /* Optional: Set a minimum height */
+}
+
+
+
+.submit-button:hover {
+    background-color: #0056b3; /* Change background color on hover */
+}
+
+
+.submit-button {
+    background-color: #007bff; /* Set button background color */
+    color: #fff; /* Set button text color */
+}
+
+
+/* Apply to all form groups not just nested */
+label {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+
+/* Button styles */
+.submit-button
+{
+    width: 100px; /* Set the width of the button */
+    height: 60px; /* Set the height of the button */
+    font-size: 16px; /* Set button font size */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Apply border radius to button */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin: 10px 5px; /* Add consistent margin to buttons for spacing */
+}
+
+
+table { 
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td { 
+    border: 1px solid hsla(0, 0%, 87%, 0.521);
+    padding: 10px;
+    text-align: left;
+}
+
+th { 
+    background-color: #f4f4f454;
+}
+
+tr:nth-child(even) { 
+    background-color: #f4f4f454; 
+}
+
+tr:hover { 
+    background-color: #07000080; 
+}
+
+.block-footer {
+    margin-top: 100px; 
+}
+
+
+.email-content-container {
+    order: -1; /* Move it to the top */
+}
+
+/* Prevent styles from applying to the radio buttons */
+#id_priority_status label {
+    font-weight: normal;
+    text-decoration: none;
+}
+
+/* For dropdowns below CkEditor */
+.email-config-container {
+    display: flex;
+    flex-wrap: wrap;              /* Allow wrapping if needed */
+    justify-content: left;      /* Center items within the container */
+    gap: 15px;                    /* Consistent spacing between items */
+    align-items: flex-start;          /* Align vertically in the container */
+}
+
+
+.email-config-container .form-group {
+    flex-grow: 1;               /* Allows form-group to grow and fill available space */
+    flex-shrink: 1;             /* Allows form-group to shrink if necessary */
+    flex-basis: 0;              /* Initial size (0 means it will take up equal space) */
+    max-width: 300px;           /* Optional: max width constraint */
+    min-width: 200px;           /* Optional: min width to prevent shrinking too much */
+}
+
+
+
+/* Style the filters container */
+#filtersContainer {
+    display: flex;
+    flex-wrap: wrap;              /* Allow wrapping if needed */
+    justify-content: flex-start;  /* Align items to the start (left) */
+    gap: 10px;                    /* Reduce spacing between items */
+    align-items: flex-start;      /* Align vertically in the container */
+}
+
+#filtersContainer .form-group {
+    display: flex;               /* Use flexbox for the form-group */
+    flex-direction: column;      /* Arrange label and dropdown vertically */
+    flex-grow: 1;                /* Allows form-group to grow and fill available space */
+    flex-shrink: 1;              /* Allows form-group to shrink if necessary */
+    flex-basis: 0;               /* Initial size (0 means it will take up equal space) */
+    max-width: 300px;            /* Optional: max width constraint */
+    min-width: 200px;            /* Optional: min width to prevent shrinking too much */
+}
+
+#filtersContainer .form-group select,
+.email-config-container .form-group select {
+    width: 100%;               /* Make the dropdown take up the full width of its container */
+    padding: 8px;              /* Add padding for better appearance */
+    border: 1px solid #ccc;    /* Add a border */
+    border-radius: 4px;        /* Add rounded corners */
+    box-sizing: border-box;    /* Ensure padding and border are included in the element's total width and height */
+}
+
+#filtersContainer select option[value="all"] {
+    font-style: italic;
+    color: #888;
+}
+
+
+
+#form-group {
+    margin-bottom: 15px; /* Add margin between form fields */
+    display: flex; /* Use flexbox for the form */
+    flex-direction: column; /* Arrange form fields vertically */
+    align-items: left; /* Center align the form fields */
+}
+
+.common-dropdown {
+    width: 100%;               /* Make the dropdown take up the full width of its container */
+    padding: 8px;              /* Add padding for better appearance */
+    border: 1px solid #ccc;    /* Add a border */
+    border-radius: 4px;        /* Add rounded corners */
+    box-sizing: border-box;    /* Ensure padding and border are included in the element's total width and height */
+    background-color: #fff;    /* Add a background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+}
+
+.common-dropdown:hover {
+    border-color: #007bff;     /* Change border color on hover */
+    background-color: #f8f9fa; /* Change background color on hover */
+}

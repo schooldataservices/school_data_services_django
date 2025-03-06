@@ -1,7 +1,16 @@
-Django==5.1.5
+Django==4.2.8
 django_ckeditor==6.7.2
 django_ckeditor_5==0.2.15
 django_storages==1.14.4
 pandas==2.2.3
 Pillow==11.1.0
 protobuf==5.29.3
+django-crispy-forms==1.14.0
+crispy-bootstrap4==2022.1
+django-debug-toolbar==3.2.4
+mysqlclient==2.1.1
+google-cloud-storage==2.10.0
+beautifulsoup4==4.12.2
+gunicorn
+google-cloud-secret-manager
+whitenoise>=5.2.0

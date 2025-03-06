@@ -12,7 +12,19 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from config import EMAIL_HOST_USER, imap_password_sam, django_db_password, django_secret_key, GS_JSON_PATH, GS_BUCKET_NAME
+from .access_secrets import access_secret_version
+
+PROJECT_ID = "django-hosting-427421"
+
+# Access secrets from Google Cloud Secret Manager
+EMAIL_HOST_USER = access_secret_version(PROJECT_ID, "EMAIL_HOST_USER")
+imap_password_sam = access_secret_version(PROJECT_ID, "imap_password_sam")
+django_db_password = access_secret_version(PROJECT_ID, "django_db_password")
+django_secret_key = access_secret_version(PROJECT_ID, "django_secret_key")
+GS_JSON_PATH = access_secret_version(PROJECT_ID, "GS_JSON_PATH")
+GS_BUCKET_NAME = access_secret_version(PROJECT_ID, "GS_BUCKET_NAME")
+django_db_user = access_secret_version(PROJECT_ID, "django_db_user")
+django_hosting_json_file = access_secret_version(PROJECT_ID, "django_hosting_json_file")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,9 +45,21 @@ SECRET_KEY = django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # You must set settings.ALLOWED_HOSTS if DEBUG is False.
-DEBUG = True
+DEBUG =False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    os.getenv('CLOUD_RUN_URL', 'localhost'),  # Fetch from environment variable or fallback to localhost
+    '127.0.0.1', 
+    'localhost', 
+    '.run.app',  # Allow Cloud Run domains
+]
+
+#For cloud run deployment
+CSRF_COOKIE_HTTPONLY = False    # Make sure this is False for JavaScript access
+CSRF_COOKIE_SECURE = True       # Set to True if using HTTPS (which you are)
+CSRF_TRUSTED_ORIGINS = [
+    'https://django-hosting-764972118687.us-central1.run.app',
+]
 
 
 # Application definition
@@ -90,14 +114,23 @@ WSGI_APPLICATION = "emailscraper_proj.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# Detect whether the app is running locally or on Cloud Run
+LOCAL_IP = "10.168.0.5"
+EXTERNAL_IP = "35.236.35.240"
+
+# Option 1: Check an environment variable
+if os.getenv("RUNNING_IN_CLOUD") == "true":
+    DB_HOST = EXTERNAL_IP
+else:
+    DB_HOST = LOCAL_IP
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "django_hosting",
-        "USER": "samuel_taylor",
+        "NAME": "django_db",
+        "USER": django_db_user,
         "PASSWORD": django_db_password,
-        "HOST": "192.168.1.219",
+        "HOST": DB_HOST,
         "PORT": "3306"
     }
 }
@@ -167,10 +200,21 @@ MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_FILE_STORAGE = 'users.gcs_storage_utils.gcs_storage.CustomGoogleCloudStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'emailscraper_app', 'static'), #path to css and js
-]
+STATIC_URL = "/static/"
+
+# Only use STATICFILES_DIRS for development
+if os.getenv("GAE_ENV", "").startswith("standard") or os.getenv("CLOUD_RUN"):
+    STATICFILES_DIRS = []  # This should be empty in production
+else:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "emailscraper_app", "static"),  # Path to Local CSS & JS
+    ]
+
+# Use WhiteNoise for serving static files in production
+INSTALLED_APPS += ["whitenoise.runserver_nostatic"]
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 if DEBUG:
 

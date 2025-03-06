@@ -1,10 +1,16 @@
 from django.conf import settings
 from django.core.files.storage import Storage
 from google.cloud import storage
-import google.auth
+import json
+from google.oauth2 import service_account
+from emailscraper_proj.settings import django_hosting_json_file
 
-GS_JSON_PATH = settings.GS_JSON_PATH
-GS_BUCKET_NAME = settings.GS_BUCKET_NAME
+# Authentication
+def get_gcs_client():
+    """Returns an authenticated GCS client."""
+    gs_credentials_info = json.loads(django_hosting_json_file)
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(gs_credentials_info)
+    return storage.Client(credentials=GS_CREDENTIALS, project=GS_CREDENTIALS.project_id)
 
 # To work with models
 class CustomGoogleCloudStorage(Storage):
@@ -33,12 +39,6 @@ class CustomGoogleCloudStorage(Storage):
         """Check if the file exists in Google Cloud Storage."""
         blob = self.bucket.blob(name)
         return blob.exists()
-
-# Authentication
-def get_gcs_client():
-    """Returns an authenticated GCS client."""
-    GS_CREDENTIALS, GS_PROJECT_ID = google.auth.load_credentials_from_file(settings.GS_JSON_PATH)
-    return storage.Client(credentials=GS_CREDENTIALS, project=GS_PROJECT_ID)
 
 # Upload raw data (such as text, JSON, or binary data that isn't tied to a Django model).
 def upload_to_gcs(bucket_name, file_path, file_content, content_type):

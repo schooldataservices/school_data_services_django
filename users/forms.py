@@ -43,9 +43,9 @@ class ProfileUpdateForm(forms.ModelForm):
 class CustomAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
 
-        print('Calling confirm login allowed')
+        # print('Calling confirm login allowed')
 
-        print(f"User info - Username: {user.username}, Email: {user.email}, Is Active: {user.is_active}, Last Login: {user.last_login}")
+        # print(f"User info - Username: {user.username}, Email: {user.email}, Is Active: {user.is_active}, Last Login: {user.last_login}")
 
 
 
@@ -56,7 +56,7 @@ class CustomAuthenticationForm(AuthenticationForm):
                 "Your account is inactive. Please check your email to activate your account.",
                 code='inactive',
             )
-        print("User is active")
+        # print("User is active")
 
 
 

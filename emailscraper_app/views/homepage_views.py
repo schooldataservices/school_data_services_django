@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from google.cloud import storage
 from datetime import datetime
-from config import *
+# from config import *
 
 
  

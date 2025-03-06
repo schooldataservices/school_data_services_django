@@ -1,0 +1,92 @@
+/* Container for the row of columns */
+
+h1 {
+    font-size: 1.5rem; /* Adjust the font size as needed */
+    font-weight: bold; /* Optional: You can change the weight or any other styling */
+    text-align: left;
+    margin-left: 110px;
+    margin-bottom: 50px;
+    margin-top: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 0.1rem;
+    margin-bottom: 1rem;
+}
+
+/* Container for individual columns */
+.form-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-left: 35px;
+}
+
+/* Left and right columns */
+.left-column, .right-column {
+    max-width: 20%;
+}
+
+/* Form group to align label and input horizontally */
+.form-group {
+    display: flex;
+    align-items: center; /* Align input and label vertically */
+    margin-bottom: 1rem;
+}
+
+/* Adjust label size and positioning */
+.form-group label {
+    font-size: 0.875rem;
+    width: 150px; /* Fixed width for labels */
+    margin-right: 1rem; /* Space between label and input */
+    text-align: right; /* Align labels to the right */
+}
+
+/* Ensure form elements take less width */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 250px; /* Adjust the width to shrink input fields */
+    padding: 6px;
+    font-size: 0.875rem;
+}
+
+/* Make notes box wider */
+.form-group textarea#id_notes {
+    width: 35%; /* Make notes box take full width */
+    height: 100px; /* Adjust height if needed */
+    flex: none; /* Ensure it expands to available width */
+    margin-left: 0px;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 160px;
+}
+
+/* Responsive design to stack labels and inputs on smaller screens */
+@media (max-width: 768px) {
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-group label {
+        text-align: left;
+        margin-right: 0;
+        width: auto;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%; /* Full width for inputs on small screens */
+    }
+}
