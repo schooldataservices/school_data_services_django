@@ -25,11 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function fetchPage(page) {
-    const url = new URL(window.location.href);
+    const baseUrl = `${window.location.origin}/filter-requests/`;
+    const url = new URL(baseUrl);
     url.searchParams.set('page', page);
     url.searchParams.set('priority', document.getElementById('priorityFilter').value);
     url.searchParams.set('date', document.getElementById('dateFilter').value);
     url.searchParams.set('completion', document.getElementById('completionFilter').value);
+    if (document.getElementById('userFilter')) {
+        url.searchParams.set('user', document.getElementById('userFilter').value);
+    }
 
     fetch(url, {
         headers: {
@@ -38,19 +42,25 @@ function fetchPage(page) {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('requestListContainer').innerHTML = data.html;
-        document.getElementById('pagination-info').innerHTML = `Page ${data.current_page} of ${data.total_pages} (Total results: ${data.total_results})`;
-        document.querySelectorAll('.page-link').forEach(function(link) {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                const page = this.getAttribute('data-page');
-                fetchPage(page);
+        if (data.html.trim() === '') {
+            document.getElementById('requestListContainer').innerHTML = '<tr><td colspan="7" style="text-align:center;">No historical requests found</td></tr>';
+            document.getElementById('pagination-info').innerHTML = '';
+        } else {
+            document.getElementById('requestListContainer').innerHTML = data.html;
+            document.getElementById('pagination-info').innerHTML = `Page ${data.current_page} of ${data.total_pages} (Total results: ${data.total_results})`;
+            document.querySelectorAll('.page-link').forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    fetchPage(page);
+                });
             });
-        });
-        attachCheckboxListeners();
-        attachEditableContentListeners();
-        attachDeleteButtonListeners();
-    });
+            attachCheckboxListeners();
+            attachEditableContentListeners();
+            attachDeleteButtonListeners();
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 function attachCheckboxListeners() {

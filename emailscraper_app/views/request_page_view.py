@@ -59,7 +59,10 @@ def filter_requests(request):
 
 def get_prior_requests_context(request):
     if request.user.is_authenticated:
-        request_configs = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted')  # Get only the logged-in user's configs
+        if request.user.is_superuser:
+            request_configs = RequestConfig.objects.all().order_by('-date_submitted')  # Get all configs for superuser
+        else:
+            request_configs = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted')  # Get only the logged-in user's configs
     else:
         request_configs = RequestConfig.objects.none()  # No requests for unauthenticated users
 
@@ -83,9 +86,13 @@ def get_prior_requests_context(request):
             first_day_of_month = datetime.now().replace(day=1)
             request_configs = request_configs.filter(schedule_time__date__gte=first_day_of_month)
 
-    # Extract distinct priority statuses
-    unique_priorities = set(request_configs.values_list("priority_status", flat=True))
-    unique_completion_status = set(request_configs.values_list("completion_status", flat=True))
+    # Extract distinct priority statuses and completion statuses
+    if request.user.is_superuser:
+        unique_priorities = set(RequestConfig.objects.values_list("priority_status", flat=True))
+        unique_completion_status = set(RequestConfig.objects.values_list("completion_status", flat=True))
+    else:
+        unique_priorities = set(request_configs.values_list("priority_status", flat=True))
+        unique_completion_status = set(request_configs.values_list("completion_status", flat=True))
 
     # Paginate the request_configs, 10 per page
     paginator = Paginator(request_configs, 10)  # Show 10 requests per page

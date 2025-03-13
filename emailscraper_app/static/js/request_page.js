@@ -38,12 +38,18 @@ if (userFilter) {
 }
 
 function fetchFilteredRequests() {
-    let selectedUser = userFilter ? userFilter.value.toLowerCase() : "all";
+    let selectedUser;
+    if (userFilter) {
+        selectedUser = userFilter.value.toLowerCase();
+    } else {
+        selectedUser = document.getElementById("loggedInUser").value.toLowerCase();
+    }
     let selectedPriority = document.getElementById("priorityFilter").value.toLowerCase();
     let selectedDate = document.getElementById("dateFilter").value.toLowerCase();
     let selectedCompletion = document.getElementById("completionFilter").value.toLowerCase();
 
     console.log("Fetching filtered requests:", { selectedUser, selectedPriority, selectedDate, selectedCompletion });
+    console.log("Fetching from:", `/filter-requests/?user=${selectedUser}&priority=${selectedPriority}&date=${selectedDate}&completion=${selectedCompletion}`);
 
     fetch(`/filter-requests/?user=${selectedUser}&priority=${selectedPriority}&date=${selectedDate}&completion=${selectedCompletion}`)
         .then(response => response.json())
@@ -56,6 +62,12 @@ function fetchFilteredRequests() {
 function updateTable(requests) {
     const tbody = document.querySelector("table tbody");
     tbody.innerHTML = ''; // Clear existing rows
+
+    if (requests.length === 0) {
+        console.log('No historical requests found');
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No historical requests found</td></tr>';
+        return;
+    }
 
     requests.forEach(req => {
         const row = document.createElement('tr');
@@ -96,9 +108,9 @@ flatpickr(".datetimepicker", {
 
 document.addEventListener("DOMContentLoaded", function() {
     attachEventListeners();
-    if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
-        fetchFilteredRequests(); // Fetch filtered requests on page load
-    }
+if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
+    fetchFilteredRequests(); // Fetch filtered requests on page load
+}
 });
 
 function attachEventListeners() {
@@ -125,10 +137,7 @@ function attachEventListeners() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const statusCell = document.querySelector(`#status-cell-${requestId}`);
-                    if (statusCell) {
-                        statusCell.innerHTML = isChecked ? "Completed" : "Pending";
-                    }
+                    fetchFilteredRequests(); // Fetch filtered requests after updating completion status
                     console.log('Status updated successfully');
                 } else {
                     console.error('Error updating status');

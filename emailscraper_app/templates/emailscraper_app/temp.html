@@ -85,6 +85,9 @@
   <div id="historicalRequestsContainer" style="display: none;">
       <!-- <h1>Historical Requests</h1> -->
       
+      <!-- Hidden input for logged-in user -->
+      <input type="hidden" id="loggedInUser" value="{{ request.user.username }}">
+
       <div id="filtersContainer">
           <div class="form-group">
               <label for="priorityFilter">Filter by Priority</label>
@@ -120,6 +123,7 @@
           <div class="form-group">
               <label for="userFilter">Filter by User</label>
               <select id="userFilter">
+                  <option value="{{ request.user.username }}" selected>{{ request.user.username }}</option>
                   <option value="all">All Users</option>
                   {% for user in users %}
                       <option value="{{ user.username }}">{{ user.username }}</option>
