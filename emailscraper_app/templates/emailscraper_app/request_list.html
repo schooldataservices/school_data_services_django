@@ -1,4 +1,3 @@
-<!-- filepath: /c:/Users/becky/Desktop/Git_Directory/Django_Email_Hub/emailscraper_app/templates/emailscraper_app/request_list.html -->
 <div id="pagination-info">
     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} (Total results: {{ page_obj.paginator.count }})
 </div>
@@ -9,6 +8,7 @@
             <th>Date Submitted</th>
             <th>Priority</th>
             <th>Desired Completion Date</th>
+            <th>User</th> <!-- Add User column -->
             <th>Email Content</th>
             <th>Completion Status</th>
         </tr>
@@ -24,6 +24,7 @@
                 <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ config.priority_status }}</td>
                 <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ config.creator.username }}</td> <!-- Add User data -->
                 <td contenteditable="true" class="editable-email-content" data-id="{{ config.id }}">
                     {% autoescape off %}
                     {{ config.email_content }}
@@ -54,7 +55,5 @@
         <span class="current">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
-
-      
     </span>
 </div>

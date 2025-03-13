@@ -45,7 +45,7 @@ SECRET_KEY = django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # You must set settings.ALLOWED_HOSTS if DEBUG is False.
-DEBUG =False
+DEBUG =True
 
 ALLOWED_HOSTS = [
     os.getenv('CLOUD_RUN_URL', 'localhost'),  # Fetch from environment variable or fallback to localhost
@@ -115,14 +115,48 @@ WSGI_APPLICATION = "emailscraper_proj.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 # Detect whether the app is running locally or on Cloud Run
+import os
+
+# Define IP addresses
 LOCAL_IP = "10.168.0.5"
 EXTERNAL_IP = "35.236.35.240"
 
-# Option 1: Check an environment variable
-if os.getenv("RUNNING_IN_CLOUD") == "true":
+# Check if the app is running in the cloud or locally
+RUNNING_IN_CLOUD = os.getenv("RUNNING_IN_CLOUD") == "true"  # Check if in cloud environment (GCP, Cloud Run, etc.)
+RUNNING_LOCALLY = not RUNNING_IN_CLOUD  # Inverse of RUNNING_IN_CLOUD
+
+# Common settings for both environments
+BASE_STATIC_DIR = os.path.join(BASE_DIR, "emailscraper_app", "static")
+
+# Adjust static files settings based on the environment
+if RUNNING_IN_CLOUD:
+    print("Running in Cloud")
+    # GCP (Cloud) Settings
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"  # Use WhiteNoise for production
+    STATICFILES_DIRS = []  # Empty in production (GCP)
+    INSTALLED_APPS += ["whitenoise.runserver_nostatic"]  # Add WhiteNoise in production
+    STATIC_URL = "/static/"  # Assuming the static URL remains the same for both environments
+    # Set DB host for cloud (external IP)
     DB_HOST = EXTERNAL_IP
+    DEBUG = False
 else:
+    print("Running Locally")
+    # Local Development Settings
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"  # Default storage for local development
+    STATICFILES_DIRS = [BASE_STATIC_DIR]  # Path to Local CSS & JS
+    STATIC_URL = "/static/"  # Local static URL
+    # Set DB host for local environment (local IP)
     DB_HOST = LOCAL_IP
+    DEBUG = True
+
+# Optional: For Google App Engine (GAE) or Cloud Run, you might have specific settings for static files
+if os.getenv("GAE_ENV", "").startswith("standard") or os.getenv("CLOUD_RUN"):
+    STATICFILES_DIRS = []  # Ensure this is empty in production for GAE/Cloud Run
+
+# Set Debugging based on Cloud/Local environment
+DEBUG = not RUNNING_IN_CLOUD  # Debugging is true locally, false in production
+
+
 
 DATABASES = {
     "default": {
@@ -130,7 +164,7 @@ DATABASES = {
         "NAME": "django_db",
         "USER": django_db_user,
         "PASSWORD": django_db_password,
-        "HOST": DB_HOST,
+        "HOST": EXTERNAL_IP,
         "PORT": "3306"
     }
 }
@@ -201,20 +235,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_FILE_STORAGE = 'users.gcs_storage_utils.gcs_storage.CustomGoogleCloudStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 STATIC_URL = "/static/"
-
-# Only use STATICFILES_DIRS for development
-if os.getenv("GAE_ENV", "").startswith("standard") or os.getenv("CLOUD_RUN"):
-    STATICFILES_DIRS = []  # This should be empty in production
-else:
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "emailscraper_app", "static"),  # Path to Local CSS & JS
-    ]
-
-# Use WhiteNoise for serving static files in production
-INSTALLED_APPS += ["whitenoise.runserver_nostatic"]
-MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 
 if DEBUG:
 

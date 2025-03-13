@@ -13,74 +13,77 @@ document.getElementById("toggleTableButton").addEventListener("click", function(
 // Priority Filter Logic
 document.getElementById("priorityFilter").addEventListener("change", function() {
     console.log("Priority filter changed to:", this.value);
-    applyFilters();
+    fetchFilteredRequests();
 });
 
 // Date Filter Logic
 document.getElementById("dateFilter").addEventListener("change", function() {
     console.log("Date filter changed to:", this.value);
-    applyFilters();
+    fetchFilteredRequests();
 });
 
 // Completion Filter Logic
 document.getElementById("completionFilter").addEventListener("change", function() {
     console.log("Completion filter changed to:", this.value);
-    applyFilters();
+    fetchFilteredRequests();
 });
 
-
-function applyFilters() {
-    let selectedPriority = document.getElementById("priorityFilter").value.toLowerCase();
-    let selectedDate = document.getElementById("dateFilter").value.toLowerCase();
-    let selectedCompletion = document.getElementById("completionFilter").value.toLowerCase();
-    let rows = document.querySelectorAll("table tbody tr");
-
-    console.log("Applying filters: ", { selectedPriority, selectedDate, selectedCompletion });
-
-    rows.forEach(row => {
-        let priorityElement = row.children[1]; // Priority column
-        let dateElement = row.children[0]; // Date Submitted column
-        let scheduleElement = row.children[2]; // Schedule Time column
-        let completionElement = row.children[4]; // Completion Status column
-
-        if (!priorityElement || !dateElement || !scheduleElement || !completionElement) return;
-
-        let priority = priorityElement.textContent.trim().toLowerCase();
-        let scheduleTime = new Date(scheduleElement.textContent.trim());
-        let completionStatus = completionElement.textContent.trim().toLowerCase();
-
-        if (isNaN(scheduleTime)) {
-            console.warn("Invalid date:", scheduleElement.textContent);
-            return;
-        }
-
-        let completionValue = completionStatus.includes("completed") ? "true" : "false";
-
-        let dateMatch = isDateMatch(selectedDate, scheduleTime);
-        let statusMatch = selectedCompletion === "all" || completionValue === selectedCompletion;
-
-        if ((selectedPriority === "all" || priority === selectedPriority) && dateMatch && statusMatch) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
+// User Filter Logic (for superusers)
+const userFilter = document.getElementById("userFilter");
+if (userFilter) {
+    userFilter.addEventListener("change", function() {
+        console.log("User filter changed to:", this.value);
+        fetchFilteredRequests();
     });
 }
 
-function isDateMatch(selectedDate, scheduleTime) {
-    if (selectedDate === "today") {
-        let today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return scheduleTime.toDateString() === today.toDateString();
-    } else if (selectedDate === "last7days") {
-        let last7Days = new Date();
-        last7Days.setDate(last7Days.getDate() - 7);
-        return scheduleTime >= last7Days;
-    } else if (selectedDate === "thismonth") {
-        let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        return scheduleTime >= firstDayOfMonth;
-    }
-    return true;
+function fetchFilteredRequests() {
+    let selectedUser = userFilter ? userFilter.value.toLowerCase() : "all";
+    let selectedPriority = document.getElementById("priorityFilter").value.toLowerCase();
+    let selectedDate = document.getElementById("dateFilter").value.toLowerCase();
+    let selectedCompletion = document.getElementById("completionFilter").value.toLowerCase();
+
+    console.log("Fetching filtered requests:", { selectedUser, selectedPriority, selectedDate, selectedCompletion });
+
+    fetch(`/filter-requests/?user=${selectedUser}&priority=${selectedPriority}&date=${selectedDate}&completion=${selectedCompletion}`)
+        .then(response => response.json())
+        .then(data => {
+            updateTable(data.requests);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateTable(requests) {
+    const tbody = document.querySelector("table tbody");
+    tbody.innerHTML = ''; // Clear existing rows
+
+    requests.forEach(req => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>
+                <button class="delete-request" data-id="${req.id}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+            <td>${req.date_submitted}</td>
+            <td>${req.priority_status}</td>
+            <td>${req.schedule_time}</td>
+            <td>${req.creator}</td>
+            <td contenteditable="true" class="editable-email-content" data-id="${req.id}">
+                ${req.email_content}
+            </td>
+            <td id="status-cell-${req.id}">
+                ${req.completion_status}
+                <input type="checkbox" class="completion-status-toggle" data-id="${req.id}" ${req.completion_status === 'Completed' ? 'checked' : ''}>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    // Re-attach event listeners for the new rows
+    attachEventListeners();
 }
 
 // Initialize Flatpickr for Date and Time input
@@ -92,6 +95,13 @@ flatpickr(".datetimepicker", {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    attachEventListeners();
+    if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
+        fetchFilteredRequests(); // Fetch filtered requests on page load
+    }
+});
+
+function attachEventListeners() {
     const statusCheckboxes = document.querySelectorAll('.completion-status-toggle');
 
     statusCheckboxes.forEach(checkbox => {
@@ -127,9 +137,9 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error('Error:', error));
         });
     });
+}
 
-    function getCSRFToken() {
-        const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
-        return csrfToken ? csrfToken[1] : '';
-    }
-});
+function getCSRFToken() {
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
+    return csrfToken ? csrfToken[1] : '';
+}

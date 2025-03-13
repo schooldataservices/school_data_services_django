@@ -59,6 +59,19 @@
             <label for="id_schedule_time">Select the Desired Completion Date</label>
             <input type="text" name="schedule_time" id="id_schedule_time" class="datetimepicker form-control" required>
         </div>
+
+        <!-- User Selection Dropdown for Admins -->
+        {% if user.is_superuser %}
+        <div class="form-group">
+            <label for="user_id">Submit on behalf of:</label>
+            <select name="user_id" id="user_id" class="form-control">
+                <option value="" disabled selected>Select User</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
     </div>
     
 
@@ -66,6 +79,60 @@
         <button type="submit" class="submit-button">Submit Request</button>
     </div>
   </form>
+
+  <button id="toggleTableButton" style="margin-bottom: 100px;">Show Historical Requests</button>
+
+  <div id="historicalRequestsContainer" style="display: none;">
+      <!-- <h1>Historical Requests</h1> -->
+      
+      <div id="filtersContainer">
+          <div class="form-group">
+              <label for="priorityFilter">Filter by Priority</label>
+              <select id="priorityFilter">
+                  <option value="all">All</option>
+                  {% for priority in unique_priorities %}
+                      <option value="{{ priority }}">{{ priority }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          
+          <div class="form-group">
+              <label for="dateFilter">Filter by Desired Completion Date</label>
+              <select id="dateFilter">
+                  <option value="all">All Dates</option>
+                  <option value="today">Today</option>
+                  <option value="last7days">Last 7 Days</option>
+                  <option value="thismonth">This Month</option>
+              </select>
+          </div>
+
+          <div class="form-group">
+              <label for="completionFilter">Filter by Completion Status</label>
+              <select id="completionFilter">
+                  <option value="all">All</option>
+                  <option value="true">Completed</option>
+                  <option value="false">Pending</option>
+              </select>
+          </div>
+
+          <!-- User Filter for Superusers -->
+          {% if user.is_superuser %}
+          <div class="form-group">
+              <label for="userFilter">Filter by User</label>
+              <select id="userFilter">
+                  <option value="all">All Users</option>
+                  {% for user in users %}
+                      <option value="{{ user.username }}">{{ user.username }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          {% endif %}
+      </div>
+      
+      <div id="requestListContainer">
+          {% include 'emailscraper_app/request_list.html' %}
+      </div>
+  </div>
 
 {% endblock %}
 
@@ -93,48 +160,6 @@
                 });  
         });
     </script>
-
-    <button id="toggleTableButton" style="margin-bottom: 100px;">Show Historical Requests</button>
-
-    <div id="historicalRequestsContainer" style="display: none;">
-        <!-- <h1>Historical Requests</h1> -->
-        
-        <div id="filtersContainer">
-            <div class="form-group">
-                <label for="priorityFilter">Filter by Priority</label>
-                <select id="priorityFilter">
-                    <option value="all">All</option>
-                    {% for priority in unique_priorities %}
-                        <option value="{{ priority }}">{{ priority }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="dateFilter">Filter by Desired Completion Date</label>
-                <select id="dateFilter">
-                    <option value="all">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="last7days">Last 7 Days</option>
-                    <option value="thismonth">This Month</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="completionFilter">Filter by Completion Status</label>
-                <select id="completionFilter">
-                    <option value="all">All</option>
-                    <option value="true">Completed</option>
-                    <option value="false">Pending</option>
-                </select>
-            </div>
-        </div>
-        
-        <div id="requestListContainer">
-            {% include 'emailscraper_app/request_list.html' %}
-        </div>
-    </div>
-
 {% endblock footer %}
 
 {% block extra_js %}
@@ -144,3 +169,4 @@
    <script src="{% static 'js/pagination.js' %}"></script>
    {{ block.super }}
 {% endblock extra_js %}
+

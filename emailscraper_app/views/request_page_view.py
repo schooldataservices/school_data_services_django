@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.html import escape
 from django.contrib import messages
 from django.http import JsonResponse
-from ..forms import  RequestConfigForm
+from ..forms import RequestConfigForm
 from django.template.loader import render_to_string
 from ..models import RequestConfig
 from django.contrib.auth.decorators import login_required
@@ -11,12 +11,57 @@ import json
 from datetime import datetime, timedelta
 from django.views.decorators.http import require_POST, require_http_methods
 from ..utils import send_request_email  # Import the new function
+from django.contrib.auth.models import User
+from django.db.models import Q
 
+def filter_requests(request):
+    user = request.GET.get('user', 'all')
+    priority = request.GET.get('priority', 'all')
+    date = request.GET.get('date', 'all')
+    completion = request.GET.get('completion', 'all')
 
-
+    filters = Q()
+    
+    if user != 'all':
+        filters &= Q(creator__username=user)
+    
+    if priority != 'all':
+        filters &= Q(priority_status=priority)
+    
+    if date != 'all':
+        now = datetime.now()
+        if date == 'today':
+            filters &= Q(schedule_time__date=now.date())
+        elif date == 'last7days':
+            filters &= Q(schedule_time__gte=now - timedelta(days=7))
+        elif date == 'thismonth':
+            filters &= Q(schedule_time__year=now.year, schedule_time__month=now.month)
+    
+    if completion != 'all':
+        completion_status = completion == 'true'
+        filters &= Q(completion_status=completion_status)
+    
+    requests = RequestConfig.objects.filter(filters)
+    
+    data = []
+    for req in requests:
+        data.append({
+            'id': req.id,
+            'date_submitted': req.date_submitted.strftime('%Y-%m-%d %H:%M:%S'),
+            'priority_status': req.priority_status,
+            'schedule_time': req.schedule_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'creator': req.creator.username,
+            'email_content': req.email_content,
+            'completion_status': 'Completed' if req.completion_status else 'Pending'
+        })
+    
+    return JsonResponse({'requests': data})
 
 def get_prior_requests_context(request):
-    request_configs = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted')  # Get only the logged-in user's configs
+    if request.user.is_authenticated:
+        request_configs = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted')  # Get only the logged-in user's configs
+    else:
+        request_configs = RequestConfig.objects.none()  # No requests for unauthenticated users
 
     # Apply filters
     priority_filter = request.GET.get('priority')
@@ -64,7 +109,6 @@ def get_prior_requests_context(request):
 
     return context
 
-@login_required
 def create_request_config(request):
     context = get_prior_requests_context(request)  # For ajax requests with pagination, and filters
 
@@ -72,31 +116,45 @@ def create_request_config(request):
         return context
 
     if request.method == 'POST':
-        form = RequestConfigForm(request.POST)
-        if form.is_valid():
-            # Save the form data to the database
-            request_config = form.save(commit=False)
-            request_config.creator = request.user  # Set the logged-in user as the creator
-            request_config.save()
+        if request.user.is_authenticated:
+            form = RequestConfigForm(request.POST)
+            if form.is_valid():
+                # Save the form data to the database
+                request_config = form.save(commit=False)
+                if request.user.is_superuser and 'user_id' in request.POST:
+                    try:
+                        user = User.objects.get(id=request.POST['user_id'])
+                        request_config.creator = user  # Set the selected user as the creator
+                    except User.DoesNotExist:
+                        context['error_message'] = escape("Selected user does not exist.")
+                        context['form'] = form
+                        return render(request, 'emailscraper_app/temp.html', context)
+                else:
+                    request_config.creator = request.user  # Set the logged-in user as the creator
+                request_config.save()
 
-            # Send email using the new function
-            send_request_email(request_config, request.user)
+                # Send email using the new function
+                send_request_email(request_config, request.user)
 
-            # Update context to reflect the new data
-            context = get_prior_requests_context(request)
-            if isinstance(context, JsonResponse):
-                return context
-            context['form'] = RequestConfigForm()  # Reset the form
-            context['success_message'] = 'Request Submitted Successfully'
+                # Update context to reflect the new data
+                context = get_prior_requests_context(request)
+                if isinstance(context, JsonResponse):
+                    return context
+                context['form'] = RequestConfigForm()  # Reset the form
+                context['success_message'] = 'Request Submitted Successfully'
 
-        # Form is invalid at this point due to empty fields
+            # Form is invalid at this point due to empty fields
+            else:
+                context['form'] = form  # Keep the invalid form to show errors
+                context['error_message'] = escape("Please correct the errors below.")  # Prevent newlines
         else:
-            context['form'] = form  # Keep the invalid form to show errors
-            context['error_message'] = escape("Please correct the errors below.")  # Prevent newlines
+            context['error_message'] = escape("You must be logged in to submit a request.")  # Prevent newlines
 
     # Initial page load, display RequestConfigForm with defaults
     else:
         context['form'] = RequestConfigForm()  # Ensure form is in context on GET request
+        if request.user.is_superuser:
+            context['users'] = User.objects.all()  # Pass all users to the template for admin
 
     return render(request, 'emailscraper_app/temp.html', context)
 
