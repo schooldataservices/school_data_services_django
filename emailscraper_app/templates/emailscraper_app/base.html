@@ -34,12 +34,23 @@
     {% block extra_css %}
     <!-- Additional CSS files can be added here -->
     {% endblock %}
+    <style>
+        .navbar {
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-right {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+    </style>
 </head>
 <body>
 
 <!-- Navigation bar -->
 <nav>
-    <ul class="navbar" style="display: flex; flex-direction: column;">
+    <ul class="navbar">
         {% if user.is_authenticated %}
             <li><a href="{% url 'landing_page' %}">Home</a></li>
             <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
@@ -55,10 +66,9 @@
             <li><a href="{% url 'landing_page' %}">Home</a></li>
             <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
             <li><a href="{% url 'register' %}">Register</a></li>
-
         {% endif %}
     </ul>
-
+    
     <!-- Dropdown menu moved outside of the navbar -->
     <div id="profileDropdownMenu" class="dropdown-menu" aria-labelledby="profileDropdown">
         <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
@@ -68,6 +78,7 @@
             <button type="submit" class="dropdown-item">Logout</button>
         </form>
     </div>
+
 </nav>
 
 <!-- Content block -->

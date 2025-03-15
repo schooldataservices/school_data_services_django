@@ -53,7 +53,7 @@ class UserLoginViewTest(TestCase):
     def test_login_view_get(self):
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        self.assertTemplateUsed(response, 'users/login.html')
 
     def test_login_view_post(self):
         response = self.client.post(reverse('login'), {'username': 'testuser', 'password': 'Testpassword123'})

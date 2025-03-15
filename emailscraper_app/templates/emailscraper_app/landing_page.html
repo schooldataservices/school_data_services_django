@@ -2,13 +2,41 @@
 {% load static %}
 
 {% block title %}
-  Welcome to the Email Campaign Hub
+  Helping Schools Make Data Flow Easy
 {% endblock title %}
 
 
 {% block content %}
-  <h1>Taylored Data Solutions</h1>
+  <h1>School Data Services
+
+  <a href="https://github.com/2015samtaylor" target="_blank" style="margin-left: 10px;">
+    <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" style="width: 30px; height: 30px;">
+  </a>
+
+  </h1>
   <p>Helping Schools Make Data Flow Easy.</p>
+  <!-- <li><a href="https://calendar.google.com/" target="_blank">Book Meeting Via Google Calendar</a></li> Google Calendar link -->
+  <!-- <a href="https://calendar.google.com/calendar/embed?src=2015samtaylor%40gmail.com&ctz=America%2FChicago" target="_blank" class="btn btn-primary">Book Meeting Via Google Calendar</a> -->
+  
+    <!-- Google Calendar Appointment Scheduling begin -->
+  <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+  <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+  <script>
+  (function() {
+    var target = document.currentScript;
+    window.addEventListener('load', function() {
+      calendar.schedulingButton.load({
+        url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+        color: '#039BE5',
+        label: 'Book an appointment',
+        target,
+      });
+    });
+  })();
+  </script>
+  <!-- end Google Calendar Appointment Scheduling -->
+
+
 
   <!-- You can display the form or other necessary content here -->
   <form action="{% url 'landing_page' %}" method="post" class="email-configuration-form" enctype="multipart/form-data">
@@ -25,7 +53,6 @@
           </p>
         {% endif %}
       {% endfor %}
-      <button type="submit" class="save-configuration-button">Learn More</button>
     </div>
   </form>
 {% endblock content %}

@@ -17,8 +17,8 @@ from .access_secrets import access_secret_version
 PROJECT_ID = "django-hosting-427421"
 
 # Access secrets from Google Cloud Secret Manager
-EMAIL_HOST_USER = access_secret_version(PROJECT_ID, "EMAIL_HOST_USER")
-imap_password_sam = access_secret_version(PROJECT_ID, "imap_password_sam")
+EMAIL_HOST_USER = access_secret_version(PROJECT_ID, "EMAIL_HOST_USER_sds")
+imap_password_schooldataservices = access_secret_version(PROJECT_ID, "imap_password_schooldataservices")
 django_db_password = access_secret_version(PROJECT_ID, "django_db_password")
 django_secret_key = access_secret_version(PROJECT_ID, "django_secret_key")
 GS_JSON_PATH = access_secret_version(PROJECT_ID, "GS_JSON_PATH")
@@ -29,7 +29,7 @@ django_hosting_json_file = access_secret_version(PROJECT_ID, "django_hosting_jso
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(f'Here is the base dir {BASE_DIR}')
+
 
 # Ensure the Logs directory exists
 LOGS_DIR = os.path.join(BASE_DIR, 'Logs')
@@ -45,13 +45,13 @@ SECRET_KEY = django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # You must set settings.ALLOWED_HOSTS if DEBUG is False.
-DEBUG =True
 
 ALLOWED_HOSTS = [
-    os.getenv('CLOUD_RUN_URL', 'localhost'),  # Fetch from environment variable or fallback to localhost
     '127.0.0.1', 
     'localhost', 
     '.run.app',  # Allow Cloud Run domains
+    "schooldataservices.com", 
+    "www.schooldataservices.com"
 ]
 
 #For cloud run deployment
@@ -59,6 +59,8 @@ CSRF_COOKIE_HTTPONLY = False    # Make sure this is False for JavaScript access
 CSRF_COOKIE_SECURE = True       # Set to True if using HTTPS (which you are)
 CSRF_TRUSTED_ORIGINS = [
     'https://django-hosting-764972118687.us-central1.run.app',
+    "https://schooldataservices.com", 
+    "https://www.schooldataservices.com"
 ]
 
 
@@ -66,8 +68,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     "emailscraper_app.apps.EmailscraperAppConfig",
-    # "ckeditor",
-    # "ckeditor_uploader",
     "storages",
     "users.apps.UsersConfig",
     "crispy_forms",
@@ -117,16 +117,11 @@ WSGI_APPLICATION = "emailscraper_proj.wsgi.application"
 # Detect whether the app is running locally or on Cloud Run
 import os
 
-# Define IP addresses
-LOCAL_IP = "10.168.0.5"
-EXTERNAL_IP = "35.236.35.240"
+
 
 # Check if the app is running in the cloud or locally
 RUNNING_IN_CLOUD = os.getenv("RUNNING_IN_CLOUD") == "true"  # Check if in cloud environment (GCP, Cloud Run, etc.)
 RUNNING_LOCALLY = not RUNNING_IN_CLOUD  # Inverse of RUNNING_IN_CLOUD
-
-# Common settings for both environments
-BASE_STATIC_DIR = os.path.join(BASE_DIR, "emailscraper_app", "static")
 
 # Adjust static files settings based on the environment
 if RUNNING_IN_CLOUD:
@@ -137,24 +132,20 @@ if RUNNING_IN_CLOUD:
     INSTALLED_APPS += ["whitenoise.runserver_nostatic"]  # Add WhiteNoise in production
     STATIC_URL = "/static/"  # Assuming the static URL remains the same for both environments
     # Set DB host for cloud (external IP)
-    DB_HOST = EXTERNAL_IP
+    DB_HOST = "35.236.35.240"
     DEBUG = False
+    MIDDLEWARE += [
+        'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise middleware
+    ]
 else:
     print("Running Locally")
     # Local Development Settings
     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"  # Default storage for local development
-    STATICFILES_DIRS = [BASE_STATIC_DIR]  # Path to Local CSS & JS
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "emailscraper_app", "static")]  # Path to Local CSS & JS
     STATIC_URL = "/static/"  # Local static URL
     # Set DB host for local environment (local IP)
-    DB_HOST = LOCAL_IP
+    DB_HOST = "35.236.35.240"
     DEBUG = True
-
-# Optional: For Google App Engine (GAE) or Cloud Run, you might have specific settings for static files
-if os.getenv("GAE_ENV", "").startswith("standard") or os.getenv("CLOUD_RUN"):
-    STATICFILES_DIRS = []  # Ensure this is empty in production for GAE/Cloud Run
-
-# Set Debugging based on Cloud/Local environment
-DEBUG = not RUNNING_IN_CLOUD  # Debugging is true locally, false in production
 
 
 
@@ -164,7 +155,7 @@ DATABASES = {
         "NAME": "django_db",
         "USER": django_db_user,
         "PASSWORD": django_db_password,
-        "HOST": EXTERNAL_IP,
+        "HOST": "35.236.35.240",
         "PORT": "3306"
     }
 }
@@ -225,7 +216,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = imap_password_sam
+EMAIL_HOST_PASSWORD = imap_password_schooldataservices
 
 # At a project level in case it needs to be duplicated. 
 GS_JSON_PATH = GS_JSON_PATH #from import

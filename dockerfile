@@ -35,13 +35,14 @@ CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collect
 
 
 
-# docker build -t gcr.io/django-hosting-427421/django-hosting 
+# docker build -t gcr.io/django-hosting-427421/django-hosting .
 # docker push gcr.io/django-hosting-427421/django-hosting    
-# g2015samtaylor@icef:~/django$ gcloud run deploy django-hosting \
-# >   --image gcr.io/django-hosting-427421/django-hosting \
-# >   --platform managed \
-# >   --region us-central1 \
-# >   --allow-unauthenticated \
-# >   --service-account django-project@django-hosting-427421.iam.gserviceaccount.com \
-# >   --memory 512Mi \
-# >   --set-env-vars RUNNING_IN_CLOUD=true                   
+
+# gcloud run deploy django-hosting \
+#     --image gcr.io/django-hosting-427421/django-hosting \
+#     --platform managed \
+#     --region us-central1 \
+#     --allow-unauthenticated \
+#     --service-account django-project@django-hosting-427421.iam.gserviceaccount.com \
+#     --memory 512Mi \
+#     --set-env-vars RUNNING_IN_CLOUD=true,DEBUG=False,DB_HOST="35.236.35.240"
