@@ -28,58 +28,58 @@
     </script>
 
     <!-- Title and Custom CSS -->
+    <meta name="description" content="School Data Services - Bringing Data Engineering to Schools & Making Data Flow Easy">
     <title>{% block title %}My Website{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     {% block extra_css %}
     <!-- Additional CSS files can be added here -->
     {% endblock %}
-    <style>
-        .navbar {
-            display: flex;
-            flex-direction: column;
-        }
-        .navbar-right {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
-    </style>
 </head>
 <body>
 
 <!-- Navigation bar -->
-<nav>
-    <ul class="navbar">
-        {% if user.is_authenticated %}
-            <li><a href="{% url 'landing_page' %}">Home</a></li>
-            <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
-            <li><a href="{% url 'register' %}">Register</a></li>
-           
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" style="width: 100px; height: 100px;">
-                </a>
-            </li>
-        {% else %}
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'landing_page' %}">Home</a></li>
-            <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
-            <li><a href="{% url 'register' %}">Register</a></li>
-        {% endif %}
-    </ul>
-    
-    <!-- Dropdown menu moved outside of the navbar -->
-    <div id="profileDropdownMenu" class="dropdown-menu" aria-labelledby="profileDropdown">
-        <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
-        <a class="dropdown-item" href="{% url 'login' %}">Login</a>
-        <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="dropdown-item">Logout</button>
-        </form>
+<nav class="navbar">
+    <div class="navbar-left">
+        <div class="header-container">
+            <h1 class="header-title">
+                <a href="{% url 'landing_page' %}">School Data Services</a>
+            </h1>
+            <img src="https://storage.googleapis.com/django_hosting/base_images/cloud-database-secondary.png" alt="cloud-db" class="cloud-db-logo">
+        </div>
+        <p class="tagline">Helping Schools Make Data Flow Easy.</p>
     </div>
-
+    <div class="navbar-right">
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'landing_page' %}">Home</a></li>
+                <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'landing_page' %}">Home</a></li>
+                <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+        <!-- For alignment purposes -->
+        {% if user.is_authenticated %} 
+        <div class="profile-container">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" style="width: 70px; height: 70px;">
+            </a>
+        </div>
+        {% endif %}
+    </div>
 </nav>
+
+<div id="profileDropdownMenu" class="dropdown-menu profile-dropdown" aria-labelledby="profileDropdown">
+    <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="dropdown-item">Logout</button>
+    </form>
+</div>
 
 <!-- Content block -->
 <div class="content">
@@ -116,9 +116,7 @@
     {% endblock %}
 </div>
 
-<!-- Footer block -->
 {% block footer %}
-<!-- Default footer content can go here or it can be left empty -->
 {% endblock %}
 
 {% block extra_js %}
@@ -145,10 +143,30 @@
                 $('#profileDropdownMenu').removeClass('show');
             }
         });
+
+        var tocToggle = document.getElementById('toc-toggle');
+        var tocContainer = document.getElementById('toc-container');
+        var navbar = document.querySelector('.navbar');
+
+        // Function to set the position of the TOC toggle button
+        function setTocTogglePosition() {
+            var navbarHeight = navbar.offsetHeight;
+            tocToggle.style.top = (navbarHeight + 10) + 'px'; // 10px below the navbar
+        }
+
+        // Set the initial position of the TOC toggle button
+        setTocTogglePosition();
+
+        // Adjust the position of the TOC toggle button on window resize
+        window.addEventListener('resize', setTocTogglePosition);
+
+        tocToggle.addEventListener('click', function() {
+            tocContainer.classList.toggle('open');
+            tocToggle.classList.toggle('open');
+        });
     });
 </script>
-{% endblock %}
-
+{% endblock extra_js %}
 </body>
 </html>
 

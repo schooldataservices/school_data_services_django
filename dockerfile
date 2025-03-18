@@ -39,7 +39,7 @@ CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collect
 # docker push gcr.io/django-hosting-427421/django-hosting    
 
 # gcloud run deploy django-hosting \
-#     --image gcr.io/django-hosting-427421/django-hosting \
+#     --image gcr.io/django-hosting-427421/django-hosting:latest \
 #     --platform managed \
 #     --region us-central1 \
 #     --allow-unauthenticated \

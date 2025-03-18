@@ -111,15 +111,17 @@ body {
 .navbar {
     list-style-type: none;
     margin: 0;
-    padding: 0;
-    overflow: hidden;
+    padding: 5px 15px; /* Add padding to the navbar */
     background-color: #182e4b; /* Background color of the navbar */
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between; /* Space items out horizontally */
+    align-items: center; /* Center items vertically */
+    height: auto; /* Allow height to adjust dynamically */
 }
 
 .navbar li {
-    float: left; /* Float the list items to create a horizontal layout */
+    float: none; /* Remove float to use flexbox layout */
+    margin: 0 10px; /* Add margin between list items */
 }
 
 .navbar li a {
@@ -127,8 +129,26 @@ body {
     color: white; /* Text color of the links */
     text-align: center;
     text-decoration: none; /* Remove underline from the links */
+    padding: 10px 15px; /* Add padding to the links */
 }
 
+/* Media query for mobile view */
+@media (max-width: 767px) {
+    .navbar {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the start */
+        padding: 10px; /* Reduce padding */
+    }
+
+    .navbar li {
+        width: 100%; /* Make list items take full width */
+        margin: 5px 0; /* Add margin between list items */
+    }
+
+    .navbar li a {
+        padding: 10px; /* Adjust padding for mobile view */
+    }
+}
 
 /* Prevent profile image from changing color on hover */
 .nav-link img {
@@ -152,10 +172,6 @@ body {
 
 .dropdown-menu.show {
     display: block !important; /* Force show when dropdown is active */
-}
-
-.navbar {
-    height: 130px; /* Increase the height of the navbar */
 }
 
 /* Register page styles */

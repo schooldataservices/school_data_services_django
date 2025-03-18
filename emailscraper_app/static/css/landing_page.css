@@ -1,0 +1,190 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.header-title {
+    margin-right: 10px;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+}
+
+.github-logo {
+    width: 30px;
+    height: 30px;
+}
+
+.tagline {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.container {
+    text-align: center;
+}
+
+.services {
+    list-style: none;
+    padding: 0;
+}
+
+.services li {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.toc-container {
+    position: fixed;
+    top: 170px;
+    left: 0;
+    width: 250px;
+    transition: left 0.3s ease; /* Smooth transition */
+    z-index: 1000; /* Ensure it is above other elements */
+}
+
+.toc-container.hidden {
+    left: -250px; /* Hide the TOC off-screen on mobile devices */
+}
+
+.toc {
+    background-color: rgba(126, 127, 128, 1); /* Solid background color */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 2000; /* Ensure it is above other elements */
+}
+
+.toc ul {
+    list-style: none;
+    padding: 0;
+}
+
+.toc ul li {
+    margin-bottom: 10px;
+}
+
+.toc ul li a {
+    text-decoration: none;
+    color: #c5c5c5;
+}
+
+.toc ul li a:hover {
+    text-decoration: underline;
+}
+
+#toc-toggle {
+    position: fixed;
+    left: 10px;
+    z-index: 2001; /* Ensure it is above the TOC */
+    background-color: #007bff; /* Background color for visibility */
+    color: #fff; /* Text color for visibility */
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#toc-toggle.open {
+    left: 260px; /* Adjust position when TOC is open */
+}
+
+/* Hide TOC on mobile devices */
+@media (max-width: 767px) {
+    .toc-container {
+        left: -250px; /* Hide the TOC off-screen */
+    }
+
+    .toc-container.open {
+        left: 0; /* Slide the TOC into view */
+        z-index: 2000; /* Ensure it is above other elements when opened */
+    }
+
+    #toc-toggle.open {
+        left: 260px; /* Adjust position when TOC is open on mobile */
+    }
+}
+
+.contact-content-container {
+    margin-top: 20px; /* Add some space between the Table of Contents and the footer content */
+}
+
+.contact-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start (left) */
+    background-color: #7e7f8065;
+    padding: 20px 0;
+    text-align: center;
+
+    flex-direction: row;
+    justify-content: center;
+    max-width: 300px; /* Limit the width of the footer */
+    margin: 20px auto; /* Center the footer and add vertical margin */
+    border-radius: 8px; /* Add rounded corners */
+}
+
+.contact-content a {
+    margin-right: 20px; /* Increase horizontal spacing between elements */
+}
+
+.contact-content .gmail-link img {
+    width: 30px; /* Set the width of the Gmail icon */
+    height: 30px; /* Set the height of the Gmail icon */
+}
+
+.contact-content .gmail-link i {
+    font-size: 30px; /* Set the size of the Font Awesome icon */
+    margin-right: 5px; /* Add some space between the icon and the image */
+}
+
+.qxCTlb {
+    color: #fff !important; /* Set the text color to white */
+}
+
+/* Additional styles for content organization */
+.main-heading {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #fff; /* Different color from navbar */
+}
+
+.tagline {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: #fff; /* Different color from navbar */
+}
+
+.content-wrapper {
+    text-align: center; /* Center the content horizontally */
+    margin: 0 auto; /* Center the content wrapper */
+    max-width: 100%; /* Allow the content wrapper to take full width */
+}
+
+.content-section {
+    padding: 60px 0; /* Increase padding to take up more vertical space */
+    margin-bottom: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-heading {
+    font-size: 2.5rem; /* Increase font size for the section heading */
+    margin-bottom: 40px; /* Add margin below the heading */
+    color: #fff; /* Different color from navbar */
+}
+
+.feature-box {
+    margin-bottom: 30px; /* Add margin to space out the feature boxes */
+}
+
+.data-pipeline-img {
+    width: 50%; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 300px; /* Optional: Set a maximum width */
+    margin: 0 auto; /* Center the image */
+}

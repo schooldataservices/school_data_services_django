@@ -1,61 +1,99 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
-{% block title %}
-  Helping Schools Make Data Flow Easy
-{% endblock title %}
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h1>School Data Services
+<div class="container-fluid"> <!-- Changed to container-fluid for full-width -->
+    <div class="row">
+        <div class="col-md-3">
+            <button id="toc-toggle" class="btn btn-primary d-md-none" title="Navigation">☰</button> <!-- Only show on mobile devices -->
+            <div class="toc-container" id="toc-container">
+                <div class="toc">
+                    <h4>Table of Contents</h4>
+                    <ul>
+                        <li><a href="#key-features">Key Features</a></li>
+                        <li><a href="#problem-solution">Problem & Solution</a></li>
+                        <li><a href="#what-we-offer">What We Offer</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="content-wrapper">
+                <h1 class="main-heading text-center">Data Engineering Designed for Schools</h1>
+                <p class="tagline text-center"><strong>We help schools organize, clean, and house data in one singular location  so your organization can gain insights on what matters</strong></p>
+                <p class="text-center">Struggling with data silos, compliance issues, and manual processes? We simplify it.</p>
 
-  <a href="https://github.com/2015samtaylor" target="_blank" style="margin-left: 10px;">
-    <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" style="width: 30px; height: 30px;">
-  </a>
+                <div style="margin-top: 170px;"></div>
 
-  </h1>
-  <p>Helping Schools Make Data Flow Easy.</p>
-  <!-- <li><a href="https://calendar.google.com/" target="_blank">Book Meeting Via Google Calendar</a></li> Google Calendar link -->
-  <!-- <a href="https://calendar.google.com/calendar/embed?src=2015samtaylor%40gmail.com&ctz=America%2FChicago" target="_blank" class="btn btn-primary">Book Meeting Via Google Calendar</a> -->
-  
-    <!-- Google Calendar Appointment Scheduling begin -->
-  <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
-  <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
-  <script>
-  (function() {
-    var target = document.currentScript;
-    window.addEventListener('load', function() {
-      calendar.schedulingButton.load({
-        url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
-        color: '#039BE5',
-        label: 'Book an appointment',
-        target,
-      });
-    });
-  })();
-  </script>
-  <!-- end Google Calendar Appointment Scheduling -->
+                <!-- Dynamic Image of Data Pipeline -->
+                <div class="text-center">
+                    <img src="https://storage.googleapis.com/django_hosting/base_images/cloud-database-secondary.png" alt="Data Pipeline" class="img-fluid data-pipeline-img" style="max-width: 100%; height: auto;">
+                </div>
+
+                <!-- Key Features -->
+                <section id="key-features" class="content-section">
+                    <h2 class="section-heading text-center">Key Features</h2>
+                    <div class="container">
+                        <div class="row text-center">
+                            <div class="col-md-4 feature-box">
+                                <h4>🔗 Data Integration</h4>
+                                <p>Connect SIS, Vendors, Testing Sources</p>
+                            </div>
+                            <div class="col-md-4 feature-box">
+                                <h4>🔄 Automated Pipelines</h4>
+                                <p>Data loading is automated, reliable, and accurate.</p>
+                            </div>
+                            <div class="col-md-4 feature-box">
+                                <h4>📊 Custom Reporting</h4>
+                                <p>Generate reports for state & federal compliance.</p>
+                            </div>
+                        </div>
+                    </div>
+                  </section>
 
 
-
-  <!-- You can display the form or other necessary content here -->
-  <form action="{% url 'landing_page' %}" method="post" class="email-configuration-form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="email-config-container">
-      {% for field in email_config_form %}
-        {% if field.widget.input_type != 'hidden' %}
-          <p class="form-field">
-            {{ field.label_tag }}<br>
-            {{ field }}
-            {% if field.errors %}
-              <span class="error-message">{{ field.errors }}</span>
-            {% endif %}
-          </p>
-        {% endif %}
-      {% endfor %}
+                </section>
+            </div>
+        </div>
     </div>
-  </form>
+</div>
 {% endblock content %}
 
 {% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/2015samtaylor" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
+      </a>
+
+      <a href="mailto:2015samtaylor@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+      </a>
+
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#84b371',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button' // Add custom class
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
 {% endblock footer %}
+
