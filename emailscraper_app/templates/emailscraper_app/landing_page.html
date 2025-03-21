@@ -3,67 +3,149 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+<style>
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid"> <!-- Changed to container-fluid for full-width -->
     <div class="row">
-        <div class="col-md-3">
-            <button id="toc-toggle" class="btn btn-primary d-md-none" title="Navigation">☰</button> <!-- Only show on mobile devices -->
-            <div class="toc-container" id="toc-container">
-                <div class="toc">
-                    <h4>Table of Contents</h4>
-                    <ul>
-                        <li><a href="#key-features">Key Features</a></li>
-                        <li><a href="#problem-solution">Problem & Solution</a></li>
-                        <li><a href="#what-we-offer">What We Offer</a></li>
-                        <li><a href="#testimonials">Testimonials</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9">
+        <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
             <div class="content-wrapper">
                 <h1 class="main-heading text-center">Data Engineering Designed for Schools</h1>
-                <p class="tagline text-center"><strong>We help schools organize, clean, and house data in one singular location  so your organization can gain insights on what matters</strong></p>
-                <p class="text-center">Struggling with data silos, compliance issues, and manual processes? We simplify it.</p>
-
-                <div style="margin-top: 170px;"></div>
-
-                <!-- Dynamic Image of Data Pipeline -->
-                <div class="text-center">
-                    <img src="https://storage.googleapis.com/django_hosting/base_images/cloud-database-secondary.png" alt="Data Pipeline" class="img-fluid data-pipeline-img" style="max-width: 100%; height: auto;">
+                <p class="tagline text-center"><strong>We help schools organize, clean, and store secure data in one singular location so your organization can gain insights on what matters</strong></p>
+                <p class="text-center">Struggling with data silos, manual processes, or spread out data amongst platforms?</p> 
+                <p class="text-center">We simplify data flow and house all of your data in Google Cloud Platform <img src="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" alt="Google Cloud Platform" class="gcp-image" style="width: 50px; height: auto; vertical-align: middle; margin-left: 10px;"></p>   
+                
+                <div style="margin-top: 30px;"></div>
+                
+                <!-- SVG Code -->
+                <div class="svg-container">
+                    <svg width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Extract -->
+                        <rect x="50" y="100" width="200" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="extract"/>
+                        <text x="150" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Extract</text>
+                        <text x="150" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(SIS, APIs, DBs, Files)</text>
+                        
+                        <!-- Transform -->
+                        <rect x="350" y="100" width="200" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="transform"/>
+                        <text x="450" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Transform</text>
+                        <text x="450" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Processing, ETL)</text>
+                        
+                        <!-- Load -->
+                        <rect x="650" y="100" width="200" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="load"/>
+                        <text x="750" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Load</text>
+                        <text x="750" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(BigQuery, Data Lake)</text>
+                        
+                        <!-- Arrows -->
+                        <line x1="250" y1="150" x2="350" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                        <line x1="550" y1="150" x2="650" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                        
+                        <!-- Arrow Definition -->
+                        <defs>
+                            <marker id="arrow" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto">
+                                <polygon points="0 0, 12 5, 0 10" fill="black"/>
+                            </marker>
+                        </defs>
+                    </svg>
                 </div>
 
-                <!-- Key Features -->
-                <section id="key-features" class="content-section">
-                    <h2 class="section-heading text-center">Key Features</h2>
+                <!-- Problems Districts Face with Data -->
+                <section id="problem-solution">
+                    <h2 class="section-heading text-center">Problems Districts Face with Data</h2>
                     <div class="container">
                         <div class="row text-center">
-                            <div class="col-md-4 feature-box">
-                                <h4>🔗 Data Integration</h4>
-                                <p>Connect SIS, Vendors, Testing Sources</p>
+                            <div class="col-md-12 problem-box">
+                                <h4>Data Silos</h4>
+                                <p>Data is often isolated with different vendors, making it hard to integrate with the SIS and create scalable systems.</p>
                             </div>
-                            <div class="col-md-4 feature-box">
-                                <h4>🔄 Automated Pipelines</h4>
-                                <p>Data loading is automated, reliable, and accurate.</p>
+                            <div class="col-md-12 problem-box">
+                                <h4>Data Quality and Accuracy</h4>
+                                <p>Manual data entry can lead to mistakes, and there are often not many data validation processes in place. This can impact compliance.</p>
                             </div>
-                            <div class="col-md-4 feature-box">
-                                <h4>📊 Custom Reporting</h4>
-                                <p>Generate reports for state & federal compliance.</p>
+                            <div class="col-md-12 problem-box">
+                                <h4>Data Security and Privacy</h4>
+                                <p>Data security and privacy can be lost in translation, leading to potential breaches and compliance issues.</p>
+                            </div>
+                            <div class="col-md-12 problem-box">
+                                <h4>Data Access and Sharing</h4>
+                                <p>It can be hard within an organization to know where to go for data, making data access and sharing a challenge.</p>
+                            </div>
+                            <div class="col-md-12 problem-box">
+                                <h4>Data Overload</h4>
+                                <p>Organizations can be overwhelmed by the sheer volume of data, making it difficult to extract meaningful insights.</p>
                             </div>
                         </div>
                     </div>
-                  </section>
-
-
                 </section>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Table of Contents -->
+<div class="toc-container" id="toc-container">
+    <div class="toc">
+        <h4>Table of Contents</h4>
+        <ul>
+            <li><a href="#key-features">Intro</a></li>
+            <li><a href="#problem-solution">Problem & Solution</a></li>
+            <li><a href="#what-we-offer">What We Offer</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+</div>
+
+<button id="toc-toggle" class="btn btn-primary d-md-none" title="Navigation" style="top: 245px;">☰</button>
+
 {% endblock content %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    $(document).ready(function() {
+        var tocToggle = document.getElementById('toc-toggle');
+        var tocContainer = document.getElementById('toc-container');
+        var navbar = document.querySelector('.navbar');
+
+        // Function to set the position of the TOC toggle button
+        function setTocTogglePosition() {
+            var navbarHeight = navbar.offsetHeight;
+            tocToggle.style.top = (navbarHeight + 10) + 'px'; // 10px below the navbar
+        }
+
+        // Set the initial position of the TOC toggle button
+        setTocTogglePosition();
+
+        // Adjust the position of the TOC toggle button on window resize
+        window.addEventListener('resize', setTocTogglePosition);
+
+        tocToggle.addEventListener('click', function() {
+            tocContainer.classList.toggle('open');
+            tocToggle.classList.toggle('open');
+
+            if (tocContainer.classList.contains('open')) {
+                var tocRect = tocContainer.getBoundingClientRect();
+                tocToggle.style.top = tocRect.top + 'px';
+                tocToggle.style.right = (window.innerWidth - tocRect.right) + 'px';
+            } else {
+                setTocTogglePosition();
+                tocToggle.style.left = '10px';
+                tocToggle.style.right = 'auto';
+            }
+        });
+    });
+</script>
+{% endblock extra_js %}
 
 {% block footer %}
 <div class="contact-content-container">

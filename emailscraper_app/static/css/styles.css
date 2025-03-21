@@ -1,9 +1,10 @@
 /* Set the default background color for all pages */
 body {
-    background-color: #324d70; /* Light gray background color */
-    color: #faf8f8; /* Default text color */
+    background-color: #f2f5f7; /* Light gray background color */
+    color: #faf8f8f5; /* Default text color */
 }
 
+/* #324d70; */
 
 /* Button styles */
 .submit-button, 
@@ -106,10 +107,6 @@ body {
 .messages li {
     margin-bottom: 0.5rem; /* Spacing between messages */
 }
-
-
-
-
 
 
 /* Prevent profile image from changing color on hover */
@@ -388,7 +385,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    background-color: #0b233b93;
+    background-color: #14539293;
 }
 .navbar-left {
     display: flex;
@@ -403,6 +400,15 @@ body {
 .header-title {
     margin-right: 10px;
 }
+
+.outlined-text {
+    text-shadow: 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000; /* Create a black outline around the text */
+}
+
 .header-title a {
     text-decoration: none !important; /* Remove underline from link */
     color: #fff !important; /* Keep the text color white */
@@ -442,4 +448,8 @@ body {
 }
 .profile-dropdown {
     margin-left: 20px;
+}
+
+p {
+    color: #000000e7; /* Set paragraph text color */
 }
