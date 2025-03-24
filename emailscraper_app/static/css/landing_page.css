@@ -19,10 +19,6 @@
     height: 30px;
 }
 
-.tagline {
-    text-align: center;
-    margin-bottom: 40px;
-}
 
 .container {
     text-align: center;
@@ -81,7 +77,7 @@
 #toc-toggle {
     position: fixed;
     left: 10px;
-    z-index: 2001; /* Ensure it is above the TOC */
+    z-index: 1000; /* Ensure it is above the TOC */
     background-color: #007bff; /* Background color for visibility */
     color: #fff; /* Text color for visibility */
     border: none;
@@ -90,9 +86,11 @@
     cursor: pointer;
 }
 
+/* Button to make sure it remains visible */
 #toc-toggle.open {
     left: auto; /* Reset left position */
     right: 10px; /* Position at the top right of the TOC */
+    z-index: 1001;
 }
 
 /* Hide TOC on mobile devices */
@@ -103,7 +101,7 @@
 
     .toc-container.open {
         left: 0; /* Slide the TOC into view */
-        z-index: 2000; /* Ensure it is above other elements when opened */
+        z-index: 1000; /* Ensure it is above other elements when opened */
     }
 
     #toc-toggle.open {
@@ -146,27 +144,18 @@
 }
 
 .qxCTlb {
-    color: #fff !important; /* Set the text color to white */
+    color: #040404 !important; /* Set the text color to white */
 }
 
 /* Additional styles for content organization */
 .main-heading {
     font-size: 2.5rem;
+    font-weight: bold;
     margin-bottom: 1rem;
     color: #000000e7; /* Different color from navbar */
 }
 
-.tagline {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    color: #000000e7; /* Different color from navbar */
-}
 
-.content-wrapper {
-    text-align: left; /* Center the content horizontally */
-    margin: 0 auto; /* Center the content wrapper */
-    max-width: 100%; /* Allow the content wrapper to take full width */
-}
 
 
 .section-heading {
@@ -179,6 +168,73 @@
     margin-bottom: 30px; /* Add margin to space out the feature boxes */
 }
 
+
+.svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px; /* Limit the width of the SVG container */
+    margin: 0 auto;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.svg-container svg {
+    width: 100%; /* Make SVG responsive, but limited to the container's max-width */
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+
+.svg-container .extract, .svg-container .transform, .svg-container .load {
+    fill: #14539293 !important; /* Ensure the fill color is applied */
+    stroke: #000 !important; /* Ensure the stroke color is applied */
+    stroke-width: 2 !important; /* Ensure the stroke width is applied */
+}
+
+.svg-container .svg-text {
+    fill: white !important; /* Ensure the text color is white */
+    text-anchor: middle !important;
+}
+
+.svg-container .svg-subtext {
+    fill: white !important; /* Ensure the text color is white */
+    text-anchor: middle !important;
+}
+
+.svg-container .arrow {
+    stroke: black !important;
+    stroke-width: 4 !important;
+    marker-end: url(#arrow) !important;
+}
+
+
+.content-wrapper {
+    padding: 20px;
+    background-color: #f8f9fa; /* Light background color */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 20px;
+}
+.main-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.tagline {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Adjust as needed */
+}
+
 @keyframes fade {
     0% { opacity: 0.3; }
     33% { opacity: 1; }
@@ -186,39 +242,60 @@
     100% { opacity: 0.3; }
 }
 
-.extract { animation: fade 9s infinite; }
-.transform { animation: fade 9s infinite; animation-delay: 3s; }
-.load { animation: fade 9s infinite; animation-delay: 6s; }
-
-/* Media query for mobile view */
-@media (max-width: 767px) {
-    .svg-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .extract, .transform, .load {
-        width: 200px; /* Adjust width as necessary */
-        height: 100px;
-        margin: 10px 0;
-    }
-
-    /* Adjust text placement for mobile */
-    .extract text, .transform text, .load text {
-        text-anchor: middle;
-    }
-
-    /* Hide arrows for mobile view */
-    .extract + line, .transform + line {
-        display: none;
-    }
+.extract {
+    animation: fade 9s infinite;
+}
+.transform {
+    animation: fade 9s infinite;
+    animation-delay: 3s;
+}
+.load {
+    animation: fade 9s infinite;
+    animation-delay: 6s;
 }
 
-.content-box {
-    background-color: rgba(126, 127, 128, 1); /* Solid background color */
-    padding: 20px; /* Add padding inside the box */
-    border-radius: 8px; /* Add rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-    margin-bottom: 20px; /* Add margin below the box */
+
+.problem-box {
+    display: flex; /* Use Flexbox for layout */
+    align-items: flex-start; /* Align items to the start (top) */
+    margin-bottom: 10px; /* Reduce the margin between problem boxes */
+    padding: 10px; /* Reduce padding inside problem boxes */
+}
+
+.problem-box h4 {
+    margin-bottom: 5px; /* Reduce the margin below the headings */
+    font-size: 1.2rem; /* Adjust font size if necessary */
+    color: #333 !important; /* Set the text color */
+    text-align: left; /* Align text to the left */
+    margin-right: 10px; /* Add some space between the h4 and p tags */
+    flex-shrink: 0; /* Prevent the h4 from shrinking */
+}
+
+.problem-box {
+    display: flex; /* Use Flexbox for layout */
+    align-items: flex-start; /* Align items to the start (top) */
+    margin-bottom: 10px; /* Reduce the margin between problem boxes */
+    padding: 10px; /* Reduce padding inside problem boxes */
+    flex-wrap: wrap; /* Allow items to wrap within the flex container */
+}
+
+.problem-box h4 {
+    margin-bottom: 5px; /* Reduce the margin below the headings */
+    font-size: 1.2rem; /* Adjust font size if necessary */
+    color: #333 !important; /* Set the text color */
+    text-align: left; /* Align text to the left */
+    margin-right: 10px; /* Add some space between the h4 and p tags */
+    flex-shrink: 0; /* Prevent the h4 from shrinking */
+    width: 100%; /* Ensure the h4 takes up the full width of the container */
+    text-decoration: underline; /* Add underline to the heading */
+}
+
+.problem-box p {
+    margin-top: 2px;
+    margin-bottom: 5px; /* Reduce the margin below the paragraphs */
+    font-size: 1rem; /* Adjust font size if necessary */
+    line-height: 1.4; /* Adjust line height for better readability */
+    flex-grow: 1; /* Allow the p tag to take up remaining space */
+    text-align: left; /* Ensure text starts on the left */
+    width: 100%; /* Ensure the p tag takes up the full width of the container */
 }

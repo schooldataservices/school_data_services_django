@@ -3,16 +3,6 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
-<style>
-    .content-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 100%;
-    }
-</style>
 {% endblock %}
 
 {% block content %}
@@ -21,91 +11,46 @@
         <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
             <div class="content-wrapper">
                 <h1 class="main-heading text-center">Data Engineering Designed for Schools</h1>
-                <p class="tagline text-center"><strong>We help schools organize, clean, and store secure data in one singular location so your organization can gain insights on what matters</strong></p>
-                <p class="text-center">Struggling with data silos, manual processes, or spread out data amongst platforms?</p> 
-                <p class="text-center">We simplify data flow and house all of your data in Google Cloud Platform <img src="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" alt="Google Cloud Platform" class="gcp-image" style="width: 50px; height: auto; vertical-align: middle; margin-left: 10px;"></p>   
-                
-                <div style="margin-top: 30px;"></div>
-                
-                <!-- SVG Code -->
-                <div class="svg-container">
-                    <svg width="900" height="500" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Extract -->
-                        <rect x="50" y="100" width="200" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="extract"/>
-                        <text x="150" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Extract</text>
-                        <text x="150" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(SIS, APIs, DBs, Files)</text>
-                        
-                        <!-- Transform -->
-                        <rect x="350" y="100" width="200" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="transform"/>
-                        <text x="450" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Transform</text>
-                        <text x="450" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Processing, ETL)</text>
-                        
-                        <!-- Load -->
-                        <rect x="650" y="100" width="200" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="load"/>
-                        <text x="750" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Load</text>
-                        <text x="750" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(BigQuery, Data Lake)</text>
-                        
-                        <!-- Arrows -->
-                        <line x1="250" y1="150" x2="350" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
-                        <line x1="550" y1="150" x2="650" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
-                        
-                        <!-- Arrow Definition -->
-                        <defs>
-                            <marker id="arrow" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto">
-                                <polygon points="0 0, 12 5, 0 10" fill="black"/>
-                            </marker>
-                        </defs>
-                    </svg>
-                </div>
+                <p class="tagline text-center"><strong>We help schools organize, clean, and store data in one singular location so your organization can gain insights on what matters.</strong></p> 
+                <p class="text-center">We simplify the process of data management with automated ETL data pipelines and leverage Google Cloud Platform for seamless integration and scalability <img src="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" alt="Google Cloud Platform" class="gcp-image" style="width: 50px; height: auto; vertical-align: middle; margin-left: 10px;"></p></p>
+           
+               <!-- SVG Code -->
+               <div class="svg-container">
+                <svg width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Extract -->
+                    <rect x="50" y="100" width="205" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="extract"/>
+                    <text x="150" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Extract</text>
+                    <text x="152" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(SIS, Vendors, Testing Data)</text>
+                    
+                    <!-- Transform -->
+                    <rect x="350" y="100" width="205" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="transform"/>
+                    <text x="450" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Transform</text>
+                    <text x="450" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Processing, ETL)</text>
+                    
+                    <!-- Load -->
+                    <rect x="650" y="100" width="205" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="load"/>
+                    <text x="750" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Load</text>
+                    <text x="750" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Cloud Database)</text>
+                    
+                    <!-- Arrows -->
+                    <line x1="255" y1="150" x2="350" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                    <line x1="555" y1="150" x2="650" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                    
+                    <!-- Arrow Definition -->
+                    <defs>
+                        <marker id="arrow" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto">
+                            <polygon points="0 0, 12 5, 0 10" fill="black"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div> <!-- Close content-wrapper here -->  
 
-                <!-- Problems Districts Face with Data -->
-                <section id="problem-solution">
-                    <h2 class="section-heading text-center">Problems Districts Face with Data</h2>
-                    <div class="container">
-                        <div class="row text-center">
-                            <div class="col-md-12 problem-box">
-                                <h4>Data Silos</h4>
-                                <p>Data is often isolated with different vendors, making it hard to integrate with the SIS and create scalable systems.</p>
-                            </div>
-                            <div class="col-md-12 problem-box">
-                                <h4>Data Quality and Accuracy</h4>
-                                <p>Manual data entry can lead to mistakes, and there are often not many data validation processes in place. This can impact compliance.</p>
-                            </div>
-                            <div class="col-md-12 problem-box">
-                                <h4>Data Security and Privacy</h4>
-                                <p>Data security and privacy can be lost in translation, leading to potential breaches and compliance issues.</p>
-                            </div>
-                            <div class="col-md-12 problem-box">
-                                <h4>Data Access and Sharing</h4>
-                                <p>It can be hard within an organization to know where to go for data, making data access and sharing a challenge.</p>
-                            </div>
-                            <div class="col-md-12 problem-box">
-                                <h4>Data Overload</h4>
-                                <p>Organizations can be overwhelmed by the sheer volume of data, making it difficult to extract meaningful insights.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Table of Contents -->
-<div class="toc-container" id="toc-container">
-    <div class="toc">
-        <h4>Table of Contents</h4>
-        <ul>
-            <li><a href="#key-features">Intro</a></li>
-            <li><a href="#problem-solution">Problem & Solution</a></li>
-            <li><a href="#what-we-offer">What We Offer</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </div>
-</div>
-
-<button id="toc-toggle" class="btn btn-primary d-md-none" title="Navigation" style="top: 245px;">☰</button>
+{% include "emailscraper_app/toc.html" %}
 
 {% endblock content %}
 
@@ -136,11 +81,14 @@
             if (tocContainer.classList.contains('open')) {
                 var tocRect = tocContainer.getBoundingClientRect();
                 tocToggle.style.top = tocRect.top + 'px';
-                tocToggle.style.right = (window.innerWidth - tocRect.right) + 'px';
+                tocToggle.style.right = '10px'; // Keep the button on the right side
+                tocToggle.style.left = 'auto'; // Reset left position
+                tocToggle.style.zIndex = '1000'; // Ensure the button is on top
             } else {
                 setTocTogglePosition();
                 tocToggle.style.left = '10px';
                 tocToggle.style.right = 'auto';
+                tocToggle.style.zIndex = 'auto'; // Reset z-index
             }
         });
     });
@@ -167,7 +115,7 @@
             window.addEventListener('load', function() {
                 calendar.schedulingButton.load({
                     url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
-                    color: '#84b371',
+                    color: '#fff',
                     label: 'Get in Touch',
                     target,
                     className: 'custom-calendar-button' // Add custom class
