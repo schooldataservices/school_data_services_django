@@ -40,14 +40,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Authenticate with Google Cloud
+      run: |
+        gcloud auth activate-service-account --key-file=$HOME/gcp-key.json --service-account=django-project@django-hosting-427421.iam.gserviceaccount.com
+
     - name: Fetch Service Account JSON from GCP Secret Manager
       run: |
         gcloud secrets versions access latest --secret=django_hosting_json_file --project=django-hosting-427421 > gcp-key.json
-
-    - name: Authenticate with Google Cloud
-      run: |
-        gcloud auth activate-service-account --key-file=gcp-key.json
-        gcloud config set project django-hosting-427421
 
     - name: Set GOOGLE_APPLICATION_CREDENTIALS
       run: echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json" >> $GITHUB_ENV
