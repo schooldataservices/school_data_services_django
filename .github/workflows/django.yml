@@ -40,9 +40,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install MySQL client
-      run: sudo apt-get install -y default-mysql-client
-
+    - name: Install MySQL client and Run Tests
       run: |
+        sudo apt-get install -y default-mysql-client
         python manage.py migrate
         python manage.py test
