@@ -12,6 +12,12 @@ from datetime import datetime
 def landing_page(request):
     return render(request, 'emailscraper_app/landing_page.html')
 
+def problem_solution(request):
+    return render(request, 'emailscraper_app/challenges_faced.html')
+
+def what_we_offer(request):
+    return render(request, 'emailscraper_app/what_we_offer.html')
+
 
 
 
