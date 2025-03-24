@@ -42,7 +42,7 @@ jobs:
 
     - name: Fetch Service Account JSON from GCP Secret Manager
       run: |
-        gcloud secrets versions access latest --secret=django_hosting_json_file > gcp-key.json
+        gcloud secrets versions access latest --secret=django_hosting_json_file --project=django-hosting-427421 > gcp-key.json
         export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json
 
     - name: Install MySQL client and Run Tests
