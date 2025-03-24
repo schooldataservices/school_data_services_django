@@ -40,7 +40,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Fetch Service Account JSON from GCP Secret Manager
+      run: |
+        gcloud secrets versions access latest --secret=django_hosting_json_file > gcp-key.json
+        export GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json
+
     - name: Install MySQL client and Run Tests
+      env:
+        DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
       run: |
         sudo apt-get install -y default-mysql-client
         python manage.py migrate
