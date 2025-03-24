@@ -40,16 +40,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Fetch Service Account JSON from GCP Secret Manager
+      run: |
+        gcloud secrets versions access latest --secret=django_hosting_json_file --project=django-hosting-427421 > $HOME/gcp-key.json
+
     - name: Authenticate with Google Cloud
       run: |
         gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
 
-    - name: Fetch Service Account JSON from GCP Secret Manager
-      run: |
-        gcloud secrets versions access latest --secret=django_hosting_json_file --project=django-hosting-427421 > gcp-key.json
-
     - name: Set GOOGLE_APPLICATION_CREDENTIALS
-      run: echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json" >> $GITHUB_ENV
+      run: echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
     - name: Install MySQL client and Run Tests
       env:
