@@ -152,11 +152,11 @@ else:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "django_db",
-        "USER": django_db_user,
-        "PASSWORD": django_db_password,
-        "HOST": "35.236.35.240",
-        "PORT": "3306"
+        "NAME": os.getenv("DJANGO_DB_NAME", "django_db"),
+        "USER": os.getenv("DJANGO_DB_USER", django_db_user),
+        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD", django_db_password),
+        "HOST": os.getenv("DJANGO_DB_HOST", "35.236.35.240"),
+        "PORT": os.getenv("DJANGO_DB_PORT", "3306"),
     }
 }
 

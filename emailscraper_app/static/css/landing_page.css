@@ -177,7 +177,7 @@
     max-width: 1000px; /* Limit the width of the SVG container */
     margin: 0 auto;
     padding-bottom: 0;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .svg-container svg {
@@ -228,12 +228,6 @@
     margin-bottom: 1.5rem;
 }
 
-.svg-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px; /* Adjust as needed */
-}
 
 @keyframes fade {
     0% { opacity: 0.3; }

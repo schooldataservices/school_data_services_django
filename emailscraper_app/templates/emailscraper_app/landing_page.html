@@ -12,29 +12,29 @@
             <div class="content-wrapper">
                 <h1 class="main-heading text-center">Data Engineering Designed for Schools</h1>
                 <p class="tagline text-center"><strong>We help schools organize, clean, and store data in one singular location so your organization can gain insights on what matters.</strong></p> 
-                <p class="text-center">We simplify the process of data management with automated ETL data pipelines and leverage Google Cloud Platform for seamless integration and scalability <img src="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" alt="Google Cloud Platform" class="gcp-image" style="width: 50px; height: auto; vertical-align: middle; margin-left: 10px;"></p></p>
+                <p class="text-center">We simplify the process of data management with automated ETL processes and leverage Google Cloud Platform for seamless integration and scalability <img src="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" alt="Google Cloud Platform" class="gcp-image" style="width: 50px; height: auto; vertical-align: middle; margin-left: 10px;"></p></p>
            
                <!-- SVG Code -->
                <div class="svg-container">
-                <svg width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
                     <!-- Extract -->
-                    <rect x="50" y="100" width="205" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="extract"/>
-                    <text x="150" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Extract</text>
-                    <text x="152" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(SIS, Vendors, Testing Data)</text>
+                    <rect x="5%" y="20%" width="22%" height="20%" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="extract"/>
+                    <text x="16%" y="30%" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Extract</text>
+                    <text x="16%" y="35%" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(SIS, Vendors, Testing Data)</text>
                     
                     <!-- Transform -->
-                    <rect x="350" y="100" width="205" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="transform"/>
-                    <text x="450" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Transform</text>
-                    <text x="450" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Processing, ETL)</text>
+                    <rect x="40%" y="20%" width="20%" height="20%" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="transform"/>
+                    <text x="50%" y="30%" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Transform</text>
+                    <text x="50%" y="35%" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Processing, ETL)</text>
                     
                     <!-- Load -->
-                    <rect x="650" y="100" width="205" height="100" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="load"/>
-                    <text x="750" y="150" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Load</text>
-                    <text x="750" y="175" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Cloud Database)</text>
+                    <rect x="75%" y="20%" width="20%" height="20%" fill="rgba(126, 127, 128, 1)" stroke="#000" stroke-width="2" class="load"/>
+                    <text x="85%" y="30%" font-size="24" font-family="Arial" fill="white" text-anchor="middle">Load</text>
+                    <text x="85%" y="35%" font-size="16" font-family="Arial" fill="white" text-anchor="middle">(Cloud Database)</text>
                     
                     <!-- Arrows -->
-                    <line x1="255" y1="150" x2="350" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
-                    <line x1="555" y1="150" x2="650" y2="150" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                    <line x1="27%" y1="30%" x2="40%" y2="30%" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                    <line x1="60%" y1="30%" x2="75%" y2="30%" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
                     
                     <!-- Arrow Definition -->
                     <defs>
@@ -51,6 +51,8 @@
 </div>
 
 {% include "emailscraper_app/toc.html" %}
+
+<button id="toc-toggle" class="btn btn-primary d-md-none" title="Navigation" style="top: 251px;">☰</button>
 
 {% endblock content %}
 
@@ -93,6 +95,25 @@
         });
     });
 </script>
+<script>
+    (function() {
+    var target = document.getElementById('calendar-button-container');
+    window.addEventListener('load', function() {
+        console.log(calendar); // Check if calendar is defined
+        if (calendar) {
+            calendar.schedulingButton.load({
+                url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                color: '#fff',
+                label: 'Get in Touch',
+                target: target,
+                className: 'custom-calendar-button'
+            });
+        } else {
+            console.error('Google Calendar schedulingButton object not found!');
+        }
+        });
+    })();
+</script>
 {% endblock extra_js %}
 
 {% block footer %}
@@ -107,22 +128,9 @@
       </a>
 
       <!-- Google Calendar Appointment Scheduling begin -->
+      <div id="calendar-button-container"></div>
       <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
       <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
-      <script>
-        (function() {
-            var target = document.currentScript;
-            window.addEventListener('load', function() {
-                calendar.schedulingButton.load({
-                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
-                    color: '#fff',
-                    label: 'Get in Touch',
-                    target,
-                    className: 'custom-calendar-button' // Add custom class
-                });
-            });
-        })();
-      </script>
   </div>
 </div>
 {% endblock footer %}
