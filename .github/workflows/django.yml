@@ -13,7 +13,8 @@ jobs:
     services:
       mysql:
         image: mysql:latest
-        env:
+        # specifically for mysql
+        env:  
           MYSQL_DATABASE: django_db
           MYSQL_USER: django_db_user
           MYSQL_PASSWORD: django_db_password
@@ -42,13 +43,6 @@ jobs:
     - name: Install MySQL client
       run: sudo apt-get install -y default-mysql-client
 
-    - name: Run tests
-      env:
-        DJANGO_DB_USER: django_db_user
-        DJANGO_DB_PASSWORD: django_db_password
-        DJANGO_DB_HOST: localhost
-        DJANGO_DB_NAME: django_db
-        DJANGO_DB_PORT: 3306
       run: |
         python manage.py migrate
         python manage.py test

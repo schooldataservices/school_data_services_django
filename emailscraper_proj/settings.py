@@ -20,12 +20,12 @@ PROJECT_ID = "django-hosting-427421"
 EMAIL_HOST_USER = access_secret_version(PROJECT_ID, "EMAIL_HOST_USER_sds")
 imap_password_schooldataservices = access_secret_version(PROJECT_ID, "imap_password_schooldataservices")
 django_db_password = access_secret_version(PROJECT_ID, "django_db_password")
+django_db_user = access_secret_version(PROJECT_ID, "django_db_user")
 django_secret_key = access_secret_version(PROJECT_ID, "django_secret_key")
 GS_JSON_PATH = access_secret_version(PROJECT_ID, "GS_JSON_PATH")
 GS_BUCKET_NAME = access_secret_version(PROJECT_ID, "GS_BUCKET_NAME")
-django_db_user = access_secret_version(PROJECT_ID, "django_db_user")
 django_hosting_json_file = access_secret_version(PROJECT_ID, "django_hosting_json_file")
-
+django_root_password = access_secret_version(PROJECT_ID, "django_root_password")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,9 +152,9 @@ else:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DJANGO_DB_NAME", "django_db"),
-        "USER": os.getenv("DJANGO_DB_USER", django_db_user),
-        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD", django_db_password),
+        "NAME": "django_db",
+        "USER": django_db_user,
+        "PASSWORD": django_db_password,
         "HOST": os.getenv("DJANGO_DB_HOST", "35.236.35.240"),
         "PORT": os.getenv("DJANGO_DB_PORT", "3306"),
     }
