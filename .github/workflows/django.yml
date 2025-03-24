@@ -1,0 +1,53 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: django_db
+          MYSQL_USER: django_db_user
+          MYSQL_PASSWORD: django_db_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install MySQL client
+      run: sudo apt-get install -y default-mysql-client
+
+    - name: Run tests
+      env:
+        DJANGO_DB_USER: django_db_user
+        DJANGO_DB_PASSWORD: django_db_password
+        DJANGO_DB_HOST: localhost
+        DJANGO_DB_NAME: django_db
+        DJANGO_DB_PORT: 3306
+      run: |
+        python manage.py migrate
+        python manage.py test
