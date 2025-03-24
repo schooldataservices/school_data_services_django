@@ -2,7 +2,7 @@ Django==4.2.8
 django_ckeditor==6.7.2
 django_ckeditor_5==0.2.15
 django_storages==1.14.4
-pandas==2.2.3
+pandas==2.0.3
 Pillow==11.1.0
 protobuf==5.29.3
 django-crispy-forms==1.14.0
