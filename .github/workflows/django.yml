@@ -17,6 +17,7 @@ jobs:
           MYSQL_DATABASE: django_db
           MYSQL_USER: django_db_user
           MYSQL_PASSWORD: django_db_password
+          MYSQL_ROOT_PASSWORD: django_db_password
         ports:
           - 3306:3306
         options: >-
