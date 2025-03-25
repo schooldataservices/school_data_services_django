@@ -44,7 +44,7 @@ jobs:
 
     - name: Verify GCP credentials (debug step)
       run: |
-        cat $HOME/gcp_credentials.json  # Ensure credentials are properly set
+        cat $HOME/gcp_credentials.json  # Print credentials to debug
 
     - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
       run: echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json" >> $GITHUB_ENV
