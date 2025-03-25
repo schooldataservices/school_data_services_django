@@ -45,11 +45,28 @@ jobs:
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
+    - name: Debugging: Check if credentials file is created correctly
+      run: |
+        echo "Checking credentials file content"
+        cat $HOME/gcloud.json || echo "Credentials file not found"
+      continue-on-error: true  # This allows the job to proceed even if there's an error
+
+    - name: Debugging: Check environment variable GOOGLE_APPLICATION_CREDENTIALS
+      run: |
+        echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+        if [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+          echo "File exists"
+        else
+          echo "File does not exist"
+        fi
+      continue-on-error: true  # This allows the job to proceed even if there's an error
+
     - name: Install MySQL client and Run Tests
       env:
         DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
         GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
       run: |
         sudo apt-get install -y default-mysql-client
+        echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
         python manage.py migrate
         python manage.py test
