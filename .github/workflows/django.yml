@@ -1,59 +1,38 @@
-name: Django CI
+name: Deploy to GCP
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - main
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_DATABASE: django_db
-          MYSQL_USER: django_db_user
-          MYSQL_PASSWORD: django_db_password
-          MYSQL_ROOT_PASSWORD: django_db_password
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd "mysqladmin ping --silent"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+    
     steps:
-    - uses: actions/checkout@v2
+    - name: Check out repository
+      uses: actions/checkout@v3
 
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v2
+    - name: Set up GCP authentication
+      uses: google-github-actions/setup-gcloud@v3
       with:
-        python-version: '3.12'
+        project_id: django-hosting-427421
+        credentials: ${{ secrets.django_hosting_json_file }}
 
-    - name: Install dependencies
+    - name: Fetch Service Account from Secret Manager
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # Install Google Cloud SDK (in case it's not installed)
+        curl https://sdk.cloud.google.com | bash
+        source $HOME/google-cloud-sdk/path.bash.inc
+        
+        # Authenticate with GCP
+        gcloud auth activate-service-account --key-file=${{ secrets.django_hosting_json_file }}
 
-    - name: Set up Google Cloud credentials
-      run: echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcp_credentials.json
-
-    - name: Verify GCP credentials (debug step)
-      run: |
-        cat $HOME/gcp_credentials.json  # Print credentials to debug
-
-    - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
-      run: echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp_credentials.json" >> $GITHUB_ENV
-
-    - name: Install MySQL client and Run Tests
-      env:
-        DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
-      run: |
-        sudo apt-get install -y default-mysql-client
-        python manage.py migrate
-        python manage.py test
-# 
+        # Retrieve service account key from Secret Manager
+        gcloud secrets versions access latest --secret="gcp-credentials" > /tmp/gcp_credentials.json
+        
+        # Now you can use the credentials
+        gcloud auth activate-service-account --key-file=/tmp/gcp_credentials.json
+        # Or do further GCP tasks like gcloud compute or gcloud storage operations
+      
+ 
