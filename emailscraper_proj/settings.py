@@ -17,7 +17,7 @@ from .access_secrets import access_secret_version
 PROJECT_ID = "django-hosting-427421"
 
 # Access secrets from Google Cloud Secret Manager
-EMAIL_HOST_USER = access_secret_version(PROJECT_ID, "EMAIL_HOST_USER_sds")
+EMAIL_HOST_USER = access_secret_version(PROJECT_ID, "EMAIL_HOST_USER")
 imap_password_schooldataservices = access_secret_version(PROJECT_ID, "imap_password_schooldataservices")
 django_db_password = access_secret_version(PROJECT_ID, "django_db_password")
 django_db_user = access_secret_version(PROJECT_ID, "django_db_user")
