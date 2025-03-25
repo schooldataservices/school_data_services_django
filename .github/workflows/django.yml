@@ -1,3 +1,13 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches:
+      - master  # Trigger on push to the master branch
+  pull_request:
+    branches:
+      - master  # Trigger on pull request to the master branch
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
