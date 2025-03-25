@@ -1,38 +1,14 @@
-name: Deploy to GCP
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up GCP authentication
-      uses: google-github-actions/setup-gcloud@v3
-      with:
-        project_id: django-hosting-427421
-        credentials: ${{ secrets.django_hosting_json_file }}
-
-    - name: Fetch Service Account from Secret Manager
-      run: |
-        # Install Google Cloud SDK (in case it's not installed)
-        curl https://sdk.cloud.google.com | bash
-        source $HOME/google-cloud-sdk/path.bash.inc
-        
-        # Authenticate with GCP
-        gcloud auth activate-service-account --key-file=${{ secrets.django_hosting_json_file }}
-
-        # Retrieve service account key from Secret Manager
-        gcloud secrets versions access latest --secret="gcp-credentials" > /tmp/gcp_credentials.json
-        
-        # Now you can use the credentials
-        gcloud auth activate-service-account --key-file=/tmp/gcp_credentials.json
-        # Or do further GCP tasks like gcloud compute or gcloud storage operations
-      
- 
+      - name: Set up GCP credentials
+        run: |
+          echo ${{ secrets.GCP_CREDENTIALS }} | base64 --decode > gcp_credentials.json
+          
+      - name: Authenticate with GCP
+        run: |
+          gcloud auth activate-service-account --key-file=gcp_credentials.json
