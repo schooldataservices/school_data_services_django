@@ -29,7 +29,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python 3.12
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.12'
@@ -39,10 +39,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Create Google Cloud credentials file
+      run: |
+        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > $HOME/gcloud.json
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
     - name: Install MySQL client and Run Tests
       env:
         DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
       run: |
         sudo apt-get install -y default-mysql-client
         python manage.py migrate
