@@ -63,7 +63,11 @@ jobs:
 
     - name: Install MySQL client and Run Tests
       env:
-        DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
+        DJANGO_DB_USER: django_db_user
+        DJANGO_DB_PASSWORD: django_db_password
+        DJANGO_DB_HOST: localhost
+        DJANGO_DB_NAME: django_db
+        DJANGO_DB_PORT: 3306
         GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
       run: |
         sudo apt-get install -y default-mysql-client
