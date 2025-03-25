@@ -45,7 +45,7 @@ jobs:
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
-    - name: Debugging: Check if credentials file is created correctly
+    - name: Debugging- Check if credentials file is created correctly
       run: |
         echo "Checking credentials file content"
         cat $HOME/gcloud.json || echo "Credentials file not found"
@@ -56,7 +56,7 @@ jobs:
         echo "Setting GOOGLE_APPLICATION_CREDENTIALS environment variable"
         echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json" >> $GITHUB_ENV
 
-    - name: Debugging: Check environment variable GOOGLE_APPLICATION_CREDENTIALS
+    - name: Debugging- Check environment variable GOOGLE_APPLICATION_CREDENTIALS
       run: |
         echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
         if [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
