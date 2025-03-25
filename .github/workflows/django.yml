@@ -44,14 +44,19 @@ jobs:
         echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > $HOME/gcloud.json
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-    
-    - name: Debugging - Check if credentials file is created correctly
+
+    - name: Debugging: Check if credentials file is created correctly
       run: |
         echo "Checking credentials file content"
         cat $HOME/gcloud.json || echo "Credentials file not found"
       continue-on-error: true  # This allows the job to proceed even if there's an error
 
-    - name: Debugging -  Check environment variable GOOGLE_APPLICATION_CREDENTIALS
+    - name: Set environment variable for Google Cloud credentials
+      run: |
+        echo "Setting GOOGLE_APPLICATION_CREDENTIALS environment variable"
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json" >> $GITHUB_ENV
+
+    - name: Debugging: Check environment variable GOOGLE_APPLICATION_CREDENTIALS
       run: |
         echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
         if [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
@@ -63,12 +68,8 @@ jobs:
 
     - name: Install MySQL client and Run Tests
       env:
-        DJANGO_DB_USER: django_db_user
-        DJANGO_DB_PASSWORD: django_db_password
-        DJANGO_DB_HOST: localhost
-        DJANGO_DB_NAME: django_db
-        DJANGO_DB_PORT: 3306
-        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json
+        DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcloud.json  # Ensure the env var is passed
       run: |
         sudo apt-get install -y default-mysql-client
         echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
