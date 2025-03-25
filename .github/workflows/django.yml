@@ -1,26 +1,49 @@
-name: Deploy to GCP
+name: Django CI
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
-      - name: Set up GCP credentials
-        run: |
-          echo ${{ secrets.GCP_CREDENTIALS }} | base64 --decode > gcp_credentials.json
-          # Debugging: Show the first 100 characters of the credentials file (safe for debugging)
-          head -n 1 gcp_credentials.json
-          
-      - name: Authenticate with GCP
-        run: |
-          gcloud auth activate-service-account --key-file=gcp_credentials.json
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: django_db
+          MYSQL_USER: django_db_user
+          MYSQL_PASSWORD: django_db_password
+          MYSQL_ROOT_PASSWORD: django_db_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install MySQL client and Run Tests
+      env:
+        DATABASE_URL: mysql://django_db_user:django_db_password@localhost:3306/django_db
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      run: |
+        sudo apt-get install -y default-mysql-client
+        python manage.py migrate
+        python manage.py test
