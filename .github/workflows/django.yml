@@ -40,20 +40,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v3
-      with:
-        version: 'latest'
-        project_id: django-hosting-427421
-
-    - name: Authenticate with Google Cloud using Secret Manager
-      run: |
-        # Retrieve the secret from GCP Secret Manager
-        echo "Fetching service account key from Secret Manager..."
-        gcloud secrets versions access latest --secret="django_hosting_json_file" > /tmp/gcp-key.json
-
-        # Authenticate using the retrieved service account key
-        gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
 
     - name: Install MySQL client and Run Tests
       env:
