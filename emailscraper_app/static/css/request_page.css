@@ -42,16 +42,21 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    background-color: #7e7f8065; 
+    
 }
 
+
 th, td { 
-    border: 1px solid hsla(0, 0%, 87%, 0.521);
+    border: 1px solid hsla(0, 0%, 87%, 0.952);
     padding: 10px;
     text-align: left;
+    color: #000000; 
 }
 
 th { 
-    background-color: #f4f4f454;
+    background-color: #14539293;
+    color : #fff
 }
 
 tr:nth-child(even) { 
@@ -59,7 +64,7 @@ tr:nth-child(even) {
 }
 
 tr:hover { 
-    background-color: #07000080; 
+    background-color: #3d3c3c75; 
 }
 
 .block-footer {
@@ -152,4 +157,44 @@ tr:hover {
 .common-dropdown:hover {
     border-color: #007bff;     /* Change border color on hover */
     background-color: #f8f9fa; /* Change background color on hover */
+}
+
+label {
+    color : #000000;
+}
+
+/* Ensure the text color is always black for the datetimepicker input */
+.datetimepicker {
+    background-color: #fff !important; /* White background color */
+    color: #000000 !important; /* Black text color */
+}
+
+/* Ensure the text color is always black for the flatpickr input */
+.flatpickr-input {
+    background-color: #fff !important; /* White background color */
+    color: #000000 !important; /* Black text color */
+}
+
+/* Ensure the cursor is a pointer for readonly flatpickr input */
+.flatpickr-input[readonly] {
+    cursor: pointer;
+}
+
+
+.ck-content {
+    color: black; /* Set default text color */
+    background-color: white; /* Set default background color */
+}
+
+.ck-list-bogus-paragraph {
+    color: black; /* Ensure text color is black */
+}
+
+/* Style the h1 header tag */
+h1.submit-request-header {
+    margin-bottom: 20px;
+    font-size: 24px;
+    margin-top: 15px;
+    color: #000000; /* Change this to the desired color */
+    text-align: center;
 }

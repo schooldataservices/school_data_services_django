@@ -38,7 +38,7 @@
     position: fixed;
     top: 170px;
     left: 0;
-    width: 180px;
+    width: 160px;
     transition: left 0.3s ease; /* Smooth transition */
     z-index: 1000; /* Ensure it is above other elements */
 }
@@ -46,6 +46,7 @@
 .toc-container.hidden {
     left: -250px; /* Hide the TOC off-screen on mobile devices */
 }
+
 
 .toc {
     background-color: rgba(126, 127, 128, 1); /* Solid background color */
@@ -76,25 +77,37 @@
 /* Ensure the TOC toggle button is positioned correctly */
 #toc-toggle {
     position: fixed;
-    left: 10px;
-    z-index: 1000; /* Ensure it is above the TOC */
-    background-color: #007bff; /* Background color for visibility */
+    top: 20px; /* 10px from the top of the TOC */
+    left: 20px; /* 10px from the right of the TOC */
+    z-index: 1001; /* Ensure it is above the TOC content */
+    background-color: rgba(126, 127, 128, 1); /* Background color for visibility */
     color: #fff; /* Text color for visibility */
     border: none;
     padding: 10px;
     border-radius: 5px;
+    display: inline-block; /* Prevent the button from stretching */
     cursor: pointer;
 }
 
-/* Button to make sure it remains visible */
-#toc-toggle.open {
-    left: auto; /* Reset left position */
-    right: 10px; /* Position at the top right of the TOC */
-    z-index: 1001;
+
+.content-wrapper {
+    padding: 20px;
+    margin-left: 150px;
+    transition: margin-left 0.3s ease; /* Smooth transition */
+    background-color: #f8f9fa; /* Light background color */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 20px;
 }
 
 /* Hide TOC on mobile devices */
 @media (max-width: 767px) {
+
+    .content-wrapper {
+        margin-left: 0; /* Remove margin for mobile view */
+        width: 100%; /* Ensure it takes up the full width */
+    }
+
     .toc-container {
         left: -250px; /* Hide the TOC off-screen */
     }
@@ -102,11 +115,12 @@
     .toc-container.open {
         left: 0; /* Slide the TOC into view */
         z-index: 1000; /* Ensure it is above other elements when opened */
+        top: 195px;
     }
 
     #toc-toggle.open {
         left: auto;
-        right: 10px; /* Adjust position when TOC is open on mobile */
+        right: 250px; /* Adjust position when TOC is open on mobile */
     }
 }
 
@@ -174,7 +188,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1000px; /* Limit the width of the SVG container */
+    max-width: 900px; /* Limit the width of the SVG container */
     margin: 0 auto;
     padding-bottom: 0;
     overflow: auto;
@@ -194,30 +208,14 @@
     stroke-width: 2 !important; /* Ensure the stroke width is applied */
 }
 
-.svg-container .svg-text {
-    fill: white !important; /* Ensure the text color is white */
-    text-anchor: middle !important;
-}
-
-.svg-container .svg-subtext {
-    fill: white !important; /* Ensure the text color is white */
-    text-anchor: middle !important;
-}
-
-.svg-container .arrow {
-    stroke: black !important;
-    stroke-width: 4 !important;
-    marker-end: url(#arrow) !important;
+.responsive-svg {
+    width: 100%; /* Scale the SVG to fit the container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Remove inline spacing */
 }
 
 
-.content-wrapper {
-    padding: 20px;
-    background-color: #f8f9fa; /* Light background color */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    margin-top: 20px;
-}
+
 .main-heading {
     font-size: 2.5rem;
     font-weight: bold;

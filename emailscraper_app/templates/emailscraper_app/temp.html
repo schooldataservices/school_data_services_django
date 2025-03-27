@@ -3,13 +3,12 @@
 
 {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/ckeditor_custom.css' %}">
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
 
 {% block content %}
-  <h1 style="margin-bottom: 20px; font-size: 24px; margin-top: 15px;">Submit Request</h1>
+  <h1 class="submit-request-header">Submit Request</h1>
   
   <!-- Display success message if available -->
   {% if success_message %}
