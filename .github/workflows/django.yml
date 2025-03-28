@@ -10,6 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      PROJECT_ID: django-hosting-427421
+
     services:
       mysql:
         image: mysql:latest
@@ -39,28 +42,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Step 4: Set up Google Cloud authentication securely
-    - name: Set up Google Cloud authentication
-      run: |
-        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > gcloud-service-key.json
-        gcloud auth activate-service-account --key-file=gcloud-service-key.json
-        gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-        # Remove service account key file for security after use
-        rm gcloud-service-key.json
+    - name: Google Cloud Auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ env.PROJECT_ID }}
 
-    # Step 5: Fetch database credentials and secret key from GCP Secrets Manager
-    - name: Fetch GCP Secrets
-      run: |
-        export DB_USER=$(gcloud secrets versions access latest --secret="django_db_user")
-        export DB_PASSWORD=$(gcloud secrets versions access latest --secret="django_db_password")
-        export SECRET_KEY=$(gcloud secrets versions access latest --secret="django_secret_key")
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.0
 
-    # Step 6: Run Tests with the database and secret key environment variables
-    - name: Run Tests
+
+    - name: Install MySQL client and Run Tests
       env:
-        DATABASE_URL: mysql://$DB_USER:$DB_PASSWORD@localhost:3306/django_db
-        DJANGO_SECRET_KEY: $SECRET_KEY
+        DATABASE_URL: mysql://django_db_user:django_db_password@35.236.35.240:3306/django_db
       run: |
-        echo "Using GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+        sudo apt-get install -y default-mysql-client
         python manage.py migrate
         python manage.py test
