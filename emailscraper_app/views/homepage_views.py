@@ -15,10 +15,14 @@ def landing_page(request):
 def problem_solution(request):
     return render(request, 'emailscraper_app/challenges_faced.html')
 
-def what_we_offer(request):
-    return render(request, 'emailscraper_app/what_we_offer.html')
+def data_modeling(request):
+    return render(request, 'emailscraper_app/data_modeling.html')
 
+def data_pipelines(request):
+    return render(request, 'emailscraper_app/data_pipelines.html')
 
+def cloud_setup(request):
+    return render(request, 'emailscraper_app/cloud_setup.html')
 
 
 def format_datetime_fields(data):

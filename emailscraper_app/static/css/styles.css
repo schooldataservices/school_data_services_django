@@ -450,6 +450,12 @@ body {
     margin-left: 20px;
 }
 
+.nav-link.dropdown-toggle {
+    color: white; /* Make the arrow white */
+    font-size: 18px; /* Increase the size of the arrow */
+}
+
 p {
     color: #000000e7; /* Set paragraph text color */
 }
+

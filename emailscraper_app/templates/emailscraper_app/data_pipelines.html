@@ -1,0 +1,101 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid"> <!-- Changed to container-fluid for full-width -->
+    <div class="row">
+        <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
+            <div class="content-wrapper">
+                <!-- Problems Districts Face with Data -->
+            
+                <!-- Data Pipelines Section -->
+                <section id="data-pipelines">
+                    <h2 class="section-heading text-center">Data Pipelines and Orchestration (More to Come) </h2>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 problem-box">
+                                <p>
+                                    Data pipelines are the backbone of modern data engineering. They ensure that data flows seamlessly from various sources to destinations where it can be analyzed and used for decision-making. 
+                                    We leverage <strong>Apache Airflow</strong> for orchestration, ensuring that all tasks in the pipeline are executed in the correct order and on schedule.
+                                </p>
+                                <p>
+                                    With Airflow, we can monitor and manage workflows in real-time. If a pipeline fails, Airflow sends <strong>email alerts</strong> to notify stakeholders, enabling quick resolution of issues. Additionally, robust <strong>logging</strong> within Airflow ensures that every step of the pipeline is tracked, making it easier to debug and optimize workflows.
+                                </p>
+                                <p>
+                                    Our pipelines are built with <strong>CI/CD processes</strong> to ensure accuracy and reliability. Automated testing and deployment pipelines allow us to quickly iterate on changes while maintaining the integrity of your data workflows.
+                                </p>
+                                <p>
+                                    Once the data is processed, it is stored in <strong>Google BigQuery</strong>, a fully managed, serverless data warehouse. BigQuery offers:
+                                </p>
+                                <ul>
+                                    <li>Scalability to handle massive datasets.</li>
+                                    <li>High-speed querying with SQL-like syntax.</li>
+                                    <li>Seamless integration with other Google Cloud services.</li>
+                                    <li>Cost-effective storage and analysis.</li>
+                                </ul>
+                                <p>
+                                    Finally, the processed data is visualized and reported using tools like <strong>Looker</strong> or <strong>Tableau</strong>. These tools provide:
+                                </p>
+                                <ul>
+                                    <li>Interactive dashboards for real-time insights.</li>
+                                    <li>Customizable reports tailored to your organization's needs.</li>
+                                    <li>Collaboration features to share insights across teams.</li>
+                                </ul>
+                                <p>
+                                    By combining Airflow for orchestration, CI/CD processes for accuracy, BigQuery for storage and analysis, and Looker/Tableau for reporting, we deliver a complete data pipeline solution that empowers your organization to make data-driven decisions with confidence.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div> <!-- Close content-wrapper here -->  
+        </div>
+    </div>
+</div>
+
+{% include "emailscraper_app/toc.html" %}
+
+
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/toc_toggles.js' %}"></script>
+{{ block.super }}
+{% endblock extra_js %}
+
+
+{% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/2015samtaylor" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
+      </a>
+
+      <a href="mailto:2015samtaylor@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+      </a>
+
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#fff',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button' // Add custom class
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
+{% endblock footer %}

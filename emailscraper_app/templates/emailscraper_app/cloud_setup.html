@@ -1,0 +1,75 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content-wrapper">
+                <!-- Cloud Setup Section -->
+                <section id="cloud-setup">
+                    <h2 class="section-heading text-center">Cloud Database (More to Come) </h2>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>
+                                    Cloud setup is essential for modern data management. By leveraging cloud platforms, we ensure scalability, reliability, and security for your organization's data.
+                                </p>
+                                <p>
+                                    Our cloud setup process includes configuring virtual machines, setting up databases, and ensuring seamless integration with your existing systems. Below is an example of a typical cloud architecture:
+                                </p>
+                                <div class="text-center">
+                                    <img src="{% static 'images/cloud_architecture_example.png' %}" alt="Cloud Architecture Example" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div> 
+        </div>
+    </div>
+</div>
+
+{% include "emailscraper_app/toc.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/toc_toggles.js' %}"></script>
+{{ block.super }}
+{% endblock extra_js %}
+
+{% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/2015samtaylor" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
+      </a>
+
+      <a href="mailto:2015samtaylor@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+      </a>
+
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#fff',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button' // Add custom class
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
+{% endblock footer %}

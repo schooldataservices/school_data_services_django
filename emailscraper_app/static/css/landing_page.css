@@ -74,18 +74,37 @@
     text-decoration: underline;
 }
 
+.toc .sub-list {
+    margin-left: 20px; /* Indent subsections */
+}
+
+.toc .sub-list a {
+    font-size: 14px; /* Smaller font size for subsections */
+}
+
+.toggle-btn-internal {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #ffffff;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.toggle-btn-internal:hover {
+    color: #5f5f5fc2;
+}
+
+
 /* Ensure the TOC toggle button is positioned correctly */
 #toc-toggle {
     position: fixed;
-    top: 20px; /* 10px from the top of the TOC */
-    left: 20px; /* 10px from the right of the TOC */
     z-index: 1001; /* Ensure it is above the TOC content */
     background-color: rgba(126, 127, 128, 1); /* Background color for visibility */
     color: #fff; /* Text color for visibility */
     border: none;
     padding: 10px;
     border-radius: 5px;
-    display: inline-block; /* Prevent the button from stretching */
     cursor: pointer;
 }
 

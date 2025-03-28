@@ -10,14 +10,24 @@
     <div class="row">
         <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
             <div class="content-wrapper">
-                <!-- Problems Districts Face with Data -->
-                <section id="problem-solution">
-                    <h2 class="section-heading text-center">Give a further concrete example here</h2>
+            
+                <!-- Data Modeling Section -->
+                <section id="data-modeling">
+                    <h2 class="section-heading text-center">Data Modeling and Centralized Metrics</h2>
                     <div class="container">
-                        <div class="row text-center">
+                        <div class="row">
                             <div class="col-md-12 problem-box">
-                                <h4>Example</h4>
-                                <p>Data is often isolated with different vendors, making it hard to integrate with the SIS and create scalable systems.</p>
+                                <p>
+                                    Data modeling is the foundation of effective data management. By normalizing data, we ensure that redundant and inconsistent data is eliminated, making it easier to manage and analyze. 
+                                    Normalization involves organizing data into structured tables, reducing duplication, and ensuring relationships between data points are clearly defined.
+                                </p>
+                                <p>
+                                    An example is shown below where attendance data and grade is normalized into separate tables, and then brought together into a centralized table that analysts can use to gain insights. 
+                                    This approach ensures that your data is clean, reliable, and ready for analysis.
+                                </p>
+                                <div class="text-center">
+                                    {% include "emailscraper_app/normalized_table.html" %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -29,45 +39,14 @@
 
 {% include "emailscraper_app/toc.html" %}
 
+
 {% endblock content %}
 
 {% block extra_js %}
+<script src="{% static 'js/toc_toggles.js' %}"></script>
 {{ block.super }}
-<script>
-    $(document).ready(function() {
-        var tocToggle = document.getElementById('toc-toggle');
-        var tocContainer = document.getElementById('toc-container');
-        var navbar = document.querySelector('.navbar');
-
-        // Function to set the position of the TOC toggle button
-        function setTocTogglePosition() {
-            var navbarHeight = navbar.offsetHeight;
-            tocToggle.style.top = (navbarHeight + 10) + 'px'; // 10px below the navbar
-        }
-
-        // Set the initial position of the TOC toggle button
-        setTocTogglePosition();
-
-        // Adjust the position of the TOC toggle button on window resize
-        window.addEventListener('resize', setTocTogglePosition);
-
-        tocToggle.addEventListener('click', function() {
-            tocContainer.classList.toggle('open');
-            tocToggle.classList.toggle('open');
-
-            if (tocContainer.classList.contains('open')) {
-                var tocRect = tocContainer.getBoundingClientRect();
-                tocToggle.style.top = tocRect.top + 'px';
-                tocToggle.style.right = (window.innerWidth - tocRect.right) + 'px';
-            } else {
-                setTocTogglePosition();
-                tocToggle.style.left = '10px';
-                tocToggle.style.right = 'auto';
-            }
-        });
-    });
-</script>
 {% endblock extra_js %}
+
 
 {% block footer %}
 <div class="contact-content-container">
@@ -89,7 +68,7 @@
             window.addEventListener('load', function() {
                 calendar.schedulingButton.load({
                     url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
-                    color: '#84b371',
+                    color: '#fff',
                     label: 'Get in Touch',
                     target,
                     className: 'custom-calendar-button' // Add custom class
