@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -17,27 +17,27 @@
                     <div class="container">
                         <div class="row text-center">
                             <div class="col-md-12 problem-box">
-                                <h4>Data Silos</h4>
+                                <h3>Data Silos</h3>
                                 <p><strong>Challenges Faced:</strong> Data is often scattered across different platforms, making integration with the Student Information System difficult and hindering year-over-year analytics.</p>
                                 <p><strong>How We Help:</strong> We streamline data collection and integration through automated data pipelines. We ensure that schools have a unified, real time, accurate, accessible data ecosystem.</p>
                             </div>
                             <div class="col-md-12 problem-box">
-                                <h4>Data Quality and Accuracy</h4>
+                                <h3>Data Quality and Accuracy</h3>
                                 <p><strong>Challenges Faced:</strong> Manual data entry can be draining, and potentially can lead to mistakes. Within these processes data validation efforts can be lost in translation. This can impact compliance, and actionable insights.</p>
                                 <p><strong>How We Help:</strong> Our processes automate data entry and validation, ensuring accuracy and compliance with time to focus on actionable insights.</p>
                             </div>
                             <div class="col-md-12 problem-box">
-                                <h4>Data Security and Privacy</h4>
+                                <h3>Data Security and Privacy</h3>
                                 <p><strong>Challenges Faced:</strong> When handling sensitive data, data security and privacy should be at the forefront. Outdated security measures can be a risk.</p>
                                 <p><strong>How We Help:</strong>  We leverage Google Cloud Platform's advanced security infrastructure to safeguard sensitive student and district data, ensuring compliance and protection against breaches.</p>
                             </div>
                             <div class="col-md-12 problem-box">
-                                <h4>Data Access and Sharing</h4>
+                                <h3>Data Access and Sharing</h3>
                                 <p><strong>Challenges Faced:</strong> In any organization it can be hard to know where to go for data, making data access and sharing a formidable challenge.</p>
                                 <p><strong>How We Help:</strong> Our processes enable real-time data access and dashboards, ensuring that authorized users can instantly retrieve and interact with the information they need for informed decision-making. Say goodbye to static reports."</p>
                             </div>
                             <div class="col-md-12 problem-box">
-                                <h4>Data Overload</h4>
+                                <h3>Data Overload</h3>
                                 <p><strong>Challenges Faced:</strong> Year over year, districts accumulate massive amounts of data, making it increasingly difficult to extract meaningful insights and track progress over time.</p>
                                 <p><strong>How We Help:</strong> We provide scalable, organized data warehouses that efficiently manage and structure large datasets, enabling districts to make sense of their data and gain actionable insights that drive student success.</p>
                             </div>
@@ -52,13 +52,11 @@
 
 {% include "emailscraper_app/toc.html" %}
 
-<button id="toc-toggle" class="btn btn-primary d-md-none" title="Navigation" style="top: 251px;">☰</button>
-
 {% endblock content %}
 
 {% block extra_js %}
-{{ block.super }}
 <script src="{% static 'js/toc_toggles.js' %}"></script>
+{{ block.super }}
 {% endblock extra_js %}
 
 {% block footer %}
