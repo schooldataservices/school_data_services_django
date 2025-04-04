@@ -1,10 +1,9 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ master ]  # Trigger on push to master branch
+
 
 jobs:
   test:
@@ -42,7 +41,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Google Cloud Auth
+    - name: Authenticate with Google Cloud
       uses: 'google-github-actions/auth@v2'
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
@@ -51,7 +50,6 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.2.0
 
-
     - name: Install MySQL client and Run Tests
       env:
         DATABASE_URL: mysql://django_db_user:django_db_password@35.236.35.240:3306/django_db
@@ -59,3 +57,53 @@ jobs:
         sudo apt-get install -y default-mysql-client
         python manage.py migrate
         python manage.py test
+
+  deploy:
+    needs: test  # Run this job only if the 'test' job succeeds
+    runs-on: ubuntu-latest
+
+    env:
+      PROJECT_ID: django-hosting-427421
+      REGION: us-central1
+      SERVICE_NAME: django-hosting
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Authenticate with Google Cloud
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ env.PROJECT_ID }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.0
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Collect Static Files
+      env:
+        DJANGO_SETTINGS_MODULE: emailscraper_proj.settings
+        RUNNING_IN_CLOUD: true
+        DEBUG: false
+        DB_HOST: "35.236.35.240"
+      run: |
+        python manage.py collectstatic --noinput
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }} .
+        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --allow-unauthenticated \
+          --memory 512Mi \
+          --set-env-vars RUNNING_IN_CLOUD=true,DEBUG=False,DB_HOST="35.236.35.240"

@@ -19,7 +19,11 @@ def send_request_email(request_config, user):
     )
     from_email = settings.EMAIL_HOST_USER  # Use the configured email host user
     recipient_list = ['2015samtaylor@gmail.com', user.email]
-    send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+    try:
+        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        print(f'Sending email to {recipient_list} with subject: {subject}')
+    except Exception as e:
+        print('Unable to send email due to error:', {e})
 
     # Record email metadata
     EmailMetadata.objects.create(

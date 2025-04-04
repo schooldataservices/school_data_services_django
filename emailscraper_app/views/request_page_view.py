@@ -3,6 +3,7 @@ from django.utils.html import escape
 from django.contrib import messages
 from django.http import JsonResponse
 from ..forms import RequestConfigForm
+from django.db import transaction
 from django.template.loader import render_to_string
 from ..models import RequestConfig
 from django.contrib.auth.decorators import login_required
@@ -116,49 +117,64 @@ def get_prior_requests_context(request):
 
     return context
 
+@transaction.atomic
 def create_request_config(request):
+    print("Entering create_request_config function.")  # Log entry point
     context = get_prior_requests_context(request)  # For ajax requests with pagination, and filters
+    print(f"Initial context: {context}")
 
     if isinstance(context, JsonResponse):
+        print("Returning early due to JsonResponse context.")
         return context
 
     if request.method == 'POST':
+        print("Handling POST request.")
         if request.user.is_authenticated:
             form = RequestConfigForm(request.POST)
             if form.is_valid():
+                print("Form is valid, saving the form data.")
                 # Save the form data to the database
                 request_config = form.save(commit=False)
                 if request.user.is_superuser and 'user_id' in request.POST:
                     try:
                         user = User.objects.get(id=request.POST['user_id'])
                         request_config.creator = user  # Set the selected user as the creator
+                        print(f"User {user} selected as creator.")
                     except User.DoesNotExist:
+                        print(f"User with id {request.POST['user_id']} does not exist.")
                         context['error_message'] = escape("Selected user does not exist.")
                         context['form'] = form
                         return render(request, 'emailscraper_app/temp.html', context)
                 else:
                     request_config.creator = request.user  # Set the logged-in user as the creator
+                    print(f"Logged-in user {request.user} set as creator.")
                 request_config.save()
 
                 # Send email using the new function
+                print(f"Sending request email to user {request.user}.")
                 send_request_email(request_config, request.user)
 
                 # Update context to reflect the new data
                 context = get_prior_requests_context(request)
                 if isinstance(context, JsonResponse):
+                    print("Returning JsonResponse after request creation.")
                     return context
+
                 context['form'] = RequestConfigForm()  # Reset the form
                 context['success_message'] = 'Request Submitted Successfully'
+                print(f"Request successfully submitted by user {request.user}.")
 
-            # Form is invalid at this point due to empty fields
             else:
+                print(f"Form is invalid: {form.errors}")
                 context['form'] = form  # Keep the invalid form to show errors
                 context['error_message'] = escape("Please correct the errors below.")  # Prevent newlines
+
         else:
+            print("User is not authenticated.")
             context['error_message'] = escape("You must be logged in to submit a request.")  # Prevent newlines
 
-    # Initial page load, display RequestConfigForm with defaults
     else:
+        print("Initial page load (GET request).")
         context['form'] = RequestConfigForm()  # Ensure form is in context on GET request
         if request.user.is_superuser:
             context['users'] = User.objects.all()  # Pass all users to the template for admin

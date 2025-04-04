@@ -57,10 +57,11 @@ ALLOWED_HOSTS = [
 #For cloud run deployment
 CSRF_COOKIE_HTTPONLY = False    # Make sure this is False for JavaScript access
 CSRF_COOKIE_SECURE = True       # Set to True if using HTTPS (which you are)
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = False
 CSRF_TRUSTED_ORIGINS = [
     'https://django-hosting-764972118687.us-central1.run.app',
     "https://schooldataservices.com", 
-    "https://www.schooldataservices.com"
 ]
 
 
@@ -137,6 +138,8 @@ if RUNNING_IN_CLOUD:
     MIDDLEWARE += [
         'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise middleware
     ]
+    SECURE_SSL_REDIRECT = True
+
 else:
     print("Running Locally")
     # Local Development Settings
@@ -146,6 +149,7 @@ else:
     # Set DB host for local environment (local IP)
     DB_HOST = "35.236.35.240"
     DEBUG = True
+    SECURE_SSL_REDIRECT = False  # Disable SSL redirect for local development
 
 
 
@@ -301,6 +305,12 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'INFO',
+            'handlers': ['console'],
         },
     },
 }
