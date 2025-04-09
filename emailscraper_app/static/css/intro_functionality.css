@@ -40,7 +40,7 @@
 
 
 .toc {
-    background-color: rgba(126, 127, 128, 1); /* Solid background color */
+    background-color: #7e7f8065; /* Solid background color */
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -58,12 +58,12 @@
 
 .toc ul li a {
     text-decoration: none;
-    color: #c5c5c5;
+    color: #ffffff;
 }
 
 .toc ul li span {
     text-decoration: none;
-    color: #c5c5c5;
+    color: #ffffff;
 }
 
 .toc ul li a:hover {
@@ -100,7 +100,7 @@
 #toc-toggle {
     position: fixed;
     z-index: 1001; /* Ensure it is above the TOC content */
-    background-color: rgba(126, 127, 128, 1); /* Background color for visibility */
+    background-color: #7e7f8065; /* Background color for visibility */
     color: #fff; /* Text color for visibility */
     border: none;
     padding: 10px;
@@ -235,7 +235,6 @@
 }
 
 #cloud-setup ul li {
-    font-size: 1rem; /* Match the font size of .problem-box p */
     line-height: 1.4; /* Match the line height for readability */
     text-align: left; /* Ensure the text is aligned to the left */
     color: black; /* Set the font color to black */
@@ -249,4 +248,17 @@
     height: auto; /* Maintain the aspect ratio */
     vertical-align: middle; /* Align the logo with the text */
     margin-left: 10px; /* Add spacing between the text and the logo */
+}
+
+li {
+    text-align: left; /* Align text to the left */
+    color: black; /* Set text color to black */
+}
+
+.col-md-12.problem-box ul li {
+    margin-top: 10px; /* Adds spacing between each list item */
+}
+
+.col-md-12.problem-box ul {
+    padding-top: 15px; /* Adds top padding to the entire list */
 }

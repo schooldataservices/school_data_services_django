@@ -14,6 +14,9 @@ from django.views.decorators.http import require_POST, require_http_methods
 from ..utils import send_request_email  # Import the new function
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator, EmptyPage
 
 def filter_requests(request):
     user = request.GET.get('user', 'all')
@@ -117,16 +120,80 @@ def get_prior_requests_context(request):
 
     return context
 
+
+def paginate_requests(request, queryset, per_page=10):
+    """
+    Handles pagination for a given queryset.
+
+    Args:
+        request: The HTTP request object.
+        queryset: The queryset to paginate.
+        per_page: Number of items per page (default is 10).
+
+    Returns:
+        A dictionary containing the paginated page object and pagination metadata.
+    """
+    paginator = Paginator(queryset, per_page)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        page_obj = paginator.page(page_number)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)  # Return the last page if out of range
+
+    return {
+        'page_obj': page_obj,
+        'total_pages': paginator.num_pages,
+        'total_results': paginator.count,
+        'current_page': page_obj.number,
+    }
+
+
 @transaction.atomic
 def create_request_config(request):
-    print("Entering create_request_config function.")  # Log entry point
-    context = get_prior_requests_context(request)  # For ajax requests with pagination, and filters
-    print(f"Initial context: {context}")
+    # Get the base queryset
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            request_configs = RequestConfig.objects.all().order_by('-date_submitted')  # All requests for superuser
+        else:
+            request_configs = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted')  # Only user's requests
+    else:
+        request_configs = RequestConfig.objects.none()  # No requests for unauthenticated users
 
-    if isinstance(context, JsonResponse):
-        print("Returning early due to JsonResponse context.")
-        return context
+    # Apply filters (if any)
+    priority_filter = request.GET.get('priority', 'all')
+    date_filter = request.GET.get('date', 'all')
+    completion_filter = request.GET.get('completion', 'all')
 
+    if priority_filter != 'all':
+        request_configs = request_configs.filter(priority_status=priority_filter)
+    if completion_filter != 'all':
+        request_configs = request_configs.filter(completion_status=(completion_filter == 'true'))
+    if date_filter != 'all':
+        if date_filter == 'today':
+            today = datetime.now().date()
+            request_configs = request_configs.filter(schedule_time__date=today)
+        elif date_filter == 'last7days':
+            last_7_days = datetime.now().date() - timedelta(days=7)
+            request_configs = request_configs.filter(schedule_time__date__gte=last_7_days)
+        elif date_filter == 'thismonth':
+            first_day_of_month = datetime.now().replace(day=1)
+            request_configs = request_configs.filter(schedule_time__date__gte=first_day_of_month)
+
+    # Paginate the filtered queryset
+    pagination_context = paginate_requests(request, request_configs)
+
+    # Handle AJAX requests for pagination
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('emailscraper_app/request_list.html', {'page_obj': pagination_context['page_obj']}, request=request)
+        return JsonResponse({
+            'html': html.strip(),
+            'total_results': pagination_context['total_results'],
+            'total_pages': pagination_context['total_pages'],
+            'current_page': pagination_context['current_page'],
+        })
+
+    # Handle POST request for creating a new request
     if request.method == 'POST':
         print("Handling POST request.")
         if request.user.is_authenticated:
@@ -135,92 +202,112 @@ def create_request_config(request):
                 print("Form is valid, saving the form data.")
                 # Save the form data to the database
                 request_config = form.save(commit=False)
-                if request.user.is_superuser and 'user_id' in request.POST:
+
+                # Check if "Submit on behalf of" has a value. Make them the creator
+                user_id = request.POST.get('user_id')
+                if request.user.is_superuser and user_id:
                     try:
-                        user = User.objects.get(id=request.POST['user_id'])
-                        request_config.creator = user  # Set the selected user as the creator
+                        user = User.objects.get(id=user_id)
+                        request_config.creator = user  # Override creator with selected user
                         print(f"User {user} selected as creator.")
                     except User.DoesNotExist:
-                        print(f"User with id {request.POST['user_id']} does not exist.")
-                        context['error_message'] = escape("Selected user does not exist.")
-                        context['form'] = form
-                        return render(request, 'emailscraper_app/temp.html', context)
+                        print(f"User with id {user_id} does not exist.")
+                        context = {
+                            'form': form,
+                            'error_message': escape("Selected user does not exist."),
+                        }
+                        return render(request, 'emailscraper_app/submit_request.html', context)
                 else:
-                    request_config.creator = request.user  # Set the logged-in user as the creator
+                    request_config.creator = request.user  # Default to logged-in user
                     print(f"Logged-in user {request.user} set as creator.")
+
                 request_config.save()
 
                 # Send email using the new function
-                print(f"Sending request email to user {request.user}.")
-                send_request_email(request_config, request.user)
+                send_request_email(request_config, request_config.creator)
 
                 # Update context to reflect the new data
-                context = get_prior_requests_context(request)
-                if isinstance(context, JsonResponse):
-                    print("Returning JsonResponse after request creation.")
-                    return context
-
-                context['form'] = RequestConfigForm()  # Reset the form
-                context['success_message'] = 'Request Submitted Successfully'
-                print(f"Request successfully submitted by user {request.user}.")
+                pagination_context = paginate_requests(request, RequestConfig.objects.all().order_by('-date_submitted'))
+                context = {
+                    'form': RequestConfigForm(),  # Reset the form
+                    'success_message': 'Request Submitted Successfully',
+                    'page_obj': pagination_context['page_obj'],
+                    'total_pages': pagination_context['total_pages'],
+                    'total_results': pagination_context['total_results'],
+                }
+                return render(request, 'emailscraper_app/submit_request.html', context)
 
             else:
-                print(f"Form is invalid: {form.errors}")
-                context['form'] = form  # Keep the invalid form to show errors
-                context['error_message'] = escape("Please correct the errors below.")  # Prevent newlines
+                context = {
+                    'form': form,  # Keep the invalid form to show errors
+                    'error_message': escape("Please correct the errors below."),
+                }
+                return render(request, 'emailscraper_app/submit_request.html', context)
 
         else:
-            print("User is not authenticated.")
-            context['error_message'] = escape("You must be logged in to submit a request.")  # Prevent newlines
+            context = {
+                'error_message': escape("You must be logged in to submit a request."),
+            }
+            return render(request, 'emailscraper_app/submit_request.html', context)
 
-    else:
-        print("Initial page load (GET request).")
-        context['form'] = RequestConfigForm()  # Ensure form is in context on GET request
-        if request.user.is_superuser:
-            context['users'] = User.objects.all()  # Pass all users to the template for admin
+    # Handle GET request
+    context = {
+        'form': RequestConfigForm(),
+        'page_obj': pagination_context['page_obj'],
+        'total_pages': pagination_context['total_pages'],
+        'total_results': pagination_context['total_results'],
+    }
+    if request.user.is_superuser:
+        context['users'] = User.objects.all()  # Pass all users to the template for admin
 
-    return render(request, 'emailscraper_app/temp.html', context)
+    return render(request, 'emailscraper_app/submit_request.html', context)
 
-# View for dynamic AJAX changing of button changes
-@login_required
-@require_POST
-def update_completion_status(request, config_id):
-    # Get the status from the request body
-    data = json.loads(request.body)
-    completion_status = data.get('completion_status')
-    
-    # Get the config and update the status using AJAX
-    try:
-        config = RequestConfig.objects.get(id=config_id)
-        config.completion_status = completion_status
-        config.save()
-        return JsonResponse({'success': True})
-    except RequestConfig.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Config not found'})
+@csrf_exempt
+def update_email_content(request, request_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email_content = data.get('email_content', '').strip()
 
-@login_required
-@require_POST
-def update_email_content(request, config_id):
-    try:
-        data = json.loads(request.body)
-        email_content = data.get('email_content')
-        config = RequestConfig.objects.get(id=config_id, creator=request.user)
-        config.email_content = email_content
-        config.save()
-        return JsonResponse({'success': True})
-    except RequestConfig.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Config not found'})
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+            # Update the email content in the database
+            request_config = RequestConfig.objects.get(id=request_id)
+            request_config.email_content = email_content
+            request_config.save()
 
-@login_required
-@require_http_methods(["DELETE"])
+            return JsonResponse({'success': True})
+        except RequestConfig.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Request not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
 def delete_request(request, config_id):
     try:
-        config = RequestConfig.objects.get(id=config_id, creator=request.user)
+        # Fetch the request config and delete it
+        config = RequestConfig.objects.get(id=config_id)
         config.delete()
         return JsonResponse({'success': True})
     except RequestConfig.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Config not found'})
+        return JsonResponse({'success': False, 'message': 'Request not found'}, status=404)
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+@csrf_exempt
+def update_completion_status(request, config_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            completion_status = data.get('completion_status', False)
+
+            # Update the database
+            config = RequestConfig.objects.get(id=config_id)
+            config.completion_status = completion_status
+            config.save()
+
+            return JsonResponse({'success': True})
+        except RequestConfig.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Request not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)

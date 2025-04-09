@@ -106,23 +106,70 @@ flatpickr(".datetimepicker", {
     time_24hr: true     
 });
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     attachEventListeners();
-if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
-    fetchFilteredRequests(); // Fetch filtered requests on page load
-}
+    if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
+        fetchFilteredRequests(); // Fetch filtered requests on page load
+    }
+
+    const checkboxes = document.querySelectorAll('.completion-status-toggle');
+    console.log(`Found ${checkboxes.length} checkboxes`);
 });
 
 function attachEventListeners() {
+    // Handle editable email cells
+    const editableEmailCells = document.querySelectorAll('.editable-email-content');
+
+    editableEmailCells.forEach(cell => {
+        // Add blur event listener to handle saving content
+        cell.addEventListener('blur', function () {
+            const requestId = cell.getAttribute('data-id');
+            const updatedContent = cell.textContent.trim();
+
+            // Validate the request ID and updated content
+            if (!requestId || !updatedContent) {
+                return; // Exit if request ID or content is invalid
+            }
+
+            // Send the updated content to the backend
+            fetch(`/update-email-content/${requestId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    'email_content': updatedContent
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data.success) {
+                    console.error('Error updating email content:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    // Handle completion status checkboxes
     const statusCheckboxes = document.querySelectorAll('.completion-status-toggle');
 
     statusCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             const requestId = checkbox.getAttribute('data-id');
             const isChecked = checkbox.checked;
 
             console.log(`Updating completion status for request ID: ${requestId}, Checked: ${isChecked}`);
 
+            // Send the updated status to the backend
             fetch(`/update-completion-status/${requestId}/`, {
                 method: 'POST',
                 headers: {
@@ -146,6 +193,49 @@ function attachEventListeners() {
             .catch(error => console.error('Error:', error));
         });
     });
+
+    const deleteButtons = document.querySelectorAll('.delete-request');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const requestId = button.getAttribute('data-id');
+
+            console.log(`Deleting request with ID: ${requestId}`);
+
+            // Confirm deletion
+            if (!confirm('Are you sure you want to delete this request?')) {
+                return;
+            }
+
+            // Send DELETE request to the backend
+            fetch(`/delete-request/${requestId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCSRFToken()
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log('Request deleted successfully');
+                    // Remove the row from the table
+                    const row = button.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                } else {
+                    console.error('Error deleting request:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
 }
 
 function getCSRFToken() {

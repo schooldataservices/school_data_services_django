@@ -41,8 +41,15 @@
     </tbody>
 </table>
 
+<!-- <td>
+    <Add a dedicated cell for the submit button -->
+    <!-- <button class="submit-email-content" data-id="{{ config.id }}" style="display: none;">✔</button> -->
+<!-- </td>  -->
+
+
+
 <!-- Pagination controls -->
-<div class="pagination">
+<!-- <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
             <a href="#" class="page-link" data-page="{{ page_obj.previous_page_number }}">previous</a>
@@ -56,4 +63,24 @@
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
     </span>
-</div>
+</div> -->
+
+<style>
+.submit-email-content-fixed {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.submit-email-content-fixed:hover {
+    background-color: #0056b3;
+}
+</style>

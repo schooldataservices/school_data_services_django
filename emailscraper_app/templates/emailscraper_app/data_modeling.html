@@ -13,25 +13,43 @@
             
                 <!-- Data Modeling Section -->
                 <section id="data-modeling">
-                    <h2 class="section-heading text-center">Data Modeling and Centralized Metrics (More to Come) </h2>
+                    <h2 class="section-heading text-center">Data Management Made Simple</h2>
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12 problem-box">
                                 <p>
-                                    Data modeling is the foundation of effective data management. By normalizing data, we ensure that redundant and inconsistent data is eliminated, making it easier to manage and analyze. 
-                                    Normalization involves organizing data into structured tables, reducing duplication, and ensuring relationships between data points are clearly defined.
+                                    Effective data management is essential for ensuring accurate data, updating with year over year changes, and aggregating data across various sources to make informed decisions on accruate metrics.
+                                     <strong>Data Modeling</strong>, eliminates redundancy and mess, making it easier to analyze and understand.
                                 </p>
-                                <p>
-                                    An example is shown below where attendance data and grade is normalized into separate tables, and then brought together into a centralized table that analysts can use to gain insights. 
-                                    This approach ensures that your data is clean, reliable, and ready for analysis.
-                                </p>
+
+                                <ul>
+                                    <li><strong>Example Below -</strong> Think of data modeling as organizing student attendance and a dimension of time into clear, separate categories, and then linking the tables together on specific columns. </li>
+                                    <li> <strong>Scalability -</strong> This schema allows for scalability when a certain table values change year over year. We only need to change values in one area, rather than having them sprinkled across multiple tables </li>
+                                    <li><strong>Accuracy -</strong> As data is normalized and column values become predictable, we can identify outliers, duplicates, nulls, or values not within range for certain columns. We go the extra mile for data accuracy.</li> 
+                                    <li><strong>Reuseablity -</strong>Tables can be re-used amongst other queries, putting an emphasis on efficiency.</li>
+                                </ul>
+
                                 <div class="text-center">
                                     {% include "emailscraper_app/normalized_table.html" %}
                                 </div>
+
+                                <h3 style="padding-top: 20px;">Measurable Outcomes from Organized Data</h3>
+                                <p>
+                                    Measurable metrics allow you to identify areas for improvement, monitor progress over time, and make data-driven decisions that directly support student success and school efficiency.
+                                    By using organized and reliable data models, we can track measurable outcomes that directly impact the success of your school:
+                                </p>
+                                <ul>
+                                    <li><strong>Improved Student Performance:</strong> Track GPA and attendance trends, how attendance affects grades, and monitor graduation rates.</li>
+                                    <li><strong>Operational Efficiency:</strong> Save time by automating reporting, and reduce errors in manual data handling.</li>
+                                    <li><strong>Resource Optimization:</strong> Track and manage budgets, staff allocation, and ensure that resources are being used effectively.</li>
+                                </ul>
+
+                               
                             </div>
                         </div>
                     </div>
                 </section>
+
             </div> <!-- Close content-wrapper here -->  
         </div>
     </div>
@@ -39,14 +57,12 @@
 
 {% include "emailscraper_app/toc.html" %}
 
-
 {% endblock content %}
 
 {% block extra_js %}
 <script src="{% static 'js/toc_toggles.js' %}"></script>
 {{ block.super }}
 {% endblock extra_js %}
-
 
 {% block footer %}
 <div class="contact-content-container">

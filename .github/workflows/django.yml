@@ -93,6 +93,10 @@ jobs:
       run: |
         python manage.py collectstatic --noinput
 
+    - name: Authenticate Docker with GCR
+      run: |
+        gcloud auth configure-docker gcr.io
+
     - name: Build and Push Docker Image
       run: |
         docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }} .

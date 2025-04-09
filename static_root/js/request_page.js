@@ -92,14 +92,18 @@ flatpickr(".datetimepicker", {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOMContentLoaded event fired");
     const statusCheckboxes = document.querySelectorAll('.completion-status-toggle');
+    console.log(`Found ${statusCheckboxes.length} checkboxes`);
+    statusCheckboxes.forEach(checkbox => {
+        console.log(`Checkbox found with data-id: ${checkbox.getAttribute('data-id')}`);
+    });
 
     statusCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
+            console.log(`Checkbox with data-id ${requestId} changed to ${isChecked}`);
             const requestId = checkbox.getAttribute('data-id');
             const isChecked = checkbox.checked;
-
-            console.log(`Updating completion status for request ID: ${requestId}, Checked: ${isChecked}`);
 
             fetch(`/update-completion-status/${requestId}/`, {
                 method: 'POST',
@@ -108,8 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     'X-CSRFToken': getCSRFToken()
                 },
                 body: JSON.stringify({
-                    'completion_status': isChecked,
-                    'config_id': requestId
+                    'completion_status': isChecked
                 })
             })
             .then(response => response.json())
@@ -119,17 +122,51 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (statusCell) {
                         statusCell.innerHTML = isChecked ? "Completed" : "Pending";
                     }
-                    console.log('Status updated successfully');
                 } else {
-                    console.error('Error updating status');
+                    alert('Failed to update status. Please try again.');
+                    console.error('Error updating status:', data.error);
                 }
             })
             .catch(error => console.error('Error:', error));
         });
     });
+});
 
-    function getCSRFToken() {
-        const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
-        return csrfToken ? csrfToken[1] : '';
+document.addEventListener('change', function(event) {
+    if (event.target.classList.contains('completion-status-toggle')) {
+        const checkbox = event.target;
+        const requestId = checkbox.getAttribute('data-id');
+        const isChecked = checkbox.checked;
+
+        console.log(`Checkbox with data-id ${requestId} changed to ${isChecked}`);
+
+        fetch(`/update-completion-status/${requestId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                'completion_status': isChecked
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const statusCell = document.querySelector(`#status-cell-${requestId}`);
+                if (statusCell) {
+                    statusCell.innerHTML = isChecked ? "Completed" : "Pending";
+                }
+            } else {
+                alert('Failed to update status. Please try again.');
+                console.error('Error updating status:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
     }
 });
+
+function getCSRFToken() {
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
+    return csrfToken ? csrfToken[1] : '';
+}
