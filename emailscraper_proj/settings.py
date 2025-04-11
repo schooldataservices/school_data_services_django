@@ -58,7 +58,8 @@ ALLOWED_HOSTS = [
 CSRF_COOKIE_HTTPONLY = False    # Make sure this is False for JavaScript access
 CSRF_COOKIE_SECURE = True       # Set to True if using HTTPS (which you are)
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # Trust the Cloud Run proxy to tell us the original request protocol
 CSRF_TRUSTED_ORIGINS = [
     'https://django-hosting-764972118687.us-central1.run.app',
     "https://schooldataservices.com", 

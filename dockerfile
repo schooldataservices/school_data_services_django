@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y \
 # Install dependencies
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-# RUN python manage.py collectstatic --noinput #trying to make initial site start faster
 
 # Set environment variable for Cloud Run
 ENV PORT=8080
@@ -32,7 +31,7 @@ ENV DJANGO_SETTINGS_MODULE=emailscraper_proj.settings
 
 # Change the CMD command to run collectstatic before Gunicorn starts
 # CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8080 emailscraper_proj.wsgi:application"]
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8080 --timeout 60 --workers 2 emailscraper_proj.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8080 --timeout 60 --workers 2 emailscraper_proj.wsgi:application"]
 
 
 

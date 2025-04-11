@@ -4,7 +4,6 @@ on:
   push:
     branches: [ master ]  # Trigger on push to master branch
 
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -66,6 +65,9 @@ jobs:
       PROJECT_ID: django-hosting-427421
       REGION: us-central1
       SERVICE_NAME: django-hosting
+      DB_HOST: "35.236.35.240"
+      RUNNING_IN_CLOUD: true
+      DEBUG: false
 
     steps:
     - uses: actions/checkout@v2
@@ -84,12 +86,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Run Migrations
+      run: |
+        python manage.py migrate --noinput
+
     - name: Collect Static Files
-      env:
-        DJANGO_SETTINGS_MODULE: emailscraper_proj.settings
-        RUNNING_IN_CLOUD: true
-        DEBUG: false
-        DB_HOST: "35.236.35.240"
       run: |
         python manage.py collectstatic --noinput
 
