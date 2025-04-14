@@ -67,6 +67,7 @@
         <div class="profile-container">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" style="width: 70px; height: 70px;">
+                <span id="notificationBadge" class="badge badge-danger" style="display: none;">0</span>
             </a>
         </div>
         {% endif %}
@@ -79,6 +80,13 @@
         {% csrf_token %}
         <button type="submit" class="dropdown-item">Logout</button>
     </form>
+    <div class="dropdown-divider"></div>
+    <div id="notificationsArea">
+        <h6 class="dropdown-header">Notifications</h6>
+        <div id="notificationsList">
+            <p class="dropdown-item text-muted">No new notifications</p>
+        </div>
+    </div>
 </div>
 
 <!-- Content block -->
@@ -119,34 +127,12 @@
 {% block footer %}
 {% endblock %}
 
-{% block extra_js %}
+
 <!-- Additional js file can be added here -->
-<script>
-    $(document).ready(function() {
-        console.log("Document is ready");
-        $('.dropdown-toggle').dropdown();
-        console.log("Dropdown initialized");
-
-        $('#profileDropdown').on('click', function() {
-            console.log("Profile image clicked");
-            var dropdownMenu = $('#profileDropdownMenu');
-            var dropdownToggle = $(this);
-            var offset = dropdownToggle.offset();
-            dropdownMenu.css({
-                top: offset.top + dropdownToggle.outerHeight(),
-                left: offset.left
-            }).toggleClass('show');
-        });
-
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('#profileDropdown, #profileDropdownMenu').length) {
-                $('#profileDropdownMenu').removeClass('show');
-            }
-        });
-    });
-
-</script>
+{% block extra_js %}
+<script type="module" src="{% static 'js/profile_dropdown_functionality.js' %}"></script>
 {% endblock extra_js %}
+
 </body>
 </html>
 

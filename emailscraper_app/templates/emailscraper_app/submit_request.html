@@ -168,7 +168,7 @@
 {% block extra_js %}
    <!-- Initialize Flatpickr for Date and Time input -->
    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-   <script src="{% static 'js/request_page.js' %}"></script>
+   <script type="module" src="{% static 'js/request_page.js' %}"></script>
    <!-- <script src="{% static 'js/pagination.js' %}"></script> -->
    {{ block.super }}
 {% endblock extra_js %}
