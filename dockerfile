@@ -1,38 +1,41 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Build stage
+FROM python:3.9-slim-buster AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the current directory contents into the container
-COPY . /app/
-
-# Install system dependencies required for MySQL
-# Install system dependencies for MySQL and build tools
 RUN apt-get update && apt-get install -y \
-    default-libmysqlclient-dev \
     build-essential \
-    python3-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/*
+    python3-dev \
+    default-libmysqlclient-dev
 
-# Install dependencies
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install --prefix=/install -r requirements.txt
 
-# Set environment variable for Cloud Run
+# Final stage
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+COPY --from=builder /install /usr/local
+COPY . .
+
+ENV DJANGO_SETTINGS_MODULE=emailscraper_proj.settings
 ENV PORT=8080
 
-# Expose the port that Django will run on
 EXPOSE 8080
 
-# Set environment variables
-ENV DJANGO_SETTINGS_MODULE=emailscraper_proj.settings
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--timeout", "60", "--workers", "2", "emailscraper_proj.wsgi:application"]
 
-# Change the CMD command to run collectstatic before Gunicorn starts
-# CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8080 emailscraper_proj.wsgi:application"]
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8080 --timeout 60 --workers 2 emailscraper_proj.wsgi:application"]
 
+
+#Manually call before
+# Run migrations to update the database schema
+# python manage.py migrate --noinput
+
+# Collect static files for production use
+# python manage.py collectstatic --noinput
 
 
 # docker build -t gcr.io/django-hosting-427421/django-hosting .

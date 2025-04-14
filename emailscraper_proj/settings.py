@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions"
 ]
 
 MIDDLEWARE = [
@@ -238,6 +239,7 @@ if DEBUG:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
         'django.middleware.cache.UpdateCacheMiddleware',
         'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
         'django.middleware.cache.FetchFromCacheMiddleware',
     )
     CACHE_MIDDLEWARE_SECONDS = 0

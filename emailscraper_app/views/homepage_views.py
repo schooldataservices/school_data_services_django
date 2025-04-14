@@ -3,11 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from google.cloud import storage
 from datetime import datetime
-# from config import *
+from django.http import JsonResponse
+from ..models import RequestConfig, Notification 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
-
- 
- 
 
 def landing_page(request):
     return render(request, 'emailscraper_app/landing_page.html')
@@ -38,3 +38,28 @@ def format_datetime_fields(data):
         return data.strftime('%Y-%m-%d %H:%M:%S')
     return data
 
+def get_notifications(request):
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+        print(f"Notifications fetched: {notifications}")
+        notifications_data = [
+            {
+                'id': notification.id,
+                'message': notification.message,
+                'timestamp': notification.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            for notification in notifications
+        ]
+        return JsonResponse({'notifications': notifications_data})
+    return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+
+
+@csrf_exempt
+def mark_notifications_as_read(request):
+    if request.user.is_authenticated and request.method == 'POST':
+        unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
+        print(f"Marking notifications as read: {unread_notifications}")
+        unread_notifications.update(is_read=True)
+        return JsonResponse({'success': True})
+    return JsonResponse({'error': 'Unauthorized'}, status=401)

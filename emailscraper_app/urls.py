@@ -15,4 +15,6 @@ urlpatterns = [
 
     path('filter-requests/', request_page_view.filter_requests, name='filter_requests'),
     path('submit-requests/', request_page_view.create_request_config, name='submit-requests'),
+    path('api/notifications/', homepage_views.get_notifications, name='get_notifications'),
+    path('api/notifications/mark-read/', homepage_views.mark_notifications_as_read, name='mark_notifications_as_read'),
 ]

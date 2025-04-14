@@ -127,6 +127,9 @@ body {
     background-color: white; /* Ensure it has a background color */
     border: 1px solid #ccc; /* Add a border */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+    max-width: 300px; /* Set a maximum width for the dropdown */
+    word-wrap: break-word; /* Ensure long words or URLs wrap to the next line */
+    white-space: normal; /* Allow text to wrap */
 }
 
 .dropdown-menu.show {
@@ -425,6 +428,7 @@ body {
 .tagline {
     margin-top: 5px; /* Adjust top margin */
     margin-bottom: 0; /* Remove bottom margin */
+    padding-bottom: 10px;
 }
 
 
@@ -462,3 +466,87 @@ p {
     color: #000000e7; /* Set paragraph text color */
 }
 
+#profileDropdownMenu {
+    position: absolute; /* Position the dropdown relative to the navbar */
+    top: 100%; /* Align it just below the navbar */
+    left: auto !important; /* Reset the left position */
+    right: 0; /* Align it to the right edge of the navbar */
+    z-index: 2000; /* Ensure it appears above other elements */
+    transform: none !important; /* Reset any transform applied */
+    max-width: 300px; /* Set a maximum width for the dropdown */
+    overflow-wrap: break-word; /* Break long words to prevent overflow */
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Ensure long words wrap */
+    overflow-y: auto; /* Add a vertical scrollbar if content exceeds the height */
+    max-height: 400px; /* Limit the height of the dropdown */
+    padding: 10px; /* Add padding for better spacing */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    background-color: white; /* Ensure the dropdown has a background color */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Add rounded corners */
+}
+
+#notificationBadge {
+    position: absolute; /* Position the badge relative to the dropdown menu */
+    bottom: 4px; /* Adjust to position it slightly below the dropdown menu */
+    right: 15px; /* Adjust to position it slightly to the right of the dropdown menu */
+    background-color: red;
+    color: white;
+    border-radius: 50%; /* Ensure it remains circular */
+    width: 20px; /* Explicitly set the width */
+    height: 20px; /* Explicitly set the height */
+    line-height: 20px; /* Center the text vertically */
+    font-size: 12px; /* Set the font size */
+    font-weight: bold; /* Make the text bold */
+    text-align: center; /* Center the text horizontally */
+    padding: 0; /* Remove padding to prevent stretching */
+    display: inline-block;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        justify-content: center; /* Center the profile container on smaller screens */
+        position: relative; /* Ensure the profile container is the positioning context */
+    }
+
+    #profileDropdownMenu {
+        position: relative; /* Ensure the dropdown menu is positioned properly */
+        top: auto; /* Reset the top position */
+        right: auto; /* Reset the right position */
+        margin: 0 auto; /* Center the dropdown menu */
+    }
+
+    #notificationBadge {
+        position: absolute; /* Keep the badge positioned relative to the profile container */
+        bottom: -15px;
+        right: 20px; /* Position it at the right of the profile container */
+        transform: translate(50%, -50%); /* Adjust to ensure it stays in the top-right corner */
+        width: 20px; /* Keep the same width as desktop */
+        height: 20px; /* Keep the same height as desktop */
+        line-height: 20px; /* Keep the text vertically centered */
+        font-size: 12px; /* Keep the font size consistent */
+        padding: 0; /* Ensure no extra padding is applied */
+        text-align: center; /* Center the text horizontally */
+        border-radius: 50%; /* Ensure it remains circular */
+        background-color: red; /* Keep the red background */
+        color: white; /* Keep the white text */
+        font-weight: bold; /* Ensure the text is bold */
+        z-index: 1000; /* Ensure it appears above other elements */
+    }
+
+
+}
+
+#notificationsList p {
+    color: #000; /* Set text color */
+    background-color: #f8f9fa; /* Set background color */
+    font-weight: bold; /* Make the text bold */
+    padding: 0.25rem 1.5rem; /* Match the padding of .dropdown-item */
+    margin: 0; /* Remove default margin */
+    word-wrap: break-word; /* Break long words to prevent overflow */
+    overflow-wrap: break-word; /* Ensure long words wrap */
+    white-space: normal; /* Allow text to wrap to the next line */
+    text-align: left; /* Align text to the left */
+    display: block; /* Ensure it behaves like a block element */
+}

@@ -1,3 +1,5 @@
+import { fetchNotificationCount } from './profile_dropdown_functionality.js';
+
 document.getElementById("toggleTableButton").addEventListener("click", function() {
     let tableContainer = document.getElementById("historicalRequestsContainer");
     
@@ -11,6 +13,7 @@ document.getElementById("toggleTableButton").addEventListener("click", function(
 });
 
 // Priority Filter Logic
+
 document.getElementById("priorityFilter").addEventListener("change", function() {
     console.log("Priority filter changed to:", this.value);
     fetchFilteredRequests();
@@ -111,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
         fetchFilteredRequests(); // Fetch filtered requests on page load
     }
+    fetchNotificationCount(); // Fetch and update the notification badge on page load
 
     const checkboxes = document.querySelectorAll('.completion-status-toggle');
     console.log(`Found ${checkboxes.length} checkboxes`);
@@ -131,6 +135,8 @@ function attachEventListeners() {
                 return; // Exit if request ID or content is invalid
             }
 
+            console.log(`Updating email content for request ID: ${requestId}`);
+
             // Send the updated content to the backend
             fetch(`/update-email-content/${requestId}/`, {
                 method: 'POST',
@@ -142,20 +148,16 @@ function attachEventListeners() {
                     'email_content': updatedContent
                 })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                if (!data.success) {
+                if (data.success) {
+                    fetchNotificationCount(); // Update the notification badge
+                    console.log('Email content updated successfully');
+                } else {
                     console.error('Error updating email content:', data.error);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            .catch(error => console.error('Error:', error));
         });
     });
 
@@ -185,6 +187,7 @@ function attachEventListeners() {
             .then(data => {
                 if (data.success) {
                     fetchFilteredRequests(); // Fetch filtered requests after updating completion status
+                    fetchNotificationCount(); // Update the notification badge
                     console.log('Status updated successfully');
                 } else {
                     console.error('Error updating status');
@@ -214,12 +217,7 @@ function attachEventListeners() {
                     'X-CSRFToken': getCSRFToken()
                 }
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     console.log('Request deleted successfully');
@@ -228,6 +226,8 @@ function attachEventListeners() {
                     if (row) {
                         row.remove();
                     }
+                    fetchNotificationCount(); // Update the notification badge
+                    console.log('Request deleted successfully');
                 } else {
                     console.error('Error deleting request:', data.error);
                 }

@@ -27,7 +27,7 @@
 
 .toc-container {
     position: fixed;
-    top: 170px;
+    top: var(--navbar-height, 170px); /* Use a CSS variable for the top position */
     left: 0;
     width: 160px;
     transition: left 0.3s ease; /* Smooth transition */
@@ -217,7 +217,7 @@
     font-size: 18px; /* Set a smaller font size */
     text-align: left; /* Align the text to the left */
     margin-top: 20px; /* Optional: Add some spacing above */
-    margin-bottom: 10px; /* Optional: Add some spacing below */
+    margin-bottom: 0px; /* Optional: Add some spacing below */
     font-weight: normal; /* Optional: Set the font weight to normal */
     text-decoration: underline;
     margin-left: 0; /* Ensure no unintended left margin */

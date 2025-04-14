@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from ..forms import RequestConfigForm
 from django.db import transaction
 from django.template.loader import render_to_string
-from ..models import RequestConfig
+from ..models import RequestConfig, Notification
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
@@ -274,6 +274,13 @@ def update_email_content(request, request_id):
             request_config.email_content = email_content
             request_config.save()
 
+            # Create a notification for the change
+            notification = Notification.objects.create(
+                user=request.user,
+                message=f"Email content for request '{request_config.id}' has been updated."
+            )
+            print(f"Notification created: {notification}")
+
             return JsonResponse({'success': True})
         except RequestConfig.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Request not found'}, status=404)
@@ -287,6 +294,12 @@ def delete_request(request, config_id):
         # Fetch the request config and delete it
         config = RequestConfig.objects.get(id=config_id)
         config.delete()
+
+        Notification.objects.create(
+            user=request.user,
+            message=f"Request '{config_id}' has been deleted."
+        )
+
         return JsonResponse({'success': True})
     except RequestConfig.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Request not found'}, status=404)
@@ -295,19 +308,33 @@ def delete_request(request, config_id):
 
 @csrf_exempt
 def update_completion_status(request, config_id):
+    print(f"Received request to update completion status for config ID: {config_id}")
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            print(f"Request data: {data}")
             completion_status = data.get('completion_status', False)
 
             # Update the database
             config = RequestConfig.objects.get(id=config_id)
+            print(f"Found RequestConfig: {config}")
             config.completion_status = completion_status
             config.save()
+            print(f"Updated completion status to: {completion_status}")
+
+            # Create a notification for the change
+            notification = Notification.objects.create(
+                user=request.user,
+                message=f"Request '{config_id}' has been {'completed' if completion_status else 'marked as pending'}."
+            )
+            print(f"Notification created: {notification}")
 
             return JsonResponse({'success': True})
         except RequestConfig.DoesNotExist:
+            print(f"RequestConfig with ID {config_id} does not exist.")
             return JsonResponse({'success': False, 'error': 'Request not found'}, status=404)
         except Exception as e:
+            print(f"An error occurred: {e}")
             return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    print("Invalid request method")
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
