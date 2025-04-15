@@ -1,5 +1,3 @@
-import { fetchNotificationCount } from './profile_dropdown_functionality.js';
-
 document.getElementById("toggleTableButton").addEventListener("click", function() {
     let tableContainer = document.getElementById("historicalRequestsContainer");
     
