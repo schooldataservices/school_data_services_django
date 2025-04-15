@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
         fetchFilteredRequests(); // Fetch filtered requests on page load
     }
-    fetchNotificationCount(); // Fetch and update the notification badge on page load
+    fetchNotifications(); // Fetch and update the notification badge on page load
 
     const checkboxes = document.querySelectorAll('.completion-status-toggle');
     console.log(`Found ${checkboxes.length} checkboxes`);
@@ -149,7 +149,7 @@ function attachEventListeners() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    fetchNotificationCount(); // Update the notification badge
+                    fetchNotifications(); // Update the notification badge
                     console.log('Email content updated successfully');
                 } else {
                     console.error('Error updating email content:', data.error);
@@ -185,7 +185,7 @@ function attachEventListeners() {
             .then(data => {
                 if (data.success) {
                     fetchFilteredRequests(); // Fetch filtered requests after updating completion status
-                    fetchNotificationCount(); // Update the notification badge
+                    fetchNotifications(); // Update the notification badge
                     console.log('Status updated successfully');
                 } else {
                     console.error('Error updating status');
@@ -224,7 +224,7 @@ function attachEventListeners() {
                     if (row) {
                         row.remove();
                     }
-                    fetchNotificationCount(); // Update the notification badge
+                    fetchNotifications(); // Update the notification badge
                     console.log('Request deleted successfully');
                 } else {
                     console.error('Error deleting request:', data.error);

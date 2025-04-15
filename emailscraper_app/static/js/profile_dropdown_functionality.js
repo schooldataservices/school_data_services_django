@@ -21,29 +21,24 @@ $(document).ready(function() {
     });
 });
 
-
-export function fetchNotificationCount() {
+function fetchNotificationCount() {
     return fetch('/api/notifications/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Notifications fetched for badge:', data); // Debugging log
+        console.log('Notifications fetched for badge:', data);
         const notificationBadge = document.getElementById('notificationBadge');
         const unreadCount = data.notifications ? data.notifications.length : 0;
 
-        console.log('Unread notification count:', unreadCount); // Debugging log
-
         if (unreadCount > 0) {
-            notificationBadge.textContent = unreadCount; // Update the badge with the count
-            notificationBadge.style.display = 'inline'; // Show the badge
-            console.log('Badge updated and displayed with count:', unreadCount); // Debugging log
+            notificationBadge.textContent = unreadCount;
+            notificationBadge.style.display = 'inline';
         } else {
-            notificationBadge.style.display = 'none'; // Hide the badge if no unread notifications
-            console.log('Badge hidden as there are no unread notifications'); // Debugging log
+            notificationBadge.style.display = 'none';
         }
     })
     .catch(error => {
@@ -52,7 +47,7 @@ export function fetchNotificationCount() {
 }
 
 function fetchNotifications() {
-    fetch('/api/notifications/', {
+    return fetch('/api/notifications/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -60,7 +55,7 @@ function fetchNotifications() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Notifications fetched for dropdown:', data); // Debugging log
+        console.log('Notifications fetched for dropdown:', data);
         const notificationsList = document.getElementById('notificationsList');
         notificationsList.innerHTML = '';
 
@@ -75,18 +70,11 @@ function fetchNotifications() {
             notificationsList.innerHTML = '<p class="dropdown-item text-muted">No new notifications</p>';
         }
 
-        // Update the badge first
-        fetchNotificationCount().then(() => {
-            console.log('Badge updated after fetching notifications'); // Debugging log
-
-            // Mark notifications as read after the badge is updated
-            markNotificationsAsRead();
-        });
+        // Call fetchNotificationCount to update the badge
+        return fetchNotificationCount();
     })
     .catch(error => {
         console.error('Error fetching notifications:', error);
-        const notificationsList = document.getElementById('notificationsList');
-        notificationsList.innerHTML = '<p class="dropdown-item text-danger">Error loading notifications</p>';
     });
 }
 
@@ -105,10 +93,12 @@ function markNotificationsAsRead() {
     .catch(error => console.error('Error marking notifications as read:', error));
 }
 
+// Attach fetchNotifications to the global window object
+window.fetchNotifications = fetchNotifications;
 
-
+// Example: Attach event listener for dropdown
 document.getElementById('profileDropdown').addEventListener('click', function() {
-    fetchNotifications(); // Fetch and display notifications when the dropdown is clicked
+    markNotificationsAsRead(); // Fetch and display notifications when the dropdown is clicked
 });
 
 function updateNavbarHeight() {
@@ -121,7 +111,7 @@ function updateNavbarHeight() {
 
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch the notification count on page load
-    fetchNotificationCount();
+    fetchNotifications();
 
     // Dynamically set the --navbar-height CSS variable
     const navbar = document.querySelector(".navbar"); // Select the navbar
@@ -131,6 +121,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     updateNavbarHeight();
 });
+
+// Attach to the global window object
+window.fetchNotifications = fetchNotifications;
 
 // Update the --navbar-height CSS variable on window resize
 window.addEventListener("resize", updateNavbarHeight);

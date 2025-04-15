@@ -198,3 +198,9 @@ h1.submit-request-header {
     color: #000000; /* Change this to the desired color */
     text-align: center;
 }
+
+#requestListContainer {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent content from wrapping */
+    max-width: 100%; /* Ensure it doesn't exceed the page width */
+}

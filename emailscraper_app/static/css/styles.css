@@ -467,6 +467,8 @@ p {
 }
 
 #profileDropdownMenu {
+    display: none;
+    visibility: hidden;
     position: absolute; /* Position the dropdown relative to the navbar */
     top: 100%; /* Align it just below the navbar */
     left: auto !important; /* Reset the left position */
@@ -484,6 +486,11 @@ p {
     background-color: white; /* Ensure the dropdown has a background color */
     border: 1px solid #ccc; /* Add a border */
     border-radius: 5px; /* Add rounded corners */
+}
+
+#profileDropdownMenu.show {
+    display: block;
+    visibility: visible;
 }
 
 #notificationBadge {
