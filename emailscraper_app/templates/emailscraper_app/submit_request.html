@@ -92,9 +92,9 @@
               <label for="priorityFilter">Filter by Priority</label>
               <select id="priorityFilter">
                   <option value="all">All</option>
-                  {% for priority in unique_priorities %}
-                      <option value="{{ priority }}">{{ priority }}</option>
-                  {% endfor %}
+                  <option value="urgent">Urgent</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
               </select>
           </div>
           
@@ -121,7 +121,7 @@
           {% if user.is_superuser %}
           <div class="form-group">
               <label for="userFilter">Filter by User</label>
-              <select id="userFilter">
+              <select id="userFilter" name="userFilter">
                   <option value="{{ request.user.username }}" selected>{{ request.user.username }}</option>
                   <option value="all">All Users</option>
                   {% for user in users %}
@@ -156,7 +156,7 @@
                     },
                 })
                 .then(editor => {
-                    console.log('Editor initialized', editor);
+                    // console.log('Editor initialized', editor);
                 })
                 .catch(error => {
                     console.error(error);
@@ -169,6 +169,7 @@
 {{ block.super }}
    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
    <script type="module" src="{% static 'js/request_page.js' %}"></script>
-   <!-- <script src="{% static 'js/pagination.js' %}"></script> -->
+   <script type="module" src="{% static 'js/request_page_table.js' %}"></script>
+   <script src="{% static 'js/pagination.js' %}"></script>
 {% endblock extra_js %}
 

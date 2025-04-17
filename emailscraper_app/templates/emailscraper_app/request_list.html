@@ -5,6 +5,7 @@
     <thead>
         <tr>
             <th></th> <!-- Empty header for the delete icon column -->
+            <th>ID</th>
             <th>Date Submitted</th>
             <th>Priority</th>
             <th>Desired Completion Date</th>
@@ -21,6 +22,7 @@
                         <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
                     </button>
                 </td>
+                <td>{{ config.id }}</td>
                 <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ config.priority_status }}</td>
                 <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
@@ -41,29 +43,24 @@
     </tbody>
 </table>
 
-<!-- <td>
-    <Add a dedicated cell for the submit button -->
-    <!-- <button class="submit-email-content" data-id="{{ config.id }}" style="display: none;">✔</button> -->
-<!-- </td>  -->
+<!-- Pagination Links -->
+<div id="pagination-links" class="pagination-container">
+    {% if page_obj.has_previous %}
+        <a href="#" class="page-link previous" data-page="{{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
 
-
-
-<!-- Pagination controls -->
-<!-- <div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="#" class="page-link" data-page="{{ page_obj.previous_page_number }}">previous</a>
+    {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+            <span class="current-page">{{ num }}</span>
+        {% else %}
+            <a href="#" class="page-link" data-page="{{ num }}">{{ num }}</a>
         {% endif %}
+    {% endfor %}
 
-        {% if page_obj.has_next %}
-        <a href="#" class="page-link" data-page="{{ page_obj.next_page_number }}">next</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-    </span>
-</div> -->
+    {% if page_obj.has_next %}
+        <a href="#" class="page-link next" data-page="{{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+</div>
 
 <style>
 .submit-email-content-fixed {
@@ -82,5 +79,55 @@
 
 .submit-email-content-fixed:hover {
     background-color: #0056b3;
+}
+
+/* Pagination container styling */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+/* Pagination link styling */
+.page-link {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Current page styling */
+.current-page {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+}
+
+/* Previous and Next button styling */
+.page-link.previous,
+.page-link.next {
+    font-weight: bold;
+}
+
+.page-link.previous:hover,
+.page-link.next:hover {
+    background-color: #0056b3;
+    color: white;
 }
 </style>

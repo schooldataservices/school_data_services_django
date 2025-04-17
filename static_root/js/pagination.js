@@ -61,7 +61,7 @@ function attachCheckboxListeners() {
             const requestId = checkbox.getAttribute('data-id');
             const isChecked = checkbox.checked;
 
-            console.log(`Updating completion status for request ID: ${requestId}, Checked: ${isChecked}`);
+            // console.log(`Updating completion status for request ID: ${requestId}, Checked: ${isChecked}`);
 
             fetch(`/update-completion-status/${requestId}/`, {
                 method: 'POST',
@@ -81,7 +81,7 @@ function attachCheckboxListeners() {
                     if (statusCell) {
                         statusCell.innerHTML = isChecked ? "Completed" : "Pending";
                     }
-                    console.log('Status updated successfully');
+                    // console.log('Status updated successfully');
                 } else {
                     console.error('Error updating status');
                 }
@@ -102,7 +102,7 @@ function attachEditableContentListeners() {
                 const requestId = cell.getAttribute('data-id');
                 const newContent = cell.innerHTML;
 
-                console.log(`Auto-saving email content for request ID: ${requestId}, New Content: ${newContent}`);
+                // console.log(`Auto-saving email content for request ID: ${requestId}, New Content: ${newContent}`);
 
                 fetch(`/update-email-content/${requestId}/`, {
                     method: 'POST',
@@ -117,7 +117,7 @@ function attachEditableContentListeners() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log('Email content auto-saved successfully');
+                        // console.log('Email content auto-saved successfully');
                     } else {
                         console.error('Error auto-saving email content');
                     }
@@ -135,7 +135,7 @@ function attachDeleteButtonListeners() {
         button.addEventListener('click', function() {
             const requestId = button.getAttribute('data-id');
 
-            console.log(`Deleting request ID: ${requestId}`);
+            // console.log(`Deleting request ID: ${requestId}`);
 
             fetch(`/delete-request/${requestId}/`, {
                 method: 'DELETE',
@@ -147,7 +147,7 @@ function attachDeleteButtonListeners() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log('Request deleted successfully');
+                    // console.log('Request deleted successfully');
                     fetchPage(1); // Refresh the page to reflect the deletion
                 } else {
                     console.error('Error deleting request');

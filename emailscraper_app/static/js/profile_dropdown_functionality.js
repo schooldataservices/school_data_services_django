@@ -1,10 +1,10 @@
 $(document).ready(function() {
-    console.log("Document is ready");
+    // console.log("Document is ready");
     $('.dropdown-toggle').dropdown();
-    console.log("Dropdown initialized");
+    // console.log("Dropdown initialized");
 
     $('#profileDropdown').on('click', function() {
-        console.log("Profile image clicked");
+        // console.log("Profile image clicked");
         var dropdownMenu = $('#profileDropdownMenu');
         var dropdownToggle = $(this);
         var offset = dropdownToggle.offset();
@@ -30,7 +30,7 @@ function fetchNotificationCount() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Notifications fetched for badge:', data);
+        // console.log('Notifications fetched for badge:', data);
         const notificationBadge = document.getElementById('notificationBadge');
         const unreadCount = data.notifications ? data.notifications.length : 0;
 
@@ -51,27 +51,39 @@ function fetchNotifications() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'same-origin'
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Notifications fetched for dropdown:', data);
-        const notificationsList = document.getElementById('notificationsList');
-        notificationsList.innerHTML = '';
-
-        if (data.notifications && data.notifications.length > 0) {
-            data.notifications.forEach(notification => {
-                const notificationItem = document.createElement('p');
-                notificationItem.className = 'dropdown-item';
-                notificationItem.textContent = `${notification.message} (${notification.timestamp})`;
-                notificationsList.appendChild(notificationItem);
-            });
-        } else {
-            notificationsList.innerHTML = '<p class="dropdown-item text-muted">No new notifications</p>';
+    .then(response => {
+        if (response.status === 401) {
+            console.warn('User is not authenticated. Notifications cannot be fetched.');
+            return;
         }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data) {
+            // console.log('Notifications fetched for dropdown:', data);
+            const notificationsList = document.getElementById('notificationsList');
+            notificationsList.innerHTML = '';
 
-        // Call fetchNotificationCount to update the badge
-        return fetchNotificationCount();
+            if (data.notifications && data.notifications.length > 0) {
+                data.notifications.forEach(notification => {
+                    const notificationItem = document.createElement('p');
+                    notificationItem.className = 'dropdown-item';
+                    notificationItem.textContent = `${notification.message} (${notification.timestamp})`;
+                    notificationsList.appendChild(notificationItem);
+                });
+            } else {
+                notificationsList.innerHTML = '<p class="dropdown-item text-muted">No new notifications</p>';
+            }
+
+            // Call fetchNotificationCount to update the badge
+            return fetchNotificationCount();
+        }
     })
     .catch(error => {
         console.error('Error fetching notifications:', error);
@@ -87,7 +99,7 @@ function markNotificationsAsRead() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Notifications marked as read");
+        // console.log("Notifications marked as read");
         fetchNotificationCount(); // Update the badge after marking notifications as read
     })
     .catch(error => console.error('Error marking notifications as read:', error));

@@ -15,7 +15,7 @@ $(document).ready(function () {
                     data.forEach(function (contact) {
                         suggestions.append('<a class="dropdown-item" href="#" data-contact-id="' + contact.id + '">' + contact.name + '</a>');
                     });
-                    console.log("Suggestions: ", suggestions.html());  // Check the rendered HTML
+                    // console.log("Suggestions: ", suggestions.html());  // Check the rendered HTML
 
                 },
                 error: function (xhr, status, error) {
