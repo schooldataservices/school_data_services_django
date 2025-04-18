@@ -40,7 +40,7 @@
 
 
 .toc {
-    background-color: #7e7f8065; /* Solid background color */
+    background-color: #64646465; /* Solid background color */
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -100,7 +100,7 @@
 #toc-toggle {
     position: fixed;
     z-index: 1001; /* Ensure it is above the TOC content */
-    background-color: #7e7f8065; /* Background color for visibility */
+    background-color: #64646465; /* Background color for visibility */
     color: #fff; /* Text color for visibility */
     border: none;
     padding: 10px;
@@ -122,6 +122,10 @@
 /* Hide TOC on mobile devices */
 @media (max-width: 767px) {
 
+    .navbar {
+        position: relative; /* Ensure the navbar is the positioning context */
+    }
+
     .content-wrapper {
         margin-left: 0; /* Remove margin for mobile view */
         width: 100%; /* Ensure it takes up the full width */
@@ -129,12 +133,13 @@
 
     .toc-container {
         left: -250px; /* Hide the TOC off-screen */
+        top: var(--navbar-height, 170px); /* Ensure it uses the dynamically set navbar height */
     }
 
     .toc-container.open {
         left: 0; /* Slide the TOC into view */
         z-index: 1000; /* Ensure it is above other elements when opened */
-        top: 195px;
+        top: var(--navbar-height, 170px); /* Ensure it aligns with the navbar */
     }
 
     #toc-toggle.open {
@@ -151,7 +156,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start; /* Align items to the start (left) */
-    background-color: #7e7f8065;
+    background-color: #64646465;
     padding: 20px 0;
     text-align: center;
 

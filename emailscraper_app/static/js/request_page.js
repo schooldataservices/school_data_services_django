@@ -72,13 +72,18 @@ function fetchFilteredRequests() {
 
 function updateTable(requests) {
     const tbody = document.querySelector("table tbody");
-    console.log("Tbody element:", tbody);
+    // console.log("Tbody element:", tbody);
+
+    if (!tbody) {
+        console.warn("Warning: <tbody> element not found. Skipping table update.");
+        return; // Exit the function if <tbody> is not found
+    }
     
     tbody.innerHTML = ''; // Clear existing rows
 
-    console.log("Requests received:", requests);
-    console.log("Type of requests:", typeof requests);
-    console.log("Is requests an array?", Array.isArray(requests));
+    // console.log("Requests received:", requests);
+    // console.log("Type of requests:", typeof requests);
+    // console.log("Is requests an array?", Array.isArray(requests));
 
     requests.forEach(req => {
         const row = document.createElement('tr');
@@ -123,14 +128,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (userFilter) { // Only fetch filtered requests if userFilter exists (i.e., user is a superuser)
         fetchFilteredRequests(); // Fetch filtered requests on page load
     }
-    fetchNotifications(); // Fetch and update the notification badge on page load
-
-    const checkboxes = document.querySelectorAll('.completion-status-toggle');
+    
+    // const checkboxes = document.querySelectorAll('.completion-status-toggle');
     // console.log(`Found ${checkboxes.length} checkboxes`);
 });
 
 function attachEventListeners() {
-    console.log("attachEventListeners is running");
+    // console.log("attachEventListeners is running");
     // Handle editable email cells
     const editableEmailCells = document.querySelectorAll('.editable-email-content');
 

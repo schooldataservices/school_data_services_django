@@ -512,16 +512,24 @@ p {
 }
 
 @media (max-width: 768px) {
+
     .profile-container {
         justify-content: center; /* Center the profile container on smaller screens */
         position: relative; /* Ensure the profile container is the positioning context */
     }
 
     #profileDropdownMenu {
-        position: relative; /* Ensure the dropdown menu is positioned properly */
-        top: auto; /* Reset the top position */
-        right: auto; /* Reset the right position */
-        margin: 0 auto; /* Center the dropdown menu */
+        position: absolute; /* Position it relative to the navbar */
+        top: 100%; /* Place it directly below the navbar */
+        left: 0; /* Align it to the left edge of the navbar */
+        right: 0; /* Stretch it to the right edge of the navbar */
+        margin: 0; /* Remove any margin */
+        width: 40%; /* Make it span the full width of the screen */
+        z-index: 2000; /* Ensure it appears above other elements */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+        border: 1px solid #ccc; /* Add a border for separation */
+        border-radius: 0; /* Remove rounded corners */
+        background-color: white; /* Ensure the dropdown has a background color */
     }
 
     #notificationBadge {

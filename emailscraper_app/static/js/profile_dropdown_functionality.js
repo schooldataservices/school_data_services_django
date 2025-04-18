@@ -66,12 +66,27 @@ function fetchNotifications() {
     })
     .then(data => {
         if (data) {
-            // console.log('Notifications fetched for dropdown:', data);
+            // Get existing notifications from sessionStorage
+            const storedNotifications = sessionStorage.getItem('notifications');
+            const existingNotifications = storedNotifications ? JSON.parse(storedNotifications) : [];
+
+            // Merge new notifications with existing ones
+            const mergedNotifications = [...data.notifications, ...existingNotifications];
+
+            // Remove duplicates (if notifications have unique IDs)
+            const uniqueNotifications = mergedNotifications.filter((notification, index, self) =>
+                index === self.findIndex(n => n.id === notification.id)
+            );
+
+            // Save merged notifications back to sessionStorage
+            sessionStorage.setItem('notifications', JSON.stringify(uniqueNotifications));
+
+            // Update the dropdown
             const notificationsList = document.getElementById('notificationsList');
             notificationsList.innerHTML = '';
 
-            if (data.notifications && data.notifications.length > 0) {
-                data.notifications.forEach(notification => {
+            if (uniqueNotifications.length > 0) {
+                uniqueNotifications.forEach(notification => {
                     const notificationItem = document.createElement('p');
                     notificationItem.className = 'dropdown-item';
                     notificationItem.textContent = `${notification.message} (${notification.timestamp})`;
@@ -81,8 +96,17 @@ function fetchNotifications() {
                 notificationsList.innerHTML = '<p class="dropdown-item text-muted">No new notifications</p>';
             }
 
-            // Call fetchNotificationCount to update the badge
-            return fetchNotificationCount();
+            // Update the notification badge without making a call to fetchNotificationCount
+            const notificationBadge = document.getElementById('notificationBadge');
+            const unreadCount = uniqueNotifications.length;
+
+            if (unreadCount > 0) {
+                notificationBadge.textContent = unreadCount;
+                notificationBadge.style.display = 'inline';
+            } else {
+                notificationBadge.style.display = 'none';
+            }
+            
         }
     })
     .catch(error => {
@@ -105,8 +129,6 @@ function markNotificationsAsRead() {
     .catch(error => console.error('Error marking notifications as read:', error));
 }
 
-// Attach fetchNotifications to the global window object
-window.fetchNotifications = fetchNotifications;
 
 // Example: Attach event listener for dropdown
 document.getElementById('profileDropdown').addEventListener('click', function() {
@@ -121,9 +143,10 @@ function updateNavbarHeight() {
     }
 }
 
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Fetch the notification count on page load
-    fetchNotifications();
+
+    fetchNotifications(); // Fetch and update the notification badge on page load
 
     // Dynamically set the --navbar-height CSS variable
     const navbar = document.querySelector(".navbar"); // Select the navbar

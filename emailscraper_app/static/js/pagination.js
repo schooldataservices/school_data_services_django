@@ -65,7 +65,14 @@ function fetchPage(page) {
                 paginationInfo.innerHTML = ""; // Clear pagination info if no results
             } else {
                 // Populate the table with the returned HTML
-                requestListContainer.innerHTML = data.html;
+                const requestListContainer = document.getElementById("requestListContainer");
+
+                if (!requestListContainer) {
+                    console.warn("Warning: Element with ID 'requestListContainer' not found. Skipping table update.");
+                    return; // Exit the function if the element is not found
+                }
+
+                requestListContainer.innerHTML = data.html; // Populate the table
                 paginationInfo.innerHTML = `Page ${data.current_page} of ${data.total_pages} (Total results: ${data.total_results})`;
 
                 // Reattach event listeners for pagination links
@@ -94,4 +101,4 @@ function fetchPage(page) {
 // All of the listeners from request_page.js here function attachEventListeners() { need to be re-attached
 
 
-// Pagination can not 
+// Pagination can not

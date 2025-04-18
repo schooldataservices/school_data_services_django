@@ -47,9 +47,14 @@ def apply_filters(request, base_queryset):
         if date == 'today':
             filters &= Q(schedule_time__date=now.date())
         elif date == 'last7days':
-            filters &= Q(schedule_time__gte=now - timedelta(days=7))
+                now = datetime.now()
+                print(f"Current datetime (now): {now}")
+                print(f"Datetime 7 days ago: {now - timedelta(days=7)}")
+                filters &= Q(schedule_time__gte=now - timedelta(days=7))
         elif date == 'thismonth':
             filters &= Q(schedule_time__year=now.year, schedule_time__month=now.month)
+    
+    filtered_queryset = base_queryset.filter(filters)
 
     # Apply the filters to the base queryset
     return base_queryset.filter(filters)
@@ -59,11 +64,15 @@ def apply_filters(request, base_queryset):
 def filter_requests(request):
     base_queryset = RequestConfig.objects.all()
     filtered_queryset = apply_filters(request, base_queryset)
-
+  
     # Paginate the filtered queryset
     paginator = Paginator(filtered_queryset, 10)  # Show 10 requests per page
     page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
+    
+    try:
+        page_obj = paginator.get_page(page_number)
+    except EmptyPage:
+        return JsonResponse({'error': 'Invalid page number'}, status=400)
 
     # Serialize the filtered requests
     data = {
@@ -77,14 +86,17 @@ def filter_requests(request):
                 'email_content': req.email_content,
                 'completion_status': 'Completed' if req.completion_status else 'Pending',
             }
-            for req in filtered_queryset
+            for req in page_obj
         ],
         'users': list(User.objects.values_list('username', flat=True)) if request.user.is_superuser else [],
+        'total_results': paginator.count,
+        'total_pages': paginator.num_pages,
+        'current_page': page_obj.number,
     }
     return JsonResponse(data)
 
 
-#This defaults to the js, no submission required on the filters
+#This defaults to the js when changing filters. Only called on page load
 def get_prior_requests_context(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
