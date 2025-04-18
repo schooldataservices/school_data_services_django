@@ -1,5 +1,13 @@
 from django.urls import path
 from .views import homepage_views, request_page_view, uploading_file_views
+from emailscraper_app.static_sitemaps import StaticViewSitemap
+from django.views.generic import TemplateView
+
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
+
 
 urlpatterns = [
 
@@ -17,4 +25,5 @@ urlpatterns = [
     path('submit-requests/', request_page_view.create_request_config, name='submit-requests'),
     path('api/notifications/', homepage_views.get_notifications, name='get_notifications'),
     path('api/notifications/mark-read/', homepage_views.mark_notifications_as_read, name='mark_notifications_as_read'),
+    path('robots.txt', TemplateView.as_view(template_name="emailscraper_app/robots.txt", content_type="text/plain")),
 ]

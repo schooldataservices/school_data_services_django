@@ -1,6 +1,18 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block head %}
+{{ block.super }}
+<title>Data Modeling for Schools | School Data Services</title>
+<meta name="description" content="Learn how School Data Services uses data modeling to organize, normalize, and optimize school data for accuracy, scalability, and actionable insights.">
+
+<meta property="og:title" content="Data Modeling for Schools | School Data Services">
+<meta property="og:description" content="Discover how data modeling eliminates redundancy, improves accuracy, and enables schools to make data-driven decisions for student success and operational efficiency.">
+<meta property="og:image" content="https://storage.googleapis.com/django_hosting/base_images/data-modeling-example.png">
+<meta property="og:url" content="https://schooldataservices.com/data_modeling/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
 {% endblock %}
@@ -71,7 +83,7 @@
           <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
       </a>
 
-      <a href="mailto:2015samtaylor@gmail.com" class="gmail-link">
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
           <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
       </a>
 

@@ -1,0 +1,9 @@
+User-agent: *
+Crawl-delay: 10
+
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+Allow: /
+
+Sitemap: https://schooldataservices.com/sitemap.xml

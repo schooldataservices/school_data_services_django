@@ -1,6 +1,18 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block head %}
+{{ block.super }}
+<title>School Data Services | Data Engineering Services, ETL, & Google Cloud Data Warehousing for Schools K-12</title>
+<meta name="description" content="Helping schools automate ETL pipelines and centralize student data using Google Cloud.">
+
+<meta property="og:title" content="School Data Services | Data Engineering for Schools">
+<meta property="og:description" content="Helping schools automate ETL pipelines and centralize student data using Google Cloud.">
+<meta property="og:url" content="https://schooldataservices.com">
+<meta property="og:type" content="website">
+
+{% endblock head %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
@@ -12,6 +24,7 @@
         <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
             <div class="content-wrapper">
                 <h1 class="main-heading text-center">Data Engineering Designed for Schools</h1>
+    
                 <p class="tagline text-center"><strong>We help schools organize, clean, and centralize data in one singular location so your organization can gain insights on what matters.</strong></p> 
                 <p class="text-center">We simplify the process of data management with automated ETL methods and leverage Google Cloud Platform for seamless integration and scalability <img src="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" alt="Google Cloud Platform" class="gcp-image" style="width: 50px; height: auto; vertical-align: middle; margin-left: 10px;"></p></p>
            
@@ -44,6 +57,7 @@
                         </marker>
                     </defs>
                 </svg>
+                
             </div> <!-- Close content-wrapper here -->  
 
             </div>
@@ -64,11 +78,11 @@
 <div class="contact-content-container">
   <div class="contact-content">
       <a href="https://github.com/2015samtaylor" target="_blank" class="github-link">
-          <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub profile for School Data Services" class="github-logo">
       </a>
 
       <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
-          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="Email for School Data Services">
       </a>
 
       <!-- Google Calendar Appointment Scheduling begin -->

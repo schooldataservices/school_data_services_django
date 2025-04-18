@@ -1,6 +1,18 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block head %}
+{{ block.super }}
+<title>Google Cloud Data Warehousing for Schools | School Data Services</title>
+<meta name="description" content="Learn how School Data Services leverages Google Cloud to provide scalable, secure, and cost-effective data warehousing solutions tailored for schools.">
+
+<meta property="og:title" content="Google Cloud Data Warehousing for Schools | School Data Services">
+<meta property="og:description" content="Discover how School Data Services uses Google Cloud to ensure scalability, security, and seamless data integration for educational institutions.">
+<meta property="og:image" content="https://storage.googleapis.com/django_hosting/base_images/gcp-vectorized.png">
+<meta property="og:url" content="https://schooldataservices.com/cloud_setup/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
 {% endblock %}
@@ -87,7 +99,7 @@
           <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
       </a>
 
-      <a href="mailto:2015samtaylor@gmail.com" class="gmail-link">
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
           <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
       </a>
 

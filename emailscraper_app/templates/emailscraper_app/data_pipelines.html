@@ -1,6 +1,18 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block head %}
+{{ block.super }}
+<title>Data Pipelines and Orchestration | School Data Services</title>
+<meta name="description" content="Learn how School Data Services builds efficient data pipelines using tools like Apache Airflow, Google BigQuery, and CI/CD processes to ensure data accuracy and scalability.">
+
+<meta property="og:title" content="Data Pipelines and Orchestration | School Data Services">
+<meta property="og:description" content="Discover how School Data Services automates data workflows with Apache Airflow, processes data for accuracy, and stores it in Google BigQuery for analysis and reporting.">
+<meta property="og:image" content="https://storage.googleapis.com/django_hosting/base_images/data-pipeline-final.png">
+<meta property="og:url" content="https://schooldataservices.com/data_pipelines">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
 <link rel="stylesheet" href="{% static 'css/data_pipelines.css' %}">
@@ -80,7 +92,7 @@
           <img src="https://storage.googleapis.com/django_hosting/base_images/github-mark-white.png" alt="GitHub" class="github-logo">
       </a>
 
-      <a href="mailto:2015samtaylor@gmail.com" class="gmail-link">
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
           <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
       </a>
 
