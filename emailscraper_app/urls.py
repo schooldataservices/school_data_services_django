@@ -8,7 +8,6 @@ sitemaps = {
     'static': StaticViewSitemap,
 }
 
-
 urlpatterns = [
 
     path('serve-file/<path:file_path>/', uploading_file_views.serve_gcs_file, name='serve_file'),

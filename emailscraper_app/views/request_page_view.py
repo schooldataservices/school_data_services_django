@@ -162,6 +162,7 @@ def paginate_requests(request, queryset, per_page=10):
 
 @transaction.atomic
 def create_request_config(request):
+    # Get the base queryset based on user authentication
     if request.user.is_authenticated:
         if request.user.is_superuser:
             base_queryset = RequestConfig.objects.all().order_by('-date_submitted')  # All requests for superuser
@@ -170,7 +171,7 @@ def create_request_config(request):
     else:
         base_queryset = RequestConfig.objects.none()  # No requests for unauthenticated users
 
-    # Apply filters
+    # Apply filters to the base queryset
     filtered_queryset = apply_filters(request, base_queryset)
 
     # Paginate the filtered queryset
@@ -186,6 +187,63 @@ def create_request_config(request):
             'current_page': pagination_context['current_page'],
         })
 
+    # Handle POST request for creating a new request
+    if request.method == 'POST':
+        print("Handling POST request.")
+        if request.user.is_authenticated:
+            form = RequestConfigForm(request.POST)
+            if form.is_valid():
+                print("Form is valid, saving the form data.")
+                # Save the form data to the database
+                request_config = form.save(commit=False)
+
+                # Check if "Submit on behalf of" has a value. Make them the creator
+                user_id = request.POST.get('user_id')
+                if request.user.is_superuser and user_id:
+                    try:
+                        user = User.objects.get(id=user_id)
+                        request_config.creator = user  # Override creator with selected user
+                        print(f"User {user} selected as creator.")
+                    except User.DoesNotExist:
+                        print(f"User with id {user_id} does not exist.")
+                        context = {
+                            'form': form,
+                            'error_message': escape("Selected user does not exist."),
+                        }
+                        return render(request, 'emailscraper_app/submit_request.html', context)
+                else:
+                    request_config.creator = request.user  # Default to logged-in user
+                    print(f"Logged-in user {request.user} set as creator.")
+
+                request_config.save()
+
+                # Send email using the new function
+                send_request_email(request_config, request_config.creator)
+
+                # Update context to reflect the new data
+                pagination_context = paginate_requests(request, RequestConfig.objects.all().order_by('-date_submitted'))
+                context = {
+                    'form': RequestConfigForm(),  # Reset the form
+                    'success_message': 'Request Submitted Successfully',
+                    'page_obj': pagination_context['page_obj'],
+                    'total_pages': pagination_context['total_pages'],
+                    'total_results': pagination_context['total_results'],
+                }
+                return render(request, 'emailscraper_app/submit_request.html', context)
+
+            else:
+                context = {
+                    'form': form,  # Keep the invalid form to show errors
+                    'error_message': escape("Please correct the errors below."),
+                }
+                return render(request, 'emailscraper_app/submit_request.html', context)
+
+        else:
+            context = {
+                'error_message': escape("You must be logged in to submit a request."),
+            }
+            return render(request, 'emailscraper_app/submit_request.html', context)
+
     # Handle GET request
     context = {
         'form': RequestConfigForm(),
@@ -200,6 +258,9 @@ def create_request_config(request):
 
 @csrf_exempt
 def update_email_content(request, request_id):
+    print(f"Request method: {request.method}")
+    print(f"Request headers: {request.headers}")
+    print(f"Request body: {request.body}")
     if request.method == 'POST':
         try:
             # Debug: Log the raw request body
@@ -255,6 +316,9 @@ def delete_request(request, config_id):
 @csrf_exempt
 def update_completion_status(request, config_id):
     print(f"Received request to update completion status for config ID: {config_id}")
+    print(f"Request method: {request.method}")
+    print(f"Request headers: {request.headers}")
+    print(f"Request body: {request.body}")
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
