@@ -10,7 +10,7 @@
             <th>Priority</th>
             <th>Desired Completion Date</th>
             <th>User</th> <!-- Add User column -->
-            <th>Email Content</th>
+            <th>Email Content (Editable)</th>
             <th>Completion Status</th>
         </tr>
     </thead>
@@ -22,14 +22,16 @@
                         <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
                     </button>
                 </td>
-                <td>{{ config.id }}</td>
+                <td>
+                    <a href="{% url 'historical_requests' %}?id={{ config.id }}">{{ config.id }}</a>
+                </td>
                 <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ config.priority_status }}</td>
                 <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ config.creator.username }}</td> <!-- Add User data -->
                 <td contenteditable="true" class="editable-email-content" data-id="{{ config.id }}">
                     {% autoescape off %}
-                    {{ config.email_content }}
+                    {{ config.email_content|safe}}
                     {% endautoescape %}
                 </td>
                 <td id="status-cell-{{ config.id }}">
@@ -62,72 +64,22 @@
     {% endif %}
 </div>
 
-<style>
-.submit-email-content-fixed {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-}
+<script>
+function toggleExpand(button) {
+    const row = button.closest("tr"); // Get the parent <tr> containing the content
+    const currentMaxHeight = window.getComputedStyle(row).maxHeight; // Get the computed max-height
 
-.submit-email-content-fixed:hover {
-    background-color: #0056b3;
-}
+    console.log("Targeted row:", row); // Debugging
+    console.log("Current maxHeight (computed):", currentMaxHeight); // Debugging
 
-/* Pagination container styling */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    gap: 10px;
+    if (currentMaxHeight === "100px" || currentMaxHeight === "100.0px") {
+        row.style.maxHeight = "none"; // Remove height limit
+        console.log("Expanding row");
+        button.textContent = "Collapse"; // Update button text
+    } else {
+        row.style.maxHeight = "400px"; // Set height limit
+        console.log("Collapsing row");
+        button.textContent = "Expand"; // Update button text
+    }
 }
-
-/* Pagination link styling */
-.page-link {
-    display: inline-block;
-    padding: 8px 12px;
-    font-size: 14px;
-    color: #007bff;
-    text-decoration: none;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.page-link:hover {
-    background-color: #007bff;
-    color: white;
-}
-
-/* Current page styling */
-.current-page {
-    display: inline-block;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    background-color: #007bff;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-}
-
-/* Previous and Next button styling */
-.page-link.previous,
-.page-link.next {
-    font-weight: bold;
-}
-
-.page-link.previous:hover,
-.page-link.next:hover {
-    background-color: #0056b3;
-    color: white;
-}
-</style>
+</script>

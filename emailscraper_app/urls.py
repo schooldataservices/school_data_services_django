@@ -24,5 +24,7 @@ urlpatterns = [
     path('submit-requests/', request_page_view.create_request_config, name='submit-requests'),
     path('api/notifications/', homepage_views.get_notifications, name='get_notifications'),
     path('api/notifications/mark-read/', homepage_views.mark_notifications_as_read, name='mark_notifications_as_read'),
+    path('historical-requests/', request_page_view.historical_requests, name='historical_requests'),
+    path('get-next-request-id/', request_page_view.get_next_request_id, name='get_next_request_id'),
     path('robots.txt', TemplateView.as_view(template_name="emailscraper_app/robots.txt", content_type="text/plain")),
 ]

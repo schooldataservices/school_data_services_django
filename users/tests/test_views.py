@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from users.forms import UserRegisterForm
 from django.test import TestCase
 from django.urls import reverse
@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from django.middleware.csrf import CsrfViewMiddleware
 from django.test.client import RequestFactory
+from emailscraper_app.models import RequestConfig
+from emailscraper_app.forms import RequestConfigForm
 
 class UserRegisterFormTest(TestCase):
     def test_valid_form(self):
@@ -17,6 +19,10 @@ class UserRegisterFormTest(TestCase):
             'password2': 'Testpassword123'
         }
         form = UserRegisterForm(data=form_data)
+        if form.is_valid():
+            print("Form is valid.")
+        else:
+            print("Form errors:", form.errors)
         self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
@@ -27,6 +33,10 @@ class UserRegisterFormTest(TestCase):
             'password2': 'Differentpassword123'
         }
         form = UserRegisterForm(data=form_data)
+        if form.is_valid():
+            print("Form is valid.")
+        else:
+            print("Form errors:", form.errors)
         self.assertFalse(form.is_valid())
 
     def test_register_form_missing_fields(self):
@@ -37,6 +47,10 @@ class UserRegisterFormTest(TestCase):
             'password2': ''
         }
         form = UserRegisterForm(data=form_data)
+        if form.is_valid():
+            print("Form is valid.")
+        else:
+            print("Form errors:", form.errors)
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
         self.assertIn('email', form.errors)
@@ -180,6 +194,116 @@ class AccessControlTest(TestCase):
         response = self.client.get(reverse('profile'))
         self.assertEqual(response.status_code, 302)  # Redirect to login
         self.assertIn(reverse('login'), response.url)
+
+
+
+class CreateRequestConfigTest(TestCase):
+    def setUp(self):
+         # Create a test user and activate them
+        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.user.is_active = True
+        self.user.save()
+
+        # Create a superuser and activate them
+        self.superuser = User.objects.create_superuser(username='admin', password='admin123')
+        self.superuser.is_active = True
+        self.superuser.save()
+
+        # Set up the client
+        self.client = Client()
+
+        # Define the URL for the view
+        self.url = reverse('submit-requests')  # Replace with the actual name of the URL pattern
+
+    def test_create_request_as_authenticated_user(self):
+        # Log in as a regular user
+        self.client.login(username='testuser', password='password123')
+
+        # Define POST data
+        post_data = {
+            'priority_status': 'medium',
+            'schedule_time': '2025-04-25 10:00:00',
+            'email_content': 'Test email content',
+        }
+
+        # Send POST request
+        response = self.client.post(self.url, post_data)
+
+        # Check if the response redirects (successful submission)
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the request was created in the database
+        self.assertEqual(RequestConfig.objects.count(), 1)
+        request_config = RequestConfig.objects.first()
+        self.assertEqual(request_config.creator, self.user)
+        self.assertEqual(request_config.priority_status, 'medium')
+        self.assertEqual(request_config.email_content, 'Test email content')
+
+    def test_create_request_as_superuser(self):
+        # Log in as a superuser
+        self.client.login(username='admin', password='admin123')
+
+        # Define POST data
+        post_data = {
+            'priority_status': 'medium',
+            'schedule_time': '2025-04-26 14:00:00',
+            'email_content': 'Superuser email content',
+            'user_id': self.user.id,  # Submit on behalf of another user
+        }
+
+        # Send POST request
+        response = self.client.post(self.url, post_data)
+
+        # Check if the response redirects (successful submission)
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the request was created in the database
+        self.assertEqual(RequestConfig.objects.count(), 1)
+        request_config = RequestConfig.objects.first()
+        self.assertEqual(request_config.creator, self.user)  # Creator should be the selected user
+        self.assertEqual(request_config.priority_status, 'medium')
+        self.assertEqual(request_config.email_content, 'Superuser email content')
+
+    def test_create_request_with_invalid_data(self):
+        # Log in as a regular user
+        self.client.login(username='testuser', password='password123')
+
+        # Define invalid POST data (missing required fields)
+        post_data = {
+            'priority_status': '',  # Invalid priority
+            'schedule_time': '',  # Missing schedule time
+            'email_content': '',  # Missing email content
+        }
+
+        # Send POST request
+        response = self.client.post(self.url, post_data)
+
+        # Check if the response returns a 200 status code (form re-rendered with errors)
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the request was not created in the database
+        self.assertEqual(RequestConfig.objects.count(), 0)
+
+        # Check if the form errors are displayed in the response
+        self.assertContains(response, "Please correct the errors below.")
+
+    def test_create_request_as_unauthenticated_user(self):
+        # Define POST data
+        post_data = {
+            'priority_status': 'low',
+            'schedule_time': '2025-04-27 16:00:00',
+            'email_content': 'Unauthenticated user email content',
+        }
+
+        # Send POST request without logging in
+        response = self.client.post(self.url, post_data)
+
+        # Check if the response redirects to the login page
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You must be logged in to submit a request.")
+
+        # Check if the request was not created in the database
+        self.assertEqual(RequestConfig.objects.count(), 0)
 
 
 #Do Final checks

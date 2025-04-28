@@ -49,6 +49,7 @@ table {
 
 th, td { 
     border: 1px solid hsla(0, 0%, 87%, 0.952);
+    vertical-align: left;
     padding: 10px;
     text-align: left;
     color: #000000; 
@@ -64,7 +65,7 @@ tr:nth-child(even) {
 }
 
 tr:hover { 
-    background-color: #3d3c3c75; 
+    background-color: #83838375; 
 }
 
 .block-footer {
@@ -204,3 +205,87 @@ h1.submit-request-header {
     white-space: nowrap; /* Prevent content from wrapping */
     max-width: 100%; /* Ensure it doesn't exceed the page width */
 }
+
+.editable-email-content {
+    white-space: normal; /* Preserve line breaks and spaces */
+    word-break: break-word; /* Ensure long words break */
+    overflow-wrap: break-word; /* Break words if they overflow */
+    max-width: 300px; /* Optional: Set a maximum width for the column */
+    text-align: left; /* Ensure text is always aligned to the left */
+    margin: 0; /* Reset margin */
+    padding: 10px;
+    line-height: 1.5; /* Set consistent line height for better readability in spacing */
+    max-height: 100px; /* Set a height limit for the box */
+    position: relative; /* Ensure the expand button is positioned correctly */
+}
+
+
+
+.submit-email-content-fixed {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.submit-email-content-fixed:hover {
+    background-color: #0056b3;
+}
+
+/* Pagination container styling */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+/* Pagination link styling */
+.page-link {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Current page styling */
+.current-page {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+}
+
+/* Previous and Next button styling */
+.page-link.previous,
+.page-link.next {
+    font-weight: bold;
+}
+
+.page-link.previous:hover,
+.page-link.next:hover {
+    background-color: #0056b3;
+    color: white;
+}
+

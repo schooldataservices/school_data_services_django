@@ -14,3 +14,4 @@ beautifulsoup4==4.12.2
 gunicorn
 google-cloud-secret-manager
 whitenoise>=5.2.0
+coverage

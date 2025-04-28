@@ -262,10 +262,13 @@ CKEDITOR_CONFIGS = {
         'height': 300,
         'width': '100%',
         'extraPlugins': ','.join([
-            'uploadimage',  # the upload image feature
+            'uploadimage',  # The upload image feature
+            'pastefromword',  # Add the Paste from Word plugin to preserver indentations and pagebreaks
         ]),
         'filebrowserUploadUrl': '/ckeditor/upload/',
         'filebrowserUploadMethod': 'form',
+        'allowedContent': True,  # Allow all content (including inline styles)
+        'forcePasteAsPlainText': False,  # Allow rich text pasting
     },
 }
 

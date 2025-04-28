@@ -25,7 +25,7 @@ document.getElementById("dateFilter").addEventListener("change", function() {
 
 // Completion Filter Logic
 document.getElementById("completionFilter").addEventListener("change", function() {
-    // console.log("Completion filter changed to:", this.value);
+    console.log("Completion filter changed to:", this.value);
     fetchFilteredRequests();
 });
 

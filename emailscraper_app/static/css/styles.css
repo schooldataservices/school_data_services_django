@@ -466,6 +466,10 @@ p {
     color: #000000e7; /* Set paragraph text color */
 }
 
+li {
+    color:#000000e7;
+}
+
 #profileDropdownMenu {
     display: none;
     visibility: hidden;

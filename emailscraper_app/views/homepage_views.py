@@ -41,7 +41,7 @@ def format_datetime_fields(data):
 def get_notifications(request):
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
-        print(f"Notifications fetched: {notifications}")
+        # print(f"Notifications fetched: {notifications}")
         notifications_data = [
             {
                 'id': notification.id,
@@ -59,7 +59,7 @@ def get_notifications(request):
 def mark_notifications_as_read(request):
     if request.user.is_authenticated and request.method == 'POST':
         unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
-        print(f"Marking notifications as read: {unread_notifications}")
+        # print(f"Marking notifications as read: {unread_notifications}")
         unread_notifications.update(is_read=True)
         return JsonResponse({'success': True})
     return JsonResponse({'error': 'Unauthorized'}, status=401)

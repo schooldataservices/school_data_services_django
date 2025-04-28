@@ -1,0 +1,293 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
+<style>
+    .flex-container {
+        display: flex;
+        gap: 20px; /* Add space between the card and the filter */
+        align-items: flex-start; /* Align items at the top */
+    }
+
+    .request-card {
+        flex: 3; /* Take up more space compared to the filter */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .request-card h3 {
+        color: black; /* Set the color of the h3 to black */
+        margin-top: 0;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        width: auto;
+        text-decoration: underline;
+    }
+
+    .request-card .editable-email-content {
+        background-color: #fff;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-top: 10px;
+        max-width: none;
+        white-space: normal;
+        word-wrap: break-word;
+        width: auto;
+        color: black;
+        text-align: left;
+        max-height: None;
+        pointer-events: auto; /* Ensure the element is clickable */
+        user-select: text; /* Allow text selection */
+    }
+
+    .filter-form-container {
+        flex: 1; /* Take up less space compared to the card */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-form input[type="number"] {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .filter-form button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .filter-form button:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex-container">
+ 
+
+    <div class="request-card">
+
+        <!-- Display success message if it exists -->
+        {% if request.GET.message %}
+        <div class="alert alert-success">
+            {{ request.GET.message }}
+        </div>
+        {% endif %}
+    
+
+        <h3 style="display: flex; align-items: center; gap: 10px;">
+            Request ID: {{ request_obj.id }}
+            <button class="delete-request" data-id="{{ request_obj.id }}" style="background: none; border: none; cursor: pointer;">
+                <i class="fas fa-trash-alt" style="font-size: 1.25rem;"></i> <!-- Font Awesome trash icon -->
+            </button>
+        </h3>
+        <div class="meta-info">
+            <p><strong>User:</strong> {{ request_obj.creator.username }}</p>
+            <p><strong>Date Submitted:</strong> {{ request_obj.date_submitted|date:"Y-m-d H:i:s" }}</p>
+            <p><strong>Priority:</strong> {{ request_obj.priority_status }}</p>
+            <p><strong>Desired Completion Date:</strong> {{ request_obj.schedule_time|date:"Y-m-d H:i:s" }}</p>
+            <p id="status-cell-{{ request_obj.id }}">
+                <strong>Completion Status:</strong>
+                <span class="status-text">{{ request_obj.completion_status|yesno:"Completed,Pending" }}</span>
+                <input type="checkbox" class="completion-status-toggle" data-id="{{ request_obj.id }}" {% if request_obj.completion_status %}checked{% endif %}>
+            </p>
+        </div>
+        <div class="editable-email-content" contenteditable="true" data-id="{{ request_obj.id }}">
+            {{ request_obj.email_content|safe }}
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="filter-form-container">
+        <form method="get" action="{% url 'historical_requests' %}" class="filter-form">
+            <label for="id"><strong>Filter by Request ID:</strong></label>
+            <select id="id" name="id">
+                {% for id in all_request_ids %}
+                    <option value="{{ id }}" {% if id == request_obj.id %}selected{% endif %}>
+                        {{ id }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <form method="get" action="{% url 'historical_requests' %}" class="filter-form">
+            <label for="keyword"><strong>Search by Keyword:</strong></label>
+            <input type="text" id="keyword" name="keyword" value="{{ keyword }}" placeholder="Enter keyword">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }} <!-- Include the parent block's content -->
+<script>
+function attachEventListeners() {
+    // Define userFilter if it exists on the page
+    // const userFilter = document.querySelector('#userFilter');
+
+    // Handle editable email cells
+    const editableEmailCells = document.querySelectorAll('.editable-email-content');
+
+    editableEmailCells.forEach(cell => {
+        // Add blur event listener to handle saving content
+        cell.addEventListener('blur', function () {
+            const requestId = cell.getAttribute('data-id');
+            const updatedContent = cell.textContent.trim();
+
+            // Validate the request ID and updated content
+            if (!requestId || !updatedContent) {
+                return; // Exit if request ID or content is invalid
+            }
+
+            // Dynamically capture the current value of userFilter
+            // const userFilterValue = userFilter ? userFilter.value : null;
+
+            // Send the updated content to the backend
+            fetch(`/update-email-content/${requestId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    email_content: updatedContent,
+                    // userFilter: userFilterValue // Include the live value of userFilter
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fetchNotifications(); // Update the notification badge
+                    console.log('Email content updated successfully');
+                } else {
+                    console.error('Error updating email content:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Handle d checkboxes
+    const statusCheckboxes = document.querySelectorAll('.completion-status-toggle');
+
+    statusCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const requestId = checkbox.getAttribute('data-id');
+            const isChecked = checkbox.checked;
+
+            // Update the text dynamically
+            const statusTextElement = document.querySelector(`#status-cell-${requestId} .status-text`);
+            if (statusTextElement) {
+                statusTextElement.textContent = isChecked ? 'Completed' : 'Pending';
+            }
+
+            // Send the updated status to the backend
+            fetch(`/update-completion-status/${requestId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    'completion_status': isChecked,
+                    'config_id': requestId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fetchNotifications(); // Update the notification badge
+                    // console.log('Status updated successfully');
+                } else {
+                    console.error('Error updating status');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    const deleteButtons = document.querySelectorAll('.delete-request');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const requestId = button.getAttribute('data-id');
+
+            // Confirm deletion
+            if (!confirm('Are you sure you want to delete this request?')) {
+                return;
+            }
+
+            // Send DELETE request to the backend
+            fetch(`/delete-request/${requestId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCSRFToken()
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fetch the next available request ID
+                    fetch(`/get-next-request-id/?id=${requestId}`, { // Pass the current ID in the query string
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(nextData => {
+                        if (nextData.next_request_id) {
+                            const successMessage = `Request ID ${requestId} deleted successfully.`;
+                            const nextUrl = `/historical-requests/?id=${nextData.next_request_id}&message=${encodeURIComponent(successMessage)}`;
+                            window.location.href = nextUrl;
+                        } else {
+                            // No more requests available
+                            alert('No more requests available.');
+                            const successMessage = `Request ID ${requestId} deleted successfully.`;
+                            const defaultUrl = `/historical-requests/?message=${encodeURIComponent(successMessage)}`;
+                            window.location.href = defaultUrl;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching next request ID:', error));
+                } else {
+                    console.error('Error deleting request:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+}
+
+function getCSRFToken() {
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
+    return csrfToken ? csrfToken[1] : '';
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    attachEventListeners();
+});
+</script>
+{% endblock %}

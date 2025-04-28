@@ -6,3 +6,4 @@ media/
 *.json
 *.ipynb
 venv/
+htmlcov/
