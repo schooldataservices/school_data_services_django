@@ -11,6 +11,7 @@
     }
 
     .request-card {
+        margin-top: 25px;
         flex: 3; /* Take up more space compared to the filter */
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -46,6 +47,7 @@
     }
 
     .filter-form-container {
+        margin-top: 25px;
         flex: 1; /* Take up less space compared to the card */
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -78,6 +80,47 @@
 
     .filter-form button:hover {
         background-color: #0056b3;
+    }
+
+     /* Responsive styles for smaller screens */
+     @media (max-width: 768px) {
+        .flex-container {
+            flex-direction: column; /* Stack elements vertically */
+            gap: 10px;
+        }
+
+        .request-card,
+        .filter-form-container {
+            width: 100%; /* Take full width */
+            flex: none; /* Remove flex-grow/shrink */
+        }
+
+        .request-card h3 {
+            font-size: 1.2em; /* Adjust font size for smaller screens */
+        }
+
+        .editable-email-content {
+            font-size: 0.9em; /* Adjust font size for readability */
+        }
+
+        .filter-form button {
+            padding: 10px; /* Increase button size for touch devices */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .request-card h3 {
+            font-size: 1em; /* Further reduce font size */
+        }
+
+        .filter-form input[type="text"],
+        .filter-form select {
+            font-size: 0.9em; /* Adjust input font size */
+        }
+
+        .filter-form button {
+            font-size: 0.9em; /* Adjust button font size */
+        }
     }
 </style>
 {% endblock %}
@@ -290,4 +333,5 @@ document.addEventListener("DOMContentLoaded", function () {
     attachEventListeners();
 });
 </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}

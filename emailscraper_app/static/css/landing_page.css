@@ -65,14 +65,3 @@
     animation-delay: 6s;
 }
 
-h1.main-heading {
-    font-size: 2.5rem; /* Larger font size for the main heading */
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-p.tagline {
-    font-size: 1.2rem; /* Slightly larger font for the tagline */
-    line-height: 1.6; /* Improve readability */
-    margin-bottom: 30px;
-}
