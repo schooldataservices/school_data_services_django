@@ -23,13 +23,12 @@ function applyFilters() {
     let selectedCompletion = document.getElementById("completionFilter").value.toLowerCase();
     let rows = document.querySelectorAll("table tbody tr");
 
-    // console.log("Applying filters: ", { selectedPriority, selectedDate, selectedCompletion });
-
     rows.forEach(row => {
-        let priorityElement = row.children[1]; // Priority column
-        let dateElement = row.children[0]; // Date Submitted column
-        let scheduleElement = row.children[2]; // Schedule Time column
-        let completionElement = row.children[4]; // Completion Status column
+        // Reference columns by class name
+        let priorityElement = row.querySelector(".priority-column");
+        let dateElement = row.querySelector(".date-column");
+        let scheduleElement = row.querySelector(".schedule-column");
+        let completionElement = row.querySelector(".status-column");
 
         if (!priorityElement || !dateElement || !scheduleElement || !completionElement) return;
 
@@ -48,9 +47,9 @@ function applyFilters() {
         let statusMatch = selectedCompletion === "all" || completionValue === selectedCompletion;
 
         if ((selectedPriority === "all" || priority === selectedPriority) && dateMatch && statusMatch) {
-            row.style.display = "";
+            row.style.display = ""; // Show the row
         } else {
-            row.style.display = "none";
+            row.style.display = "none"; // Hide the row
         }
     });
 }

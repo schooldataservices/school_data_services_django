@@ -4,37 +4,37 @@
 <table>
     <thead>
         <tr>
-            <th></th> <!-- Empty header for the delete icon column -->
-            <th>ID</th>
-            <th>Date Submitted</th>
-            <th>Priority</th>
-            <th>Desired Completion Date</th>
-            <th>User</th> <!-- Add User column -->
-            <th>Email Content (Editable)</th>
-            <th>Completion Status</th>
+            <th class="delete-column"></th> <!-- Empty header for the delete icon column -->
+            <th class="id-column">ID</th>
+            <th class="date-column">Date Submitted</th>
+            <th class="priority-column">Priority</th>
+            <th class="schedule-column">Desired Completion Date</th>
+            <th class="user-column">User</th> <!-- Add User column -->
+            <th class="email-content-column">Email Content (Editable)</th>
+            <th class="status-column">Completion Status</th>
         </tr>
     </thead>
     <tbody>
         {% for config in page_obj %}
             <tr>
-                <td>
+                <td class="delete-column">
                     <button class="delete-request" data-id="{{ config.id }}">
                         <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
                     </button>
                 </td>
-                <td>
+                <td class="id-column">
                     <a href="{% url 'historical_requests' %}?id={{ config.id }}">{{ config.id }}</a>
                 </td>
-                <td>{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
-                <td>{{ config.priority_status }}</td>
-                <td>{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
-                <td>{{ config.creator.username }}</td> <!-- Add User data -->
-                <td contenteditable="true" class="editable-email-content" data-id="{{ config.id }}">
+                <td class="date-column">{{ config.date_submitted|date:"Y-m-d H:i:s" }}</td>
+                <td class="priority-column">{{ config.priority_status }}</td>
+                <td class="schedule-column">{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
+                <td class="user-column">{{ config.creator.username }}</td> <!-- Add User data -->
+                <td contenteditable="true" class="editable-email-content email-content-column" data-id="{{ config.id }}">
                     {% autoescape off %}
-                    {{ config.email_content|safe}}
+                    {{ config.email_content|safe }}
                     {% endautoescape %}
                 </td>
-                <td id="status-cell-{{ config.id }}">
+                <td class="status-column" id="status-cell-{{ config.id }}">
                     <!-- Initially, display the current status -->
                     {{ config.completion_status|yesno:"Completed,Pending" }}
                     <!-- Checkbox to toggle the completion status -->

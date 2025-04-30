@@ -52,6 +52,7 @@ function fetchFilteredRequests() {
     fetch(`/filter-requests/?user=${selectedUser}&priority=${selectedPriority}&date=${selectedDate}&completion=${selectedCompletion}`)
         .then(response => response.json())
         .then(data => {
+            console.log("Data received from backend:", data); // Debugging
             updateTable(data.requests);
 
             // Update the "Filter by User" dropdown if the response includes users
@@ -72,7 +73,7 @@ function fetchFilteredRequests() {
 
 function updateTable(requests) {
     const tbody = document.querySelector("table tbody");
-    // console.log("Tbody element:", tbody);
+    console.log("Requests received in updateTable:", requests); // Debugging
 
     if (!tbody) {
         console.warn("Warning: <tbody> element not found. Skipping table update.");
@@ -81,11 +82,8 @@ function updateTable(requests) {
     
     tbody.innerHTML = ''; // Clear existing rows
 
-    // console.log("Requests received:", requests);
-    // console.log("Type of requests:", typeof requests);
-    // console.log("Is requests an array?", Array.isArray(requests));
-
     requests.forEach(req => {
+        console.log(`Processing request ID: ${req.id}`); // Debugging
         const row = document.createElement('tr');
 
         row.innerHTML = `
@@ -94,7 +92,9 @@ function updateTable(requests) {
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </td>
-            <td>${req.id}</td>
+            <td>
+                <a href="/historical-requests/?id=${req.id}">${req.id}</a> <!-- Corrected URL -->
+            </td>
             <td>${req.date_submitted}</td>
             <td>${req.priority_status}</td>
             <td>${req.schedule_time}</td>
@@ -142,7 +142,7 @@ function attachEventListeners() {
         // Add blur event listener to handle saving content
         cell.addEventListener('blur', function () {
             const requestId = cell.getAttribute('data-id');
-            const updatedContent = cell.textContent.trim();
+            const updatedContent = cell.innerHTML.trim(); // Use innerHTML to preserve formatting
 
             // Validate the request ID and updated content
             if (!requestId || !updatedContent) {

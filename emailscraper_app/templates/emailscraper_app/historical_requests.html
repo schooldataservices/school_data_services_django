@@ -197,7 +197,7 @@ function attachEventListeners() {
         // Add blur event listener to handle saving content
         cell.addEventListener('blur', function () {
             const requestId = cell.getAttribute('data-id');
-            const updatedContent = cell.textContent.trim();
+            const updatedContent = cell.innerHTML.trim(); // Use innerHTML to preserve formatting
 
             // Validate the request ID and updated content
             if (!requestId || !updatedContent) {

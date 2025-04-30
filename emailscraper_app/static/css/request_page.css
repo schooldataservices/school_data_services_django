@@ -39,20 +39,22 @@ label {
 
 
 table { 
-    width: 100%;
-    border-collapse: collapse;
+    table-layout: fixed; /* Fix the table layout to prevent stretching */
+    width: 100%; /* Ensure the table takes up the full width */
+    border-collapse: collapse; /* Collapse borders for a cleaner look */
     margin-top: 10px;
     background-color: #7e7f8065; 
     
 }
 
-
 th, td { 
     border: 1px solid hsla(0, 0%, 87%, 0.952);
-    vertical-align: left;
+    vertical-align: top; /* Align content to the top */
     padding: 10px;
     text-align: left;
     color: #000000; 
+    overflow: hidden; /* Prevent content overflow */
+    text-overflow: ellipsis; /* Add ellipsis for overflowing text */
 }
 
 th { 
@@ -67,6 +69,70 @@ tr:nth-child(even) {
 tr:hover { 
     background-color: #83838375; 
 }
+
+tbody tr {
+    height: 100px; /* Set a strict height for each row */
+    overflow: hidden; /* Hide any content that overflows */
+    display: table-row; /* Ensure proper table layout */
+}
+
+
+/* Target the specific "Delete" column */
+th.delete-column,
+td.delete-column {
+    width: 5%; /* Adjust as needed */
+}
+
+/* Target the specific "ID" column */
+th.id-column,
+td.id-column {
+    width: 5%; /* Adjust as needed */
+}
+
+/* Target the specific "Date" column */
+th.date-column,
+td.date-column {
+    width: 10%; /* Adjust as needed */
+}
+
+/* Target the specific "Priority" column */
+th.priority-column,
+td.priority-column {
+    width: 7%; /* Adjust as needed */
+}
+
+/* Target the specific "Schedule" column */
+th.schedule-column,
+td.schedule-column {
+    width: 15%; /* Adjust as needed */
+}
+
+/* Target the specific "User" column */
+th.user-column,
+td.user-column {
+    width: 10%; /* Adjust as needed */
+}
+
+/* Target the specific "Status" column */
+th.status-column,
+td.status-column {
+    width: 10%; /* Adjust as needed */
+}
+
+
+/* Adjust the editable email content specifically */
+td.editable-email-content {
+    max-height: 200px; /* Set a maximum height for the content */
+    overflow: hidden; /* Hide overflowing content */
+    padding: 10px; /* Add consistent padding */
+    line-height: 1.5; /* Improve readability */
+}
+
+/* Allow scrolling for overflowing content on hover */
+td.editable-email-content:hover {
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
 
 .block-footer {
     margin-top: 100px; 
@@ -210,16 +276,37 @@ h1.submit-request-header {
     white-space: normal; /* Preserve line breaks and spaces */
     word-break: break-word; /* Ensure long words break */
     overflow-wrap: break-word; /* Break words if they overflow */
-    max-width: 300px; /* Optional: Set a maximum width for the column */
+    width: auto; /* Let the width adjust based on content */
     text-align: left; /* Ensure text is always aligned to the left */
     margin: 0; /* Reset margin */
     padding: 10px;
-    line-height: 1.5; /* Set consistent line height for better readability in spacing */
-    max-height: 100px; /* Set a height limit for the box */
+    line-height: 1.5; /* Set consistent line height for better readability */
+    height: 180px;
+    max-height: 180px; /* Set a strict height limit for the box */
+    overflow: hidden; /* Hide overflowing content */
     position: relative; /* Ensure the expand button is positioned correctly */
+    display: block; /* Ensure the content respects the height limit */
 }
 
+.editable-email-content:hover {
+    overflow-y: auto; /* Allow vertical scrolling on hover */
+}
 
+.editable-email-content:hover::after {
+    content: attr(data-tooltip); /* Display the full content as a tooltip */
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+    padding: 5px;
+    z-index: 10;
+    max-width: 300px;
+    white-space: normal;
+    word-break: break-word;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
 .submit-email-content-fixed {
     background-color: #007bff;
@@ -289,3 +376,39 @@ h1.submit-request-header {
     color: white;
 }
 
+
+/* For screens smaller than 768px (mobile size) */
+@media (max-width: 768px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block; /* Make table elements block-level */
+    }
+
+    thead {
+        display: none; /* Hide table headers */
+    }
+
+    tr {
+        margin-bottom: 15px; /* Add spacing between rows */
+        border: 1px solid #ccc; /* Add a border for separation */
+        padding: 10px; /* Add padding for better readability */
+    }
+
+    td {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    td::before {
+        content: attr(data-label); /* Use the data-label attribute for labels */
+        font-weight: bold;
+        margin-right: 10px;
+        color: #555;
+    }
+}

@@ -19,6 +19,7 @@ from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
+from bleach import clean
 
 def apply_filters(request, base_queryset):
     user = request.GET.get('user', None)
@@ -48,9 +49,8 @@ def apply_filters(request, base_queryset):
         elif date == 'thismonth':
             filters &= Q(schedule_time__year=now.year, schedule_time__month=now.month)
     
-    filtered_queryset = base_queryset.filter(filters)
-
-    return base_queryset.filter(filters)
+    filtered_queryset = base_queryset.filter(filters).order_by('-date_submitted')  # Explicit ordering
+    return filtered_queryset
 
 def filter_requests(request):
     base_queryset = RequestConfig.objects.all()
@@ -99,10 +99,13 @@ def get_prior_requests_context(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Debugging: Log the IDs in the page_obj
+    print(f"Page object for user {request.user.username}: {[config.id for config in page_obj]}")
+
     context = {
         'page_obj': page_obj,
         'total_pages': paginator.num_pages,
-        'total_results': paginator.count,
+        'total_results': paginator.count
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -114,7 +117,7 @@ def get_prior_requests_context(request):
             'current_page': page_obj.number
         })
 
-    return context
+    return render(request, 'emailscraper_app/submit_request.html', context)
 
 def paginate_requests(request, queryset, per_page=10):
     paginator = Paginator(queryset, per_page)
@@ -220,20 +223,39 @@ def create_request_config(request):
 def update_email_content(request, request_id):
     if request.method == 'POST':
         try:
+            # Debugging: Log the incoming request body
+            print(f"Request body received for update_email_content: {request.body}")
+
             data = json.loads(request.body)
+            print(f"Parsed data: {data}")  # Debugging
 
-            email_content = data.get('email_content', '').strip()
-            selected_user_username = data.get('userFilter')
+            # Sanitize the email content using bleach
+            email_content = clean(
+                data.get('email_content', '').strip(),
+                tags=['p', 'strong', 'ul', 'li', 'a', 'br'],  # Allow specific tags
+                attributes={'a': ['href']},  # Allow specific attributes for <a> tags
+                # styles=[],  # Disallow inline styles
+                strip=True  # Remove disallowed tags instead of escaping them
+            )
+            print(f"Sanitized email content: {email_content}")  # Debugging
 
+            # Fetch the RequestConfig object
             request_config = RequestConfig.objects.get(id=request_id)
+            print(f"RequestConfig object found: {request_config}")  # Debugging
+
+            # Update the email content
             request_config.email_content = email_content
             request_config.save()
+            print(f"Email content updated successfully for ID {request_id}")  # Debugging
 
             return JsonResponse({'success': True})
         except RequestConfig.DoesNotExist:
+            print(f"Error: RequestConfig with ID {request_id} does not exist")  # Debugging
             return JsonResponse({'success': False, 'error': 'Request not found'}, status=404)
         except Exception as e:
+            print(f"Error in update_email_content: {e}")  # Debugging
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    print("Invalid request method. Only POST is allowed.")  # Debugging
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 @csrf_exempt
