@@ -90,3 +90,27 @@
     display: block; /* Ensure it starts on a new line */
     margin-top: 35px; /* Add spacing above the second <strong> element */
 }
+
+@media (max-width: 767px) {
+    .svg-container {
+        display: flex;
+        flex-direction: column-reverse; /* Reverse the order: SVG on top */
+        align-items: center; /* Center items horizontally */
+        width: 75%; /* Adjust width for mobile */
+        height: auto; /* Allow height to adjust */
+
+    }
+
+    .svg-container svg {
+        width: 100%; /* Make the SVG responsive */
+        height: auto; /* Maintain aspect ratio */
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .top-paragraph {
+        text-align: center; /* Center-align the text for better readability */
+        margin-top: -120px;
+    }
+    
+}
