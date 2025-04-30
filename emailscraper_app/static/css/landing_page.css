@@ -2,13 +2,15 @@
 
 .svg-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    flex-direction: row;
     align-items: center;
     width: 100%;
     max-width: 900px; /* Limit the width of the SVG container */
     margin: 0 auto;
     padding-bottom: 0;
     overflow: auto;
+    height: 100%;
 }
 
 .svg-container svg {
@@ -65,3 +67,26 @@
     animation-delay: 6s;
 }
 
+
+
+
+/* Adjust the paragraph's spacing */
+.top-paragraph {
+    align-self: flex-start; /* Align the paragraph to the top */
+    margin-top: 0; /* Remove default margin */
+    padding-top: 30px; /* Remove padding */
+    font-size: 16px; /* Adjust font size */
+    line-height: 1.6; /* Improve readability */
+    width: 100%; /* Optional: Set width for the paragraph */
+    
+}
+
+
+.paragraph-below {
+    margin-top: 15px; /* Add spacing between the sections */
+}
+
+.top-paragraph strong:nth-of-type(2) {
+    display: block; /* Ensure it starts on a new line */
+    margin-top: 35px; /* Add spacing above the second <strong> element */
+}
