@@ -156,8 +156,12 @@
                 <input type="checkbox" class="completion-status-toggle" data-id="{{ request_obj.id }}" {% if request_obj.completion_status %}checked{% endif %}>
             </p>
         </div>
-        <div class="editable-email-content" contenteditable="true" data-id="{{ request_obj.id }}">
-            {{ request_obj.email_content|safe }}
+        <div class="editable-email-container">
+            <div class="editable-email-content" contenteditable="false" data-id="{{ request_obj.id }}">
+                {{ request_obj.email_content|safe }}
+            </div>
+            <button class="edit-button">Edit</button>
+            <button class="save-button" style="display: none;">Save</button>
         </div>
     </div>
 
@@ -187,52 +191,7 @@
 {{ block.super }} <!-- Include the parent block's content -->
 <script>
 function attachEventListeners() {
-    // Define userFilter if it exists on the page
-    // const userFilter = document.querySelector('#userFilter');
 
-    // Handle editable email cells
-    const editableEmailCells = document.querySelectorAll('.editable-email-content');
-
-    editableEmailCells.forEach(cell => {
-        // Add blur event listener to handle saving content
-        cell.addEventListener('blur', function () {
-            const requestId = cell.getAttribute('data-id');
-            const updatedContent = cell.innerHTML.trim(); // Use innerHTML to preserve formatting
-
-            // Validate the request ID and updated content
-            if (!requestId || !updatedContent) {
-                return; // Exit if request ID or content is invalid
-            }
-
-            // Dynamically capture the current value of userFilter
-            // const userFilterValue = userFilter ? userFilter.value : null;
-
-            // Send the updated content to the backend
-            fetch(`/update-email-content/${requestId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken()
-                },
-                body: JSON.stringify({
-                    email_content: updatedContent,
-                    // userFilter: userFilterValue // Include the live value of userFilter
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    fetchNotifications(); // Update the notification badge
-                    console.log('Email content updated successfully');
-                } else {
-                    console.error('Error updating email content:', data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    });
-
-    // Handle d checkboxes
     const statusCheckboxes = document.querySelectorAll('.completion-status-toggle');
 
     statusCheckboxes.forEach(checkbox => {
@@ -322,11 +281,59 @@ function attachEventListeners() {
         });
     });
 
-}
+    const containers = document.querySelectorAll(".editable-email-container");
 
-function getCSRFToken() {
-    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
-    return csrfToken ? csrfToken[1] : '';
+    containers.forEach(container => {
+        const contentDiv = container.querySelector(".editable-email-content");
+        const editButton = container.querySelector(".edit-button");
+        const saveButton = container.querySelector(".save-button");
+
+        // Enable editing when the Edit button is clicked
+        editButton.addEventListener("click", function () {
+            contentDiv.contentEditable = "true"; // Enable editing
+            contentDiv.focus(); // Focus on the content
+            editButton.style.display = "none"; // Hide the Edit button
+            saveButton.style.display = "inline-block"; // Show the Save button
+        });
+
+        // Save changes when the Save button is clicked
+        saveButton.addEventListener("click", function () {
+            const requestId = contentDiv.getAttribute("data-id");
+            const updatedContent = contentDiv.innerHTML.trim(); // Get the updated content
+
+            // Disable editing
+            contentDiv.contentEditable = "false";
+            editButton.style.display = "inline-block"; // Show the Edit button
+            saveButton.style.display = "none"; // Hide the Save button
+
+            // Send the updated content to the backend
+            fetch(`/update-email-content/${requestId}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({
+                    email_content: updatedContent
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fetchNotifications();
+                } else {
+                    console.error("Error updating email content:", data.error);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+
+    // Function to get CSRF token
+    function getCSRFToken() {
+        const csrfToken = document.cookie.match(/csrftoken=([^;]+)/);
+        return csrfToken ? csrfToken[1] : "";
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {

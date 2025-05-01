@@ -96,7 +96,7 @@
         display: flex;
         flex-direction: column-reverse; /* Reverse the order: SVG on top */
         align-items: center; /* Center items horizontally */
-        width: 75%; /* Adjust width for mobile */
+        width: 100%; /* Adjust width for mobile */
         height: auto; /* Allow height to adjust */
 
     }
@@ -110,7 +110,14 @@
 
     .top-paragraph {
         text-align: center; /* Center-align the text for better readability */
-        margin-top: -120px;
+        margin-top: -100px;
+        width: 100%; /* Ensure the paragraph takes full width */
     }
     
+}
+
+.background-box {
+    background-color: #ffffff; /* Light gray background */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
 }

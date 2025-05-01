@@ -223,30 +223,27 @@ def create_request_config(request):
 def update_email_content(request, request_id):
     if request.method == 'POST':
         try:
-            # Debugging: Log the incoming request body
-            print(f"Request body received for update_email_content: {request.body}")
-
             data = json.loads(request.body)
-            print(f"Parsed data: {data}")  # Debugging
 
             # Sanitize the email content using bleach
             email_content = clean(
                 data.get('email_content', '').strip(),
                 tags=['p', 'strong', 'ul', 'li', 'a', 'br'],  # Allow specific tags
                 attributes={'a': ['href']},  # Allow specific attributes for <a> tags
-                # styles=[],  # Disallow inline styles
                 strip=True  # Remove disallowed tags instead of escaping them
             )
-            print(f"Sanitized email content: {email_content}")  # Debugging
 
             # Fetch the RequestConfig object
             request_config = RequestConfig.objects.get(id=request_id)
-            print(f"RequestConfig object found: {request_config}")  # Debugging
 
             # Update the email content
             request_config.email_content = email_content
             request_config.save()
-            print(f"Email content updated successfully for ID {request_id}")  # Debugging
+            
+            Notification.objects.create(
+            user=request.user,
+            message=f"Email content for Request ID {request_id} was updated."
+            )
 
             return JsonResponse({'success': True})
         except RequestConfig.DoesNotExist:
@@ -319,20 +316,35 @@ def historical_requests(request):
     keyword = request.GET.get('keyword', '')
     request_id = request.GET.get('id')
 
+    print(f"Keyword: {keyword}")  # Debugging: Log the keyword
+    print(f"Request ID: {request_id}")  # Debugging: Log the request ID
+
     if request.user.is_superuser:
         base_queryset = RequestConfig.objects.all()
+        print("User is superuser. Base queryset includes all requests.")
     else:
         base_queryset = RequestConfig.objects.filter(creator=request.user)
+        print(f"User is not superuser. Base queryset filtered by creator: {request.user.username}")
+
+    print(f"Base queryset count before filtering: {base_queryset.count()}")  # Debugging: Log the initial queryset count
 
     if keyword:
         base_queryset = base_queryset.filter(email_content__icontains=keyword)
+        print(f"Filtered queryset by keyword '{keyword}'. Count: {base_queryset.count()}")  # Debugging: Log the count after keyword filter
 
     if request_id:
-        request_obj = get_object_or_404(base_queryset, id=request_id)
+        try:
+            request_obj = get_object_or_404(base_queryset, id=request_id)
+            print(f"Request object found for ID {request_id}: {request_obj}")  # Debugging: Log the found request object
+        except Exception as e:
+            print(f"Error finding request with ID {request_id}: {e}")  # Debugging: Log any errors
+            request_obj = None
     else:
         request_obj = base_queryset.order_by('id').first()
+        print(f"No request ID provided. Returning the first request: {request_obj}")  # Debugging: Log the first request
 
     all_request_ids = base_queryset.values_list('id', flat=True).order_by('id')
+    print(f"All request IDs in the filtered queryset: {list(all_request_ids)}")  # Debugging: Log all request IDs
 
     return render(request, 'emailscraper_app/historical_requests.html', {
         'request_obj': request_obj,

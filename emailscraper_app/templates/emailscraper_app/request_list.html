@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <div id="pagination-info">
     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} (Total results: {{ page_obj.paginator.count }})
 </div>
@@ -29,7 +30,7 @@
                 <td class="priority-column">{{ config.priority_status }}</td>
                 <td class="schedule-column">{{ config.schedule_time|date:"Y-m-d H:i:s" }}</td>
                 <td class="user-column">{{ config.creator.username }}</td> <!-- Add User data -->
-                <td contenteditable="true" class="editable-email-content email-content-column" data-id="{{ config.id }}">
+                <td contenteditable="false" class="email-content-column" data-id="{{ config.id }}">
                     {% autoescape off %}
                     {{ config.email_content|safe }}
                     {% endautoescape %}

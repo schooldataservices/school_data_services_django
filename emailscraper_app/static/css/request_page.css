@@ -128,9 +128,17 @@ td.editable-email-content {
     line-height: 1.5; /* Improve readability */
 }
 
-/* Allow scrolling for overflowing content on hover */
-td.editable-email-content:hover {
-    overflow-y: auto; /* Enable vertical scrolling */
+.editable-email-content::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+}
+
+.editable-email-content::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Set the color of the scrollbar thumb */
+    border-radius: 4px; /* Add rounded corners */
+}
+
+.editable-email-content::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa; /* Change color on hover */
 }
 
 
@@ -272,6 +280,27 @@ h1.submit-request-header {
     max-width: 100%; /* Ensure it doesn't exceed the page width */
 }
 
+.email-content-column {
+    white-space: normal; /* Preserve line breaks and spaces */
+    word-break: break-word; /* Ensure long words break */
+    overflow-wrap: break-word; /* Break words if they overflow */
+    width: auto; /* Let the width adjust based on content */
+    text-align: left; /* Ensure text is always aligned to the left */
+    margin: 0; /* Reset margin */
+    padding: 10px;
+    line-height: 1.5; /* Set consistent line height for better readability */
+    height: 180px;
+    max-height: 180px; /* Set a strict height limit for the box */
+    overflow: hidden; /* Hide overflowing content */
+    position: relative; /* Ensure the expand button is positioned correctly */
+    display: block; /* Ensure the content respects the height limit */
+}
+
+.email-content-column:hover {
+    overflow-y: auto; /* Enables vertical scrolling when hovered */
+}
+
+
 .editable-email-content {
     white-space: normal; /* Preserve line breaks and spaces */
     word-break: break-word; /* Ensure long words break */
@@ -287,6 +316,7 @@ h1.submit-request-header {
     position: relative; /* Ensure the expand button is positioned correctly */
     display: block; /* Ensure the content respects the height limit */
 }
+
 
 .editable-email-content:hover {
     overflow-y: auto; /* Allow vertical scrolling on hover */
@@ -405,10 +435,33 @@ h1.submit-request-header {
         border-bottom: 1px solid #ccc;
     }
 
+    td.status-column,
+    td.id-column,
+    td.user-column,
+    td.delete-column,
+    td.priority-column,
+    td.schedule-column,
+    td.date-column,
+    td.email-content-column {
+        width: 100%; /* Set specific columns to 100% width */
+    }
+
     td::before {
         content: attr(data-label); /* Use the data-label attribute for labels */
         font-weight: bold;
         margin-right: 10px;
         color: #555;
     }
+}
+
+thead tr th {
+    height: 50px !important; /* Set a fixed height */
+    vertical-align: middle; /* Align content vertically in the middle */
+    text-align: center; /* Center-align the text horizontally */
+    line-height: 1.5; /* Ensure consistent line spacing */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Prevent content overflow */
+    padding: 8px 10px; /* Add consistent padding */
+    background-color: #14539293; /* Ensure background color is applied */
+    color: #fff; /* Ensure text color is white */
 }

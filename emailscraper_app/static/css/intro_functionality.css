@@ -140,7 +140,7 @@
     .toc-container.open {
         left: 0; /* Slide the TOC into view */
         z-index: 1000; /* Ensure it is above other elements when opened */
-        top: var(--navbar-height, 170px); /* Ensure it aligns with the navbar */
+        top: var(--navbar-height, 215px); /* Ensure it aligns with the navbar */
     }
 
     #toc-toggle.open {
