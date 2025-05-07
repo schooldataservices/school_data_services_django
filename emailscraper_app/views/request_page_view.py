@@ -314,42 +314,74 @@ def create_notifications(logged_in_user, selected_user_username, request_id, use
 @login_required
 def historical_requests(request):
     keyword = request.GET.get('keyword', '')
-    request_id = request.GET.get('id')
+    request_id = request.GET.get('id')  # Get the request ID from the query string
+    user_id = request.GET.get('user_id')  # Get the selected user ID
 
-    print(f"Keyword: {keyword}")  # Debugging: Log the keyword
-    print(f"Request ID: {request_id}")  # Debugging: Log the request ID
+    print(f"Debug: request_id = {request_id}")  # Debugging
+    print(f"Debug: request.GET = {request.GET}")  # Debugging
 
+    # Validate user_id
+    try:
+        user_id = int(user_id) if user_id and user_id != 'None' else None
+    except ValueError:
+        user_id = None
+
+    # Determine the base queryset
     if request.user.is_superuser:
         base_queryset = RequestConfig.objects.all()
-        print("User is superuser. Base queryset includes all requests.")
+        users = User.objects.all()
+        if user_id:  # Filter by the selected user
+            base_queryset = base_queryset.filter(creator_id=user_id)
     else:
         base_queryset = RequestConfig.objects.filter(creator=request.user)
-        print(f"User is not superuser. Base queryset filtered by creator: {request.user.username}")
+        users = None
 
-    print(f"Base queryset count before filtering: {base_queryset.count()}")  # Debugging: Log the initial queryset count
-
+    # Apply keyword filtering
     if keyword:
         base_queryset = base_queryset.filter(email_content__icontains=keyword)
-        print(f"Filtered queryset by keyword '{keyword}'. Count: {base_queryset.count()}")  # Debugging: Log the count after keyword filter
 
-    if request_id:
+    # Get all request IDs for the filtered queryset
+    all_request_ids = list(base_queryset.values_list('id', flat=True).order_by('id'))
+
+    # Default to the lowest request ID if no request_id is provided
+    if not request_id and all_request_ids:
+        request_id = all_request_ids[0]  # Set to the first ID in the list
+
+    # Convert request_id to an integer
+    try:
+        request_id_int = int(request_id) if request_id else None
+    except ValueError:
+        request_id_int = None
+
+    # Get the specific request object
+    if request_id_int:
         try:
-            request_obj = get_object_or_404(base_queryset, id=request_id)
-            print(f"Request object found for ID {request_id}: {request_obj}")  # Debugging: Log the found request object
-        except Exception as e:
-            print(f"Error finding request with ID {request_id}: {e}")  # Debugging: Log any errors
+            request_obj = get_object_or_404(base_queryset, id=request_id_int)
+        except Exception:
             request_obj = None
     else:
-        request_obj = base_queryset.order_by('id').first()
-        print(f"No request ID provided. Returning the first request: {request_obj}")  # Debugging: Log the first request
+        request_obj = None
 
-    all_request_ids = base_queryset.values_list('id', flat=True).order_by('id')
-    print(f"All request IDs in the filtered queryset: {list(all_request_ids)}")  # Debugging: Log all request IDs
+    # Determine prev_id and next_id
+    prev_id = next_id = None
+    if request_id_int in all_request_ids:
+        current_index = all_request_ids.index(request_id_int)
+        if current_index > 0:
+            prev_id = all_request_ids[current_index - 1]
+        if current_index < len(all_request_ids) - 1:
+            next_id = all_request_ids[current_index + 1]
+
+    print(f"Debug: all_request_ids = {all_request_ids}")
+    print(f"Debug: prev_id = {prev_id}, next_id = {next_id}")
 
     return render(request, 'emailscraper_app/historical_requests.html', {
         'request_obj': request_obj,
         'all_request_ids': all_request_ids,
-        'keyword': keyword
+        'prev_id': prev_id,  # Pass prev_id to the template
+        'next_id': next_id,  # Pass next_id to the template
+        'keyword': keyword,
+        'users': users,
+        'selected_user_id': user_id,  # Pass the selected user ID to the template
     })
 
 @login_required

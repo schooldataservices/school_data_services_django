@@ -95,10 +95,3 @@ function fetchPage(page) {
         })
         .catch(error => console.error("Error:", error));
 }
-
-
-
-// All of the listeners from request_page.js here function attachEventListeners() { need to be re-attached
-
-
-// Pagination can not

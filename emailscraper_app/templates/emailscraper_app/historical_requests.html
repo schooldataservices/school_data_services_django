@@ -141,9 +141,29 @@
 
         <h3 style="display: flex; align-items: center; gap: 10px;">
             Request ID: {{ request_obj.id }}
+
             <button class="delete-request" data-id="{{ request_obj.id }}" style="background: none; border: none; cursor: pointer;">
                 <i class="fas fa-trash-alt" style="font-size: 1.25rem;"></i> <!-- Font Awesome trash icon -->
             </button>
+          
+
+            <!-- Previous Button -->
+            {% if prev_id %}
+                <a href="{% url 'historical_requests' %}?id={{ prev_id }}&user_id={{ selected_user_id }}&keyword={{ keyword }}" class="nav-arrow">
+                    &#8592; Previous
+                </a>
+            {% endif %}
+
+
+            <!-- Next Button -->
+            {% if next_id %}
+                <a href="{% url 'historical_requests' %}?id={{ next_id }}&user_id={{ selected_user_id }}&keyword={{ keyword }}" class="nav-arrow">
+                    Next &#8594;
+                </a>
+            {% endif %}
+
+
+                        
         </h3>
         <div class="meta-info">
             <p><strong>User:</strong> {{ request_obj.creator.username }}</p>
@@ -167,6 +187,7 @@
 
     <!-- Filter Form -->
     <div class="filter-form-container">
+        <!-- Filter by Request ID -->
         <form method="get" action="{% url 'historical_requests' %}" class="filter-form">
             <label for="id"><strong>Filter by Request ID:</strong></label>
             <select id="id" name="id">
@@ -176,13 +197,34 @@
                     </option>
                 {% endfor %}
             </select>
+            <input type="hidden" name="user_id" value="{{ selected_user_id }}">  <!-- Preserve selected user -->
+            <input type="hidden" name="keyword" value="{{ keyword }}">  <!-- Preserve keyword -->
             <button type="submit">Filter</button>
         </form>
+
+        <!-- Search by Keyword -->
         <form method="get" action="{% url 'historical_requests' %}" class="filter-form">
             <label for="keyword"><strong>Search by Keyword:</strong></label>
             <input type="text" id="keyword" name="keyword" value="{{ keyword }}" placeholder="Enter keyword">
+            <input type="hidden" name="user_id" value="{{ selected_user_id }}">  <!-- Preserve selected user -->
             <button type="submit">Search</button>
         </form>
+
+        <!-- Filter by User (Superusers Only) -->
+        {% if user.is_superuser %}
+        <form method="get" action="{% url 'historical_requests' %}" class="filter-form">
+            <label for="user_id"><strong>Filter by User:</strong></label>
+            <select name="user_id" id="user_id" class="form-control">
+                <option value="" {% if not selected_user_id %}selected{% endif %}>All Users</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.id|stringformat:"s" == selected_user_id %}selected{% endif %}>
+                        {{ user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
