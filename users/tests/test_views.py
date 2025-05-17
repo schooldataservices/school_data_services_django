@@ -221,7 +221,7 @@ class CreateRequestConfigTest(TestCase):
 
         # Define POST data
         post_data = {
-            'priority_status': 'medium',
+            'priority_status': 'low',
             'schedule_time': '2025-04-25 10:00:00',
             'email_content': 'Test email content',
         }
@@ -236,7 +236,7 @@ class CreateRequestConfigTest(TestCase):
         self.assertEqual(RequestConfig.objects.count(), 1)
         request_config = RequestConfig.objects.first()
         self.assertEqual(request_config.creator, self.user)
-        self.assertEqual(request_config.priority_status, 'medium')
+        self.assertEqual(request_config.priority_status, 'low')
         self.assertEqual(request_config.email_content, 'Test email content')
 
     def test_create_request_as_superuser(self):
@@ -245,7 +245,7 @@ class CreateRequestConfigTest(TestCase):
 
         # Define POST data
         post_data = {
-            'priority_status': 'medium',
+            'priority_status': 'urgent',
             'schedule_time': '2025-04-26 14:00:00',
             'email_content': 'Superuser email content',
             'user_id': self.user.id,  # Submit on behalf of another user
@@ -261,7 +261,7 @@ class CreateRequestConfigTest(TestCase):
         self.assertEqual(RequestConfig.objects.count(), 1)
         request_config = RequestConfig.objects.first()
         self.assertEqual(request_config.creator, self.user)  # Creator should be the selected user
-        self.assertEqual(request_config.priority_status, 'medium')
+        self.assertEqual(request_config.priority_status, 'urgent')
         self.assertEqual(request_config.email_content, 'Superuser email content')
 
     def test_create_request_with_invalid_data(self):

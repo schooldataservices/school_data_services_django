@@ -431,7 +431,7 @@ body {
 }
 .header-title a:hover {
     text-decoration: none !important; /* Remove underline on hover */
-    color: #fff !important; /* Keep the text color white on hover */
+    color: #e7e7e7 !important; /* Keep the text color white on hover */
 }
 .cloud-db-logo {
     width: 50px;

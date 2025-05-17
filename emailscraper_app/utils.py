@@ -18,7 +18,7 @@ def send_request_email(request_config, user):
         f'<p>Email Content: {request_config.email_content}</p>'
     )
     from_email = settings.EMAIL_HOST_USER  # Use the configured email host user
-    recipient_list = ['2015samtaylor@gmail.com', user.email]
+    recipient_list = ['schooldataservices.info@gmail.com', '2015samtaylor@gmail.com', user.email]
     try:
         send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
         print(f'Sending email to {recipient_list} with subject: {subject}')

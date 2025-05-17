@@ -371,8 +371,8 @@ def historical_requests(request):
         if current_index < len(all_request_ids) - 1:
             next_id = all_request_ids[current_index + 1]
 
-    print(f"Debug: all_request_ids = {all_request_ids}")
-    print(f"Debug: prev_id = {prev_id}, next_id = {next_id}")
+    # print(f"Debug: all_request_ids = {all_request_ids}")
+    # print(f"Debug: prev_id = {prev_id}, next_id = {next_id}")
 
     return render(request, 'emailscraper_app/historical_requests.html', {
         'request_obj': request_obj,

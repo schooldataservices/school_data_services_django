@@ -17,7 +17,7 @@ class RequestConfig(models.Model):
     # Priority Status choices
     PRIORITY_CHOICES = [
         ('urgent', 'Urgent'),
-        ('medium', 'Medium'),
+        ('normal', 'Normal'),
         ('low', 'Low'),
     ]
 
@@ -32,7 +32,7 @@ class RequestConfig(models.Model):
     priority_status = models.CharField(
         max_length=10,
         choices=PRIORITY_CHOICES,
-        default='medium',
+        default='normal',
     )
     email_content = RichTextUploadingField()
     schedule_time = models.DateTimeField()

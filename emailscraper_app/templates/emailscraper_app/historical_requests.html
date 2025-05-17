@@ -41,9 +41,14 @@
         width: auto;
         color: black;
         text-align: left;
-        max-height: None;
-        pointer-events: auto; /* Ensure the element is clickable */
-        user-select: text; /* Allow text selection */
+        /* Allow vertical resizing by the user */
+        resize: vertical;
+        min-height: 100px;
+        height: 190px;
+        max-height: none;
+        overflow: auto; /* Required for resize to work */
+        pointer-events: auto;
+        user-select: text;
     }
 
     .filter-form-container {

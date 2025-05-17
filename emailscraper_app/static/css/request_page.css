@@ -310,8 +310,8 @@ h1.submit-request-header {
     margin: 0; /* Reset margin */
     padding: 10px;
     line-height: 1.5; /* Set consistent line height for better readability */
-    height: 180px;
-    max-height: 180px; /* Set a strict height limit for the box */
+    height: 210px;
+    max-height: 210px; /* Set a strict height limit for the box */
     overflow: hidden; /* Hide overflowing content */
     position: relative; /* Ensure the expand button is positioned correctly */
     display: block; /* Ensure the content respects the height limit */
