@@ -24,6 +24,9 @@ def data_pipelines(request):
 def cloud_setup(request):
     return render(request, 'emailscraper_app/cloud_setup.html')
 
+# def pricing_faqs(request):
+#     return render(request, 'emailscraper_app/pricing.html')
+
 
 def format_datetime_fields(data):
     """

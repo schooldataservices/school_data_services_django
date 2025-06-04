@@ -20,6 +20,10 @@ from django.core.paginator import Paginator, EmptyPage
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 from bleach import clean
+# from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from emailscraper_proj.settings import EMAIL_HOST_USER
+
 
 def apply_filters(request, base_queryset):
     user = request.GET.get('user', None)
@@ -100,7 +104,7 @@ def get_prior_requests_context(request):
     page_obj = paginator.get_page(page_number)
 
     # Debugging: Log the IDs in the page_obj
-    print(f"Page object for user {request.user.username}: {[config.id for config in page_obj]}")
+    # print(f"Page object for user {request.user.username}: {[config.id for config in page_obj]}")
 
     context = {
         'page_obj': page_obj,
@@ -247,12 +251,12 @@ def update_email_content(request, request_id):
 
             return JsonResponse({'success': True})
         except RequestConfig.DoesNotExist:
-            print(f"Error: RequestConfig with ID {request_id} does not exist")  # Debugging
+            # print(f"Error: RequestConfig with ID {request_id} does not exist")  # Debugging
             return JsonResponse({'success': False, 'error': 'Request not found'}, status=404)
         except Exception as e:
-            print(f"Error in update_email_content: {e}")  # Debugging
+            # print(f"Error in update_email_content: {e}")  # Debugging
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
-    print("Invalid request method. Only POST is allowed.")  # Debugging
+    # print("Invalid request method. Only POST is allowed.")  # Debugging
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
 @csrf_exempt
@@ -272,16 +276,66 @@ def delete_request(request, config_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
+
+
+def send_completion_email(config, config_id):
+    subject = "Your Request Has Been Completed"
+    from_email = EMAIL_HOST_USER
+    to_email = [config.creator.email]
+
+    text_content = f"""
+    Hello {config.creator.username},
+
+    Your request (ID: {config_id}) submitted on {config.date_submitted.strftime('%Y-%m-%d %H:%M:%S')} has been marked as completed.
+    """
+
+    html_content = f"""
+    <html>
+        <body>
+            <p>Hello {config.creator.username},</p>
+            <p>Your request (ID: {config_id}) submitted on {config.date_submitted.strftime('%Y-%m-%d %H:%M:%S')} has been marked as completed</span>.</p>
+            <br>
+            <p>Thank you,</p>
+            <p>From the SDS Team</p>
+            <img src="https://storage.googleapis.com/django_hosting/base_images/favicon_sds_2.png"
+            alt="Logo"
+            width="85"
+            style="display:inline-block; border:none; outline:none; text-decoration:none;" />
+
+        </body>
+    </html>
+    """
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send(fail_silently=False)
+
+
+
 @csrf_exempt
 def update_completion_status(request, config_id):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             completion_status = data.get('completion_status', False)
+            # print(completion_status)
+  
 
             config = RequestConfig.objects.get(id=config_id)
             config.completion_status = completion_status
             config.save()
+
+            # print(config.creator)
+            # print(config.creator.email)
+
+            # Send notification email to the creator if marked as completed
+            if completion_status and config.creator and config.creator.email:
+                try:
+                    send_completion_email(config, config_id)
+                except Exception as email_err:
+                    pass
+                    # print(f"Failed to send completion email: {email_err}")
+
 
             Notification.objects.create(
                 user=request.user,
@@ -317,8 +371,8 @@ def historical_requests(request):
     request_id = request.GET.get('id')  # Get the request ID from the query string
     user_id = request.GET.get('user_id')  # Get the selected user ID
 
-    print(f"Debug: request_id = {request_id}")  # Debugging
-    print(f"Debug: request.GET = {request.GET}")  # Debugging
+    # print(f"Debug: request_id = {request_id}")  # Debugging
+    # print(f"Debug: request.GET = {request.GET}")  # Debugging
 
     # Validate user_id
     try:
