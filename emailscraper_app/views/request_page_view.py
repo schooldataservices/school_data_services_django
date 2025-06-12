@@ -287,21 +287,38 @@ def send_completion_email(config, config_id):
     Hello {config.creator.username},
 
     Your request (ID: {config_id}) submitted on {config.date_submitted.strftime('%Y-%m-%d %H:%M:%S')} has been marked as completed.
+
+    View your request: http://localhost:8000/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=
     """
 
     html_content = f"""
     <html>
         <body>
             <p>Hello {config.creator.username},</p>
-            <p>Your request (ID: {config_id}) submitted on {config.date_submitted.strftime('%Y-%m-%d %H:%M:%S')} has been marked as completed</span>.</p>
-            <br>
+            <p>
+                Your request (ID: 
+                <a href="http://localhost:8000/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=" target="_blank">
+                    {config_id}
+                </a>
+                ) submitted on {config.date_submitted.strftime('%Y-%m-%d %H:%M:%S')} has been marked as completed.
+            </p>
+            <p>
+                <a href="http://localhost:8000/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=" target="_blank">
+                    View your request
+                </a>
+            </p>
             <p>Thank you,</p>
-            <p>From the SDS Team</p>
-            <img src="https://storage.googleapis.com/django_hosting/base_images/favicon_sds_2.png"
-            alt="Logo"
-            width="85"
-            style="display:inline-block; border:none; outline:none; text-decoration:none;" />
-
+            <a href="https://schooldataservices.com" target="_blank">
+                <img src="https://storage.googleapis.com/django_hosting/base_images/favicon_sds_2.png"
+                     alt="Logo"
+                     width="85"
+                     style="display:inline-block; border:none; outline:none; text-decoration:none;" />
+            </a>
+            <br>
+            <a href="https://schooldataservices.com" target="_blank" style="text-decoration:none; color:#000;">
+                School Data Services
+            </a>
+            <p style="margin:0;padding:0;">Helping Schools Make Data Flow Easy</p>
         </body>
     </html>
     """
