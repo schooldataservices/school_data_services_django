@@ -18,18 +18,18 @@ class Profile(models.Model):
 
         # Ensure an image is assigned before saving
         if not self.image or not self.image.name:
-            print("No profile image found, using default.")
+            # print("No profile image found, using default.")
             self.image = "profile_pics/default.jpg"
 
         # Update user and image field if existing instance of Profile model, otherwise update
         super().save(*args, **kwargs)
 
         gcs_path = self.image.name.replace('\\', '/')  # Ensure the file path uses forward slashes
-        print(f"gcs_path: {gcs_path}")
+        # print(f"gcs_path: {gcs_path}")
 
         # Skip processing if the image is the default one
         if gcs_path == "profile_pics/default.jpg":
-            print("Default image detected. Skipping resizing logic.")
+            # print("Default image detected. Skipping resizing logic.")
             return
 
         try:

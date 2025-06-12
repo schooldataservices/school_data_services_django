@@ -9,52 +9,81 @@ from django.middleware.csrf import CsrfViewMiddleware
 from django.test.client import RequestFactory
 from emailscraper_app.models import RequestConfig
 from emailscraper_app.forms import RequestConfigForm
+from unittest.mock import patch
 
 class UserRegisterFormTest(TestCase):
-    def test_valid_form(self):
+    @patch('captcha.fields.ReCaptchaField.clean')
+    def test_valid_form(self, mock_clean):
+        mock_clean.return_value = None
         form_data = {
             'username': 'testuser',
             'email': 'testuser@example.com',
             'password1': 'Testpassword123',
-            'password2': 'Testpassword123'
+            'password2': 'Testpassword123',
+            'captcha': 'PASSED'
         }
         form = UserRegisterForm(data=form_data)
-        if form.is_valid():
-            print("Form is valid.")
-        else:
-            print("Form errors:", form.errors)
         self.assertTrue(form.is_valid())
 
-    def test_invalid_form(self):
+    @patch('captcha.fields.ReCaptchaField.clean')
+    def test_invalid_form(self, mock_clean):
+        mock_clean.return_value = None
         form_data = {
             'username': 'testuser',
             'email': 'testuser@example.com',
             'password1': 'Testpassword123',
-            'password2': 'Differentpassword123'
+            'password2': 'Differentpassword123',
+            'captcha': 'PASSED'
         }
         form = UserRegisterForm(data=form_data)
-        if form.is_valid():
-            print("Form is valid.")
-        else:
-            print("Form errors:", form.errors)
         self.assertFalse(form.is_valid())
 
-    def test_register_form_missing_fields(self):
+    @patch('captcha.fields.ReCaptchaField.clean')
+    def test_register_form_missing_fields(self, mock_clean):
+        mock_clean.return_value = None
         form_data = {
             'username': '',
             'email': '',
             'password1': '',
-            'password2': ''
+            'password2': '',
+            'captcha': 'PASSED'
         }
         form = UserRegisterForm(data=form_data)
-        if form.is_valid():
-            print("Form is valid.")
-        else:
-            print("Form errors:", form.errors)
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
         self.assertIn('email', form.errors)
         self.assertIn('password1', form.errors)
+
+    @patch('captcha.fields.ReCaptchaField.clean')
+    def test_valid_form_with_captcha(self, mock_clean):
+        # Mock the captcha validation to always pass
+        mock_clean.return_value = None
+        form_data = {
+            'username': 'testuser2',
+            'email': 'testuser2@example.com',
+            'password1': 'Testpassword123',
+            'password2': 'Testpassword123',
+            'g-recaptcha-response': 'PASSED'  # Simulate the POST data from the widget
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    @patch('captcha.fields.ReCaptchaField.clean')
+    def test_invalid_form_missing_captcha(self, mock_clean):
+        # Simulate captcha failure by raising a ValidationError
+        from django.core.exceptions import ValidationError
+        mock_clean.side_effect = ValidationError('Please complete the CAPTCHA to register.')
+        form_data = {
+            'username': 'testuser3',
+            'email': 'testuser3@example.com',
+            'password1': 'Testpassword123',
+            'password2': 'Testpassword123',
+            # No 'g-recaptcha-response'
+        }
+        form = UserRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('captcha', form.errors)
+        self.assertIn('Please complete the CAPTCHA to register.', form.errors['captcha'])
 
 
 class UserRegisterViewTest(TestCase):

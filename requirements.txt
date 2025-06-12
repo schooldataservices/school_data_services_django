@@ -16,3 +16,4 @@ google-cloud-secret-manager
 whitenoise>=5.2.0
 coverage
 bleach
+django-recaptcha

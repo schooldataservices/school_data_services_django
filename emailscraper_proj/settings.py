@@ -26,6 +26,13 @@ GS_JSON_PATH = access_secret_version(PROJECT_ID, "GS_JSON_PATH")
 GS_BUCKET_NAME = access_secret_version(PROJECT_ID, "GS_BUCKET_NAME")
 django_hosting_json_file = access_secret_version(PROJECT_ID, "django_hosting_json_file")
 django_root_password = access_secret_version(PROJECT_ID, "django_root_password")
+RECAPTCHA_PUBLIC_KEY = access_secret_version(PROJECT_ID, "captcha_site_key")
+RECAPTCHA_PRIVATE_KEY = access_secret_version(PROJECT_ID, "captcha_secret_key")
+
+
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,6 +88,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "captcha"
     # "django_extensions"
 ]
 
