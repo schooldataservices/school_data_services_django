@@ -91,13 +91,16 @@ class UserRegisterViewTest(TestCase):
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/register.html')
-
-    def test_register_view_post(self):
+    
+    @patch('captcha.fields.ReCaptchaField.clean')
+    def test_register_view_post(self, mock_clean):
+        mock_clean.return_value = None
         form_data = {
             'username': 'testuser',
             'email': 'testuser@example.com',
             'password1': 'Testpassword123',
-            'password2': 'Testpassword123'
+            'password2': 'Testpassword123',
+            'captcha': 'PASSED'
         }
         response = self.client.post(reverse('register'), data=form_data)
         self.assertEqual(response.status_code, 302)  # Redirect after successful registration
@@ -109,7 +112,8 @@ class UserRegisterViewTest(TestCase):
             'username': 'testuser',  # Duplicate username
             'email': 'newuser@example.com',
             'password1': 'Testpassword123',
-            'password2': 'Testpassword123'
+            'password2': 'Testpassword123',
+            'captcha': 'PASSED'
         }
         response = self.client.post(reverse('register'), data=form_data)
         self.assertEqual(response.status_code, 200)  # Form should not redirect
@@ -120,7 +124,8 @@ class UserRegisterViewTest(TestCase):
             'username': 'testuser',
             'email': 'testuser@example.com',
             'password1': 'Testpassword123',
-            'password2': 'Testpassword123'
+            'password2': 'Testpassword123',
+            'captcha': 'PASSED'
         }
 
         # Create a request without a CSRF token
