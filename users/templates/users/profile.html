@@ -1,5 +1,19 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load crispy_forms_tags %}
+
+{% block meta_description %}
+<meta name="description" content="View and update your School Data Services profile. Manage your account information and profile image securely.">
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<title>Your Profile | School Data Services</title>
+<meta property="og:title" content="Your Profile | School Data Services">
+<meta property="og:description" content="View and update your School Data Services profile. Manage your account information and profile image securely.">
+<meta property="og:url" content="https://schooldataservices.com/profile/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block content %}
 <div class="profile-page-container">
     <div class="content-section profile-form-wrapper">

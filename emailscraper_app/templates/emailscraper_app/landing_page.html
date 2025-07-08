@@ -1,16 +1,17 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block meta_description %}
+<meta name="description" content="Helping schools automate data ingestion and centralize student data using Google Cloud.">
+{% endblock %}
+
 {% block head %}
 {{ block.super }}
 <title>School Data Services | Data Engineering Services, ETL, & Google Cloud Data Warehousing for Schools K-12</title>
-<meta name="description" content="Helping schools automate ETL pipelines and centralize student data using Google Cloud.">
-
 <meta property="og:title" content="School Data Services | Data Engineering for Schools">
-<meta property="og:description" content="Helping schools automate ETL pipelines and centralize student data using Google Cloud.">
+<meta property="og:description" content="Helping schools automate data ingestion and centralize student data using Google Cloud.">
 <meta property="og:url" content="https://schooldataservices.com">
 <meta property="og:type" content="website">
-
 {% endblock head %}
 
 {% block extra_css %}

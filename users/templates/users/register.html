@@ -1,5 +1,19 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load crispy_forms_tags %}
+
+{% block meta_description %}
+<meta name="description" content="Create your School Data Services account. Register to access data management tools and streamline your school's data workflows.">
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<title>Register | School Data Services</title>
+<meta property="og:title" content="Register | School Data Services">
+<meta property="og:description" content="Create your School Data Services account. Register to access data management tools and streamline your school's data workflows.">
+<meta property="og:url" content="https://schooldataservices.com/register/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block content %}
 <div class="content-section register-container">
     <form method="POST" class="form-register">

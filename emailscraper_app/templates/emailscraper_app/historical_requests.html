@@ -1,6 +1,19 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block meta_description %}
+<meta name="description" content="View and manage your historical data requests with School Data Services. Filter, search, and edit past submissions for efficient data management.">
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<title>Historical Data Requests | School Data Services</title>
+<meta property="og:title" content="Historical Data Requests | School Data Services">
+<meta property="og:description" content="View and manage your historical data requests with School Data Services. Filter, search, and edit past submissions for efficient data management.">
+<meta property="og:url" content="https://schooldataservices.com/historical-requests/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
 <style>

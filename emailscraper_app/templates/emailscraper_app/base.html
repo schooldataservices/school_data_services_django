@@ -27,8 +27,9 @@
         crossorigin="anonymous">
     </script>
 
-    <!-- Title and Custom CSS -->
+    {% block meta_description %}
     <meta name="description" content="School Data Services - Helping Schools Make Data Flow Easy">
+    {% endblock %}
     <title>{% block title %}School Data Services{% endblock %}</title>
 
     <link rel="shortcut icon" href="https://storage.googleapis.com/django_hosting/base_images/SDS-BUTTON.png" type="image/png">

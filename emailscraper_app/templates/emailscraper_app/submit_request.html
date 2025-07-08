@@ -1,6 +1,20 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load static %}
 
+{% block meta_description %}
+<meta name="description" content="Submit a data request to School Data Services and get fast, reliable support for all your school's data management needs. Simplify data access and insights today.">
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<title>Submit a Data Request | School Data Services</title>
+<meta property="og:title" content="Submit a Data Request | School Data Services">
+<meta property="og:description" content="Submit a data request to School Data Services and get fast, reliable support for all your school's data management needs. Simplify data access and insights today.">
+<meta property="og:url" content="https://schooldataservices.com/submit-requests/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
+
 {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
     <!-- Flatpickr CSS -->

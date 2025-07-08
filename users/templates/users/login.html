@@ -1,5 +1,19 @@
 {% extends 'emailscraper_app/base.html' %}
 {% load crispy_forms_tags %}
+
+{% block meta_description %}
+<meta name="description" content="Log in to your School Data Services account to access your dashboard and manage your school's data securely.">
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<title>Login | School Data Services</title>
+<meta property="og:title" content="Login | School Data Services">
+<meta property="og:description" content="Log in to your School Data Services account to access your dashboard and manage your school's data securely.">
+<meta property="og:url" content="https://schooldataservices.com/login/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
 {% block content %}
 <div class="content-section text-center login-container">
     <div class="form-wrapper login-form-wrapper">
