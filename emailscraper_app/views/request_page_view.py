@@ -22,6 +22,8 @@ from django.shortcuts import get_object_or_404
 from bleach import clean
 # from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
+from ..utils import add_to_google_calendar
+from django.utils import timezone
 from emailscraper_proj.settings import EMAIL_HOST_USER
 
 
@@ -185,6 +187,13 @@ def create_request_config(request):
                 request_config.save()
 
                 send_request_email(request_config, request_config.creator)
+
+                add_to_google_calendar(
+                    summary=f"Request {request_config.id} - {request_config.creator.username}",
+                    description=request_config.email_content,
+                    start_datetime=request_config.schedule_time,
+                    end_datetime=request_config.schedule_time
+                )
 
                 base_queryset = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted') if not request.user.is_superuser else RequestConfig.objects.all().order_by('-date_submitted')
                 filtered_queryset = apply_filters(request, base_queryset)
