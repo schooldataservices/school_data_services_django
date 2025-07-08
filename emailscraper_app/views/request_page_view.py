@@ -188,9 +188,17 @@ def create_request_config(request):
 
                 send_request_email(request_config, request_config.creator)
 
+                # Prepare the description for the calendar event
+                calendar_description = request_config.email_content
+
+                # Build the request link if info is provided
+                if request_config.id and request_config.creator.username:
+                    request_link = f"https://schooldataservices.com/historical-requests/?id={request_config.id}&user_id={request_config.creator.username}&keyword="
+                    calendar_description += f"\n\nView request: {request_link}"
+
                 add_to_google_calendar(
                     summary=f"Request {request_config.id} - {request_config.creator.username}",
-                    description=request_config.email_content,
+                    description=calendar_description,
                     start_datetime=request_config.schedule_time,
                     end_datetime=request_config.schedule_time
                 )
