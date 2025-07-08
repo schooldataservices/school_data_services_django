@@ -28,12 +28,7 @@ django_hosting_json_file = access_secret_version(PROJECT_ID, "django_hosting_jso
 django_root_password = access_secret_version(PROJECT_ID, "django_root_password")
 RECAPTCHA_PUBLIC_KEY = access_secret_version(PROJECT_ID, "captcha_site_key")
 RECAPTCHA_PRIVATE_KEY = access_secret_version(PROJECT_ID, "captcha_secret_key")
-
-
-
-
-
-
+ 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
