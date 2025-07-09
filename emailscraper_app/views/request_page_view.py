@@ -25,6 +25,7 @@ from django.core.mail import EmailMultiAlternatives
 from ..utils import add_to_google_calendar
 from django.utils import timezone
 from emailscraper_proj.settings import EMAIL_HOST_USER
+import pytz
 
 
 def apply_filters(request, base_queryset):
@@ -196,11 +197,22 @@ def create_request_config(request):
                     request_link = f"https://schooldataservices.com/historical-requests/?id={request_config.id}&user_id={request_config.creator.username}&keyword="
                     calendar_description += f"\n\nView request: {request_link}"
 
+                central = pytz.timezone('America/Chicago')
+                schedule_time = request_config.schedule_time
+
+                # Make sure schedule_time is timezone-aware
+                if timezone.is_naive(schedule_time):
+                    schedule_time = central.localize(schedule_time)
+                else:
+                    schedule_time = schedule_time.astimezone(central)
+
+                print('Here is the schedule time in Central Time:', schedule_time)
+
                 add_to_google_calendar(
                     summary=f"Request {request_config.id} - {request_config.creator.username}",
                     description=calendar_description,
-                    start_datetime=request_config.schedule_time,
-                    end_datetime=request_config.schedule_time
+                    start_datetime=schedule_time,
+                    end_datetime=schedule_time
                 )
 
                 base_queryset = RequestConfig.objects.filter(creator=request.user).order_by('-date_submitted') if not request.user.is_superuser else RequestConfig.objects.all().order_by('-date_submitted')
@@ -314,13 +326,13 @@ def send_completion_email(config, config_id):
             <p>Hello {config.creator.username},</p>
             <p>
                 Your request (ID: 
-                <a href="http://localhost:8000/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=" target="_blank">
+                <a href="http://schooldataservices.com/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=" target="_blank">
                     {config_id}
                 </a>
                 ) submitted on {config.date_submitted.strftime('%Y-%m-%d %H:%M:%S')} has been marked as completed.
             </p>
             <p>
-                <a href="http://localhost:8000/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=" target="_blank">
+                <a href="http://schooldataservices.com/historical-requests/?id={config_id}&user_id={config.creator.username}&keyword=" target="_blank">
                     View your request
                 </a>
             </p>

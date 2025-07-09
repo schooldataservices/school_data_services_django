@@ -28,7 +28,7 @@ def send_request_email(request_config, user):
     Email Content: {strip_tags(request_config.email_content)}
 
     You can view the request details here:
-    http://localhost:8000/historical-requests/?id={request_config.id}&user_id={user.username}&keyword=
+    http://schooldataservices.com/historical-requests/?id={request_config.id}&user_id={user.username}&keyword=
 
     Thank you,
     School Data Services
@@ -46,7 +46,7 @@ def send_request_email(request_config, user):
           <li><strong>Email Content:</strong> {request_config.email_content}</li>
         </ul>
         <p>
-          <a href="http://localhost:8000/historical-requests/?id={request_config.id}&user_id={user.username}&keyword=" target="_blank">
+          <a href="http://schooldataservices.com/historical-requests/?id={request_config.id}&user_id={user.username}&keyword=" target="_blank">
             View your request
           </a>
         </p>
@@ -84,7 +84,6 @@ def record_email_metadata(request, email_config):
     Create and save an EmailOption instance to record email metadata.
     """
 
-#This must only be for samuel.taylor super user
 def add_to_google_calendar(summary, description, start_datetime, end_datetime):
     # Your secret is a JSON string with escape characters, decode it
     raw_json_str = django_hosting_json_file
