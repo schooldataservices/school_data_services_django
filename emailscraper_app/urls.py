@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import homepage_views, request_page_view, uploading_file_views
+from .views import homepage_views, request_page_view, uploading_file_views, big_query_table_views
 from emailscraper_app.static_sitemaps import StaticViewSitemap
 from django.views.generic import TemplateView
 
@@ -19,6 +19,7 @@ urlpatterns = [
     path('data-modeling/', homepage_views.data_modeling, name='data_modeling'),
     path('data-pipelines/', homepage_views.data_pipelines, name='data_pipelines'),
     path('cloud-setup/', homepage_views.cloud_setup, name='cloud_setup'),
+    path('data-pipelines-metadata/', big_query_table_views.bigquery_table_view, name='data_pipelines_metadata'),
     #  path('pricing/', homepage_views.pricing_faqs, name='pricing'),
 
     path('filter-requests/', request_page_view.filter_requests, name='filter_requests'),

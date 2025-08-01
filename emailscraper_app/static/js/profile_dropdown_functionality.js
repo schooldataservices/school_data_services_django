@@ -1,22 +1,70 @@
 $(document).ready(function() {
-    // console.log("Document is ready");
+    // Initialize all dropdowns
     $('.dropdown-toggle').dropdown();
-    // console.log("Dropdown initialized");
 
-    $('#profileDropdown').on('click', function() {
-        // console.log("Profile image clicked");
+    // Handle Requests Dropdown
+    $('#requestsDropdown').on('click', function(e) {
+        e.preventDefault();
+        console.log('Requests dropdown clicked');
+        $('.dropdown-menu').not('#requestsDropdownMenu').removeClass('show');
+        var dropdownMenu = $('#requestsDropdownMenu');
+        var dropdownToggle = $(this);
+        var offset = dropdownToggle.offset();
+
+        var topOffset = 40; // Adjust as needed
+        var menuWidth = dropdownMenu.outerWidth();
+        var toggleWidth = dropdownToggle.outerWidth();
+        var windowWidth = $(window).width();
+
+        // Default: align left edges
+        var left = offset.left;
+
+        // If the menu would overflow the right edge, align right edges
+        if (left + menuWidth > windowWidth) {
+            left = offset.left + toggleWidth - menuWidth;
+            if (left < 0) left = 0;
+        }
+
+        dropdownMenu.css({
+            position: 'absolute',
+            top: offset.top + dropdownToggle.outerHeight() + topOffset,
+            left: left
+        }).toggleClass('show');
+        console.log('Requests dropdown positioned at:', {
+            top: offset.top + dropdownToggle.outerHeight() + topOffset,
+            left: left
+        });
+    });
+
+    // Handle Profile Dropdown with custom positioning
+    $('#profileDropdown').on('click', function(e) {
+        e.preventDefault();
+        console.log('Profile dropdown clicked');
+        $('.dropdown-menu').not('#profileDropdownMenu').removeClass('show');
         var dropdownMenu = $('#profileDropdownMenu');
         var dropdownToggle = $(this);
         var offset = dropdownToggle.offset();
+
+        // Add a vertical offset for the profile dropdown
+        var topOffset = 16; // Adjust this value as needed
+        var leftOffset = 0; // Adjust if you want to shift horizontally
+
         dropdownMenu.css({
-            top: offset.top + dropdownToggle.outerHeight(),
-            left: offset.left
+            position: 'absolute',
+            top: offset.top + dropdownToggle.outerHeight() + topOffset,
+            left: offset.left + leftOffset
         }).toggleClass('show');
+        console.log('Profile dropdown positioned at:', {
+            top: offset.top + dropdownToggle.outerHeight() + topOffset,
+            left: offset.left + leftOffset
+        });
+        markNotificationsAsRead();
     });
 
+    // Close dropdowns when clicking outside
     $(document).on('click', function(event) {
-        if (!$(event.target).closest('#profileDropdown, #profileDropdownMenu').length) {
-            $('#profileDropdownMenu').removeClass('show');
+        if (!$(event.target).closest('#profileDropdown, #profileDropdownMenu, #requestsDropdown, .dropdown-menu').length) {
+            $('.dropdown-menu').removeClass('show');
         }
     });
 });

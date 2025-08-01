@@ -62,30 +62,48 @@
         <ul>
             {% if user.is_authenticated %}
                 <li><a href="{% url 'landing_page' %}">Home</a></li>
-                <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
                 <li><a href="{% url 'register' %}">Register</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}">Login</a></li>
                 <li><a href="{% url 'landing_page' %}">Home</a></li>
-                <li><a href="{% url 'submit-requests' %}">Submit Request</a></li>
                 <li><a href="{% url 'register' %}">Register</a></li>
             {% endif %}
         </ul>
         <!-- For alignment purposes -->
         {% if user.is_authenticated %} 
+
+        <div class="profile-container">
+            <a class="nav-link dropdown-toggle" href="#" id="requestsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Requests
+            </a>
+        </div>
+
         <div class="profile-container">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" style="width: 70px; height: 70px;">
                 <span id="notificationBadge" class="badge badge-danger" style="display: none;">0</span>
             </a>
         </div>
+        
+        {% else %}
+        <div class="profile-container">
+            <a class="nav-link dropdown-toggle" href="#" id="requestsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Requests
+            </a>
+        </div>
         {% endif %}
+        
     </div>
 </nav>
 
+<div class="dropdown-menu dropdown-menu-right" id="requestsDropdownMenu" aria-labelledby="requestsDropdown">
+    <a class="dropdown-item" href="{% url 'submit-requests' %}">Submit Request</a>
+    <a class="dropdown-item" href="{% url 'historical_requests' %}">Historical Requests</a>
+    <a class="dropdown-item" href="{% url 'data_pipelines_metadata' %}">My Data Pipelines</a>
+</div>
+
 <div id="profileDropdownMenu" class="dropdown-menu profile-dropdown" aria-labelledby="profileDropdown">
     <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
-    <a class="dropdown-item" href="{% url 'historical_requests' %}">Historical Requests</a>
     <form method="POST" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="dropdown-item">Logout</button>

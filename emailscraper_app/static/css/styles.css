@@ -594,3 +594,14 @@ li {
     white-space: normal; /* Allow text to wrap */
     text-align: left; /* Align text to the left */
 }
+
+/* Override dropdown-item color to black */
+.dropdown-menu .dropdown-item,
+.dropdown-item {
+    color: #000 !important;
+}
+
+/* Make the Requests dropdown link a specific font size */
+#requestsDropdown {
+    font-size: 1.0rem; /* Change to your desired size */
+}

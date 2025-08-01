@@ -465,3 +465,9 @@ thead tr th {
     background-color: #14539293; /* Ensure background color is applied */
     color: #fff; /* Ensure text color is white */
 }
+
+.client-data-pipelines-table td:last-child {
+    white-space: normal !important;      /* Allow wrapping */
+    word-break: break-all !important;    /* Break long words/URLs */
+    overflow-wrap: break-word !important;
+}

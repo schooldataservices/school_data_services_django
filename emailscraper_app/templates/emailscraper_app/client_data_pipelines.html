@@ -1,0 +1,44 @@
+{% extends 'emailscraper_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="submit-request-header">ICEF Data Pipelines</h1>
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+{% endif %}
+
+{% if data %}
+<table class="table table-bordered table-striped table-hover align-middle client-data-pipelines-table">
+    <thead>
+        <tr>
+            {% for key in data.0.keys %}
+                <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                {% for value in row.values %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/request_page.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+   <script type="module" src="{% static 'js/request_page.js' %}"></script>
+   <script type="module" src="{% static 'js/request_page_table.js' %}"></script>
+{% endblock extra_js %}
+
