@@ -36,12 +36,15 @@
                     {{ u_form.email|as_crispy_field }}
                 </div>
                 <div class="form-group">
+                    {{ p_form.school_acronym|as_crispy_field }}
+                </div>
+                <div class="form-group">
                     {{ p_form.image|as_crispy_field }}
                 </div>
             </fieldset>
             <div class="form-group"> 
                 <button type="submit" class="btn btn-primary submit-button">Update</button>
-                <a class="btn btn-outline-info" href="{% url 'password_reset' %}">Reset Password</a>
+                <a class="btn submit-button" href="{% url 'password_reset' %}">Reset Password</a>
             </div>
         </form>
     </div>

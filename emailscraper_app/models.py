@@ -39,8 +39,26 @@ class RequestConfig(models.Model):
     date_submitted = models.DateTimeField(auto_now_add=True) 
     completion_status = models.BooleanField(default=False)
 
+    request_title = models.CharField(max_length=150, blank=False)  # short descriptive title
+
+    reference_tag = models.CharField(
+    max_length=50,
+    blank=True,
+    null=False,         
+    unique=True
+    )
+
     def __str__(self):
         return f"Email Configuration: {self.priority_status} |Request Completion Date {self.schedule_time} | Created by {self.creator.username} @ {self.date_submitted} "
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and not self.reference_tag:
+            # Get school acronym from user's profile
+            school_acronym = self.creator.profile.school_acronym if self.creator and hasattr(self.creator, 'profile') else 'GEN'
+            self.reference_tag = f"{school_acronym}-{self.id}"
+            super().save(update_fields=['reference_tag'])
 
 
 class Email(models.Model):

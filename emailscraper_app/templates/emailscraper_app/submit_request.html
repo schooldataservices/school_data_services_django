@@ -23,22 +23,37 @@
 
 {% block content %}
   <h1 class="submit-request-header">Submit Request</h1>
-  
-  <!-- Display success message if available -->
-  {% if success_message %}
-    <div class="alert alert-success">
-      {{ success_message }}
-    </div>
-  {% endif %}
 
-  {% if error_message %}
-    <div class="alert alert-danger">
-        {{ error_message }}
-    </div>
-  {% endif %}
-  
-  <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+
+    <!-- Display success message if available -->
+    {% if success_message %}
+        <div class="alert alert-success">
+        {{ success_message }}
+        </div>
+    {% endif %}
+
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    
+    <div class="form-group">
+            <label for="id_request_title">Request Title</label>
+            <input type="text"
+                name="request_title"
+                id="id_request_title"
+                class="form-control"
+                value="{{ form.request_title.value|default:'' }}"
+                placeholder="Short descriptive title for the request"
+                required>
+            {% if form.request_title.errors %}
+            <span class="error-message text-danger">{{ form.request_title.errors.0 }}</span>
+            {% endif %}
+        </div>
+  
     
     <div class="email-content-container">
       <!-- Email Content Field -->
@@ -56,6 +71,7 @@
     </div>
 
     <div class="email-config-container">
+
         <!-- Priority Status Field -->
         <div class="form-group">
             <label for="id_priority_status">Priority Status</label>

@@ -206,8 +206,6 @@ def create_request_config(request):
                 else:
                     schedule_time = schedule_time.astimezone(central)
 
-                print('Here is the schedule time in Central Time:', schedule_time)
-
                 add_to_google_calendar(
                     summary=f"Request {request_config.id} - {request_config.creator.username}",
                     description=calendar_description,
@@ -413,76 +411,79 @@ def create_notifications(logged_in_user, selected_user_username, request_id, use
 
 @login_required
 def historical_requests(request):
-    keyword = request.GET.get('keyword', '')
-    request_id = request.GET.get('id')  # Get the request ID from the query string
-    user_id = request.GET.get('user_id')  # Get the selected user ID
+    keyword    = request.GET.get('keyword', '').strip()
+    request_id = request.GET.get('id')
+    user_id    = request.GET.get('user_id')
 
-    # print(f"Debug: request_id = {request_id}")  # Debugging
-    # print(f"Debug: request.GET = {request.GET}")  # Debugging
-
-    # Validate user_id
+    # Normalize user_id
     try:
         user_id = int(user_id) if user_id and user_id != 'None' else None
     except ValueError:
         user_id = None
 
-    # Determine the base queryset
+    # Base queryset (with creator + profile for efficiency)
     if request.user.is_superuser:
-        base_queryset = RequestConfig.objects.all()
+        base_queryset = RequestConfig.objects.select_related('creator__profile')
         users = User.objects.all()
-        if user_id:  # Filter by the selected user
+        if user_id:
             base_queryset = base_queryset.filter(creator_id=user_id)
     else:
-        base_queryset = RequestConfig.objects.filter(creator=request.user)
+        base_queryset = RequestConfig.objects.select_related('creator__profile').filter(creator=request.user)
         users = None
 
-    # Apply keyword filtering
+    # Keyword search across title + content + reference_tag
     if keyword:
-        base_queryset = base_queryset.filter(email_content__icontains=keyword)
+        base_queryset = base_queryset.filter(
+            Q(request_title__icontains=keyword) |
+            Q(email_content__icontains=keyword) |
+            Q(reference_tag__icontains=keyword)
+        )
 
-    # Get all request IDs for the filtered queryset
-    all_request_ids = list(base_queryset.values_list('id', flat=True).order_by('id'))
+    # Order by id (stable navigation)
+    base_queryset = base_queryset.order_by('id')
 
-    # Default to the lowest request ID if no request_id is provided
-    if not request_id and all_request_ids:
-        request_id = all_request_ids[0]  # Set to the first ID in the list
+    # For the dropdown we want full objects (not just ids)
+    all_requests = list(
+        base_queryset 
+    )
 
-    # Convert request_id to an integer
+    # Default request_id = first available if none provided
+    if not request_id and all_requests:
+        request_id = all_requests[0].id
+
+    # Convert provided request_id
     try:
         request_id_int = int(request_id) if request_id else None
     except ValueError:
         request_id_int = None
 
-    # Get the specific request object
+    # Current request object
+    request_obj = None
     if request_id_int:
-        try:
-            request_obj = get_object_or_404(base_queryset, id=request_id_int)
-        except Exception:
-            request_obj = None
-    else:
-        request_obj = None
+        request_obj = next((r for r in all_requests if r.id == request_id_int), None)
 
-    # Determine prev_id and next_id
+    # Prev / Next logic (by index in all_requests)
     prev_id = next_id = None
-    if request_id_int in all_request_ids:
-        current_index = all_request_ids.index(request_id_int)
-        if current_index > 0:
-            prev_id = all_request_ids[current_index - 1]
-        if current_index < len(all_request_ids) - 1:
-            next_id = all_request_ids[current_index + 1]
+    if request_obj:
+        idx = next(i for i, r in enumerate(all_requests) if r.id == request_obj.id)
+        if idx > 0:
+            prev_id = all_requests[idx - 1].id
+        if idx < len(all_requests) - 1:
+            next_id = all_requests[idx + 1].id
 
-    # print(f"Debug: all_request_ids = {all_request_ids}")
-    # print(f"Debug: prev_id = {prev_id}, next_id = {next_id}")
-
-    return render(request, 'emailscraper_app/historical_requests.html', {
-        'request_obj': request_obj,
-        'all_request_ids': all_request_ids,
-        'prev_id': prev_id,  # Pass prev_id to the template
-        'next_id': next_id,  # Pass next_id to the template
-        'keyword': keyword,
-        'users': users,
-        'selected_user_id': user_id,  # Pass the selected user ID to the template
-    })
+    return render(
+        request,
+        'emailscraper_app/historical_requests.html',
+        {
+            'request_obj': request_obj,
+            'all_requests': all_requests,   # NEW: objects for select
+            'prev_id': prev_id,
+            'next_id': next_id,
+            'keyword': keyword,
+            'users': users,
+            'selected_user_id': user_id,
+        }
+    )
 
 @login_required
 def get_next_request_id(request):

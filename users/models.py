@@ -8,6 +8,15 @@ from .gcs_storage import CustomGoogleCloudStorage  # Assuming this is where your
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='profile_pics', storage=CustomGoogleCloudStorage())
+    school_acronym = models.CharField(
+        max_length=10,
+        blank=True,
+        choices=[
+            ('ICEF', 'ICEF'), #key is stored in db, value is displayed in form
+            ('IOTA', 'IOTA'),
+            ('OTHER', 'OTHER'),
+        ]
+    )
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -18,7 +27,6 @@ class Profile(models.Model):
 
         # Ensure an image is assigned before saving
         if not self.image or not self.image.name:
-            # print("No profile image found, using default.")
             self.image = "profile_pics/default.jpg"
 
         # Update user and image field if existing instance of Profile model, otherwise update

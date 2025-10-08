@@ -238,6 +238,7 @@ body {
     border: 1px solid #ccc; /* Add a border */
     border-radius: 4px; /* Add rounded corners */
     box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    height: auto; /* Allow height to adjust */
 }
 
 /* Align the profile page content to the left */
@@ -282,6 +283,7 @@ body {
     width: 175%; /* Ensure the input boxes take up the full width of their container */
     max-width: 600px; /* Set a maximum width for the input boxes */
     box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    height: auto;
 }
 
 /* Style for the legend element */

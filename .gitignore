@@ -7,3 +7,4 @@ media/
 *.ipynb
 venv/
 htmlcov/
+notes.txt

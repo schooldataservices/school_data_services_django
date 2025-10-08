@@ -5,14 +5,26 @@ from .models import Profile
 from .widgets import CustomClearableFileInput
 from captcha.fields import ReCaptchaField
 
+SCHOOL_CHOICES = [('', 'Select School')] + list(Profile._meta.get_field('school_acronym').choices)
 
 class UserRegisterForm(UserCreationForm):
     captcha = ReCaptchaField(error_messages={'required': 'Please complete the CAPTCHA to register.'})
     email = forms.EmailField(required=True)
+    school_acronym = forms.ChoiceField(
+        choices=SCHOOL_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True
+    )
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'captcha']
+        fields = ['username', 'email', 'school_acronym', 'password1', 'password2', 'captcha']
+
+    def clean_school_acronym(self):
+        val = self.cleaned_data.get('school_acronym', '').strip()
+        if not val:
+            raise forms.ValidationError("Please select a school acronym.")
+        return val
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -30,36 +42,29 @@ class UserUpdateForm(forms.ModelForm):
 
 class ProfileUpdateForm(forms.ModelForm):
     image = forms.ImageField(required=False, widget=CustomClearableFileInput(attrs={'initial_text': 'Profile picture'}))
+    school_acronym = forms.ChoiceField(
+        choices=SCHOOL_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False
+    )
 
     class Meta:
         model = Profile
-        fields = ['image']
+        fields = ['image', 'school_acronym']
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
-        if image:
-            if hasattr(image, 'content_type'):
-                if not image.content_type.startswith('image'):
-                    raise forms.ValidationError("File is not a valid image.")
+        if image and hasattr(image, 'content_type') and not image.content_type.startswith('image'):
+            raise forms.ValidationError("File is not a valid image.")
         return image
 
 class CustomAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
-
-        # print('Calling confirm login allowed')
-
-        # print(f"User info - Username: {user.username}, Email: {user.email}, Is Active: {user.is_active}, Last Login: {user.last_login}")
-
-
-
-        # print(f"confirm_login_allowed called for user: {user.username}")
         if not user.is_active:
-            print("User is inactive")
             raise forms.ValidationError(
                 "Your account is inactive. Please check your email to activate your account.",
                 code='inactive',
             )
-        # print("User is active")
 
 
 

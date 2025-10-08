@@ -5,9 +5,6 @@ from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
 class RequestConfigForm(forms.ModelForm):
-    class Meta:
-        model = RequestConfig
-        fields = ['priority_status', 'schedule_time', 'email_content', 'completion_status']
 
     priority_status = forms.ChoiceField(
         choices=RequestConfig.PRIORITY_CHOICES,  # Ensure this matches your model choices
@@ -26,9 +23,21 @@ class RequestConfigForm(forms.ModelForm):
         widget=CKEditorUploadingWidget(),
         label='Email Content',
         required=True,
+        initial='',
         error_messages={'required': 'Email content is required.'}
     )
 
+    request_title = forms.CharField(
+        max_length=150,
+        label="Request Title",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter a short title'}),
+        required=True,
+        error_messages={'required': 'Request title is required.'}
+    )
+
+    class Meta:
+        model = RequestConfig
+        fields = ['request_title', 'priority_status', 'schedule_time', 'email_content', 'completion_status']
 
 
 
