@@ -1,4 +1,4 @@
-{% extends 'emailscraper_app/base.html' %}
+{% extends 'sds_app/base.html' %}
 {% load crispy_forms_tags %}
 
 {% block meta_description %}
@@ -47,3 +47,8 @@
     {% endif %}
 </div>
 {% endblock content %}
+
+
+{% block footer %}
+    <!-- Set here to block inheritance -->
+{% endblock %}

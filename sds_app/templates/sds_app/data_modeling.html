@@ -1,0 +1,114 @@
+{% extends 'sds_app/base.html' %}
+{% load static %}
+
+{% block head %}
+{{ block.super }}
+<title>Data Modeling for Schools | School Data Services</title>
+<meta name="description" content="Learn how School Data Services uses data modeling to organize, normalize, and optimize school data for accuracy, scalability, and actionable insights.">
+
+<meta property="og:title" content="Data Modeling for Schools | School Data Services">
+<meta property="og:description" content="Discover how data modeling eliminates redundancy, improves accuracy, and enables schools to make data-driven decisions for student success and operational efficiency.">
+<meta property="og:image" content="https://storage.googleapis.com/django_hosting/base_images/data-modeling-example.png">
+<meta property="og:url" content="https://schooldataservices.com/data_modeling/">
+<meta property="og:type" content="website">
+{% endblock head %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
+{% endblock %}
+
+{% block toc_toggle_button %}
+    <button id="toc-toggle">☰</button>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid"> <!-- Changed to container-fluid for full-width -->
+    <div class="row">
+        <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
+            <div class="content-wrapper">
+            
+                <!-- Data Modeling Section -->
+                <section id="data-modeling">
+                    <h2 class="section-heading text-center">Data Management Made Simple</h2>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 problem-box">
+                                <p>
+                                    Effective data management is essential for ensuring accurate data. We take into account the process of updating with year over year changes, and aggregating data across various sources.
+                                     <strong>Data Modeling</strong>, eliminates redundancy and mess, making it easier to analyze and understand.
+                                </p>
+
+                                <ul>
+                                    <li><strong>Example Below -</strong> Think of data modeling as organizing student attendance and a dimension of time into clear, separate categories, and then linking the tables together on specific columns. </li>
+                                    <li> <strong>Scalability -</strong> This schema allows for scalability when a certain table values change year over year. We only need to change values in one area, rather than having them sprinkled across multiple tables </li>
+                                    <li><strong>Accuracy -</strong> As data is normalized and column values become predictable, we can identify outliers, duplicates, nulls, or values not within range for certain columns. We go the extra mile for data accuracy.</li> 
+                                    <li><strong>Reuseablity -</strong>Tables can be re-used amongst other queries, putting an emphasis on efficiency.</li>
+                                </ul>
+
+                                <div class="text-center">
+                                    {% include "sds_app/normalized_table.html" %}
+                                </div>
+
+                                <h3 style="padding-top: 20px;">Measurable Outcomes from Organized Data</h3>
+                                <p>
+                                    Measurable metrics allow you to identify areas for improvement, monitor progress over time, and make data-driven decisions that directly support student success and school efficiency.
+                                    By using organized and reliable data models, we can track measurable outcomes that directly impact the success of your school:
+                                </p>
+                                <ul>
+                                    <li><strong>Improved Student Performance:</strong> Track GPA and attendance trends, how attendance affects grades, and monitor graduation rates.</li>
+                                    <li><strong>Operational Efficiency:</strong> Save time by automating reporting, and reduce errors in manual data handling.</li>
+                                    <li><strong>Resource Optimization:</strong> Track and manage budgets, staff allocation, and ensure that resources are being used effectively.</li>
+                                </ul>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div> <!-- Close content-wrapper here -->  
+        </div>
+    </div>
+</div>
+
+{% include "sds_app/toc.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/toc_toggles.js' %}"></script>
+{{ block.super }}
+{% endblock extra_js %}
+
+{% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/schooldataservices" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github_logo_black.svg" alt="GitHub" class="github-logo">
+      </a>
+
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+      </a>
+
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#fff',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button' // Add custom class
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
+{% endblock footer %}

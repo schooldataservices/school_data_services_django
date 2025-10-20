@@ -7,8 +7,8 @@ from django.contrib.auth import get_user_model
 from django.core import mail
 from django.middleware.csrf import CsrfViewMiddleware
 from django.test.client import RequestFactory
-from emailscraper_app.models import RequestConfig
-from emailscraper_app.forms import RequestConfigForm
+from sds_app.models import RequestConfig
+from sds_app.forms import RequestConfigForm
 from unittest.mock import patch
 from django.utils import timezone
 from datetime import timedelta

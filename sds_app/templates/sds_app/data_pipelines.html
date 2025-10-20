@@ -1,0 +1,122 @@
+{% extends 'sds_app/base.html' %}
+{% load static %}
+
+{% block head %}
+{{ block.super }}
+<title>Data Pipelines and Orchestration | School Data Services</title>
+<meta name="description" content="Learn how School Data Services builds efficient data pipelines using tools like Apache Airflow, Google BigQuery, and CI/CD processes to ensure data accuracy and scalability.">
+
+<meta property="og:title" content="Data Pipelines and Orchestration | School Data Services">
+<meta property="og:description" content="Discover how School Data Services automates data workflows with Apache Airflow, processes data for accuracy, and stores it in Google BigQuery for analysis and reporting.">
+<meta property="og:image" content="https://storage.googleapis.com/django_hosting/base_images/data-pipeline-final.png">
+<meta property="og:url" content="https://schooldataservices.com/data_pipelines">
+<meta property="og:type" content="website">
+{% endblock head %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
+<link rel="stylesheet" href="{% static 'css/data_pipelines.css' %}">
+{% endblock %}
+
+{% block toc_toggle_button %}
+    <button id="toc-toggle">☰</button>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content-wrapper">
+                <section id="data-pipelines">
+                    <h2 class="section-heading text-center">Data Pipelines and Orchestration</h2>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 problem-box">
+
+                                <div class="text-center">
+                                    <img src="https://storage.googleapis.com/django_hosting/base_images/data-pipeline-final.png" 
+                                         alt="Data Pipeline Diagram" 
+                                         class="data-pipeline-image">
+                                </div>
+
+
+
+                                <h3>Data Collection 📥</h3>
+                                <p>We gather raw data from given sources using:</p>
+                                <ul>
+                                    <li>APIs (Google Classroom, Illuminate, etc.)</li>
+                                    <li>SFTP Transfers (Secure file sharing from district systems)</li>
+                                    <li>Web Scraping (Extracting data from websites if direct integration isn’t available)</li>
+                                </ul>
+                                
+                                <h3>Data Processing & Transformation 🔄</h3>
+                                <p>Raw data is cleaned, standardized, and structured into meaningful tables. We validate the data to prevent errors and inconsistencies.</p>
+                                
+                                <h3>
+                                    Orchestration with Apache Airflow 
+                                    <img src="https://storage.googleapis.com/django_hosting/base_images/Apache%20Airflow.svg" 
+                                         alt="Apache Airflow Logo" 
+                                         class="airflow-logo">
+                                </h3>
+                                <p>
+                                    Airflow schedules and automates the entire data workflow. Each step is tracked from data gathering, to transformation, to accuracy checks. This ensures that data flows efficiently and correctly. If an issue occurs, Airflow automatically alerts stakeholders via email.
+                                </p>
+                                
+                                <h3>Continuous Integration & Continuous Development for Quality Assurance ✅</h3>
+                                <p>Before data pipelines go live, our CI/CD process runs automated tests on the codebase to check for data integrity. Any failed tests stop data pipelines from being deployed. This ensures accurate and reliable school metrics.</p>
+                                
+                                <h3>Storage & Analysis in BigQuery 📊</h3>
+                                <p>Processed data is stored in Google BigQuery, allowing fast and scalable queries. Data is linked across different sources to comply with data modeling, and create comprehensive views upon request.</p>
+                                
+                                <h3>Reporting & Visualization 📈</h3>
+                                <p>Analysts are able to hook up to data sources in order to create dashboards in Looker, Tableau, Power BI, Google Data Studio, or directly in Google Sheets making insights easy to understand. Schools can filter, analyze, and track trends over time.</p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "sds_app/toc.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/toc_toggles.js' %}"></script>
+{{ block.super }}
+{% endblock extra_js %}
+
+{% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/schooldataservices" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github_logo_black.svg" alt="GitHub" class="github-logo">
+      </a>
+
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+      </a>
+
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#fff',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button'
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
+{% endblock footer %}

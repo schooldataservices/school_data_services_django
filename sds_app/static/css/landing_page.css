@@ -1,0 +1,161 @@
+
+
+.svg-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    max-width: 900px; /* Limit the width of the SVG container */
+    margin: 0 auto;
+    padding-bottom: 0;
+    overflow: auto;
+    height: 100%;
+}
+
+.svg-container svg {
+    width: 100%; /* Make SVG responsive, but limited to the container's max-width */
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+
+.svg-container .extract, .svg-container .transform, .svg-container .load {
+    fill: #14539293 !important; /* Ensure the fill color is applied */
+    stroke: #000 !important; /* Ensure the stroke color is applied */
+    stroke-width: 2 !important; /* Ensure the stroke width is applied */
+}
+
+.svg-container a {
+    text-decoration: none; /* Disable underline */
+}
+
+.svg-container a:hover {
+    text-decoration: none; /* Ensure no underline on hover */
+}
+
+.responsive-svg {
+    width: 100%; /* Scale the SVG to fit the container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Remove inline spacing */
+}
+
+.main-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: rgb(0, 0, 0);
+}
+
+@keyframes fade {
+    0% { opacity: 0.3; }
+    33% { opacity: 1; }
+    66% { opacity: 0.3; }
+    100% { opacity: 0.3; }
+}
+
+.extract {
+    animation: fade 9s infinite;
+}
+.transform {
+    animation: fade 9s infinite;
+    animation-delay: 3s;
+}
+.load {
+    animation: fade 9s infinite;
+    animation-delay: 6s;
+}
+
+
+
+
+/* Adjust the paragraph's spacing */
+.top-paragraph {
+    align-self: flex-start; /* Align the paragraph to the top */
+    margin-top: 0; /* Remove default margin */
+    padding-top: 30px; /* Remove padding */
+    font-size: 16px; /* Adjust font size */
+    line-height: 1.6; /* Improve readability */
+    width: 100%; /* Optional: Set width for the paragraph */
+    
+}
+
+
+.paragraph-below {
+    margin-top: 15px; /* Add spacing between the sections */
+}
+
+.top-paragraph strong:nth-of-type(2) {
+    display: block; /* Ensure it starts on a new line */
+    margin-top: 35px; /* Add spacing above the second <strong> element */
+}
+
+@media (max-width: 767px) {
+    .svg-container {
+        display: flex;
+        flex-direction: column-reverse; /* Reverse the order: SVG on top */
+        align-items: center; /* Center items horizontally */
+        width: 100%; /* Adjust width for mobile */
+        height: auto; /* Allow height to adjust */
+
+    }
+
+    .svg-container svg {
+        width: 100%; /* Make the SVG responsive */
+        height: auto; /* Maintain aspect ratio */
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .top-paragraph {
+        text-align: center; /* Center-align the text for better readability */
+        margin-top: -100px;
+        width: 100%; /* Ensure the paragraph takes full width */
+    }
+    
+}
+
+.background-box {
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+
+.animated-underline {
+    display: inline-block;
+    position: relative;
+}
+.animated-underline::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #64646465, #14539293);  
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    border-radius: 3px;
+    animation: underline-grow 2s ease;
+}
+@keyframes underline-grow {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.highlight-bg {
+    background: linear-gradient(90deg, #e6f0fa 10%, #14539293 100%);
+    display: inline-block;
+    padding: 0.2em 1em;
+    border-radius: 10px;
+}
+
+
+.content-wrapper {
+    background: linear-gradient(135deg, #e6f0fa 0%, #14539293 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(20, 83, 146, 0.08);
+    padding: 48px 32px;
+    margin-top: 32px;
+}
+

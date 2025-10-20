@@ -22,10 +22,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variable for Cloud Run
 ENV PORT=8080
-ENV DJANGO_SETTINGS_MODULE=emailscraper_proj.settings
+ENV DJANGO_SETTINGS_MODULE=sds_proj.settings
 EXPOSE 8080
 
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8080 --timeout 60 --workers 2 emailscraper_proj.wsgi:application"]
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8080 --timeout 60 --workers 2 sds_proj.wsgi:application"]
 
 
 

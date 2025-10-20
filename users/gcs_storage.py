@@ -3,7 +3,7 @@ from django.core.files.storage import Storage
 from google.cloud import storage
 import json
 from google.oauth2 import service_account
-from emailscraper_proj.settings import django_hosting_json_file
+from sds_proj.settings import django_hosting_json_file
 
 # Authentication
 def get_gcs_client():

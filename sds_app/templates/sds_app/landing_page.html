@@ -1,0 +1,149 @@
+{% extends 'sds_app/base.html' %}
+{% load static %}
+
+{% block meta_description %}
+<meta name="description" content="Helping schools automate data ingestion and centralize student data using Google Cloud.">
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<title>School Data Services | Data Engineering Services, ETL, & Google Cloud Data Warehousing for Schools K-12</title>
+<meta property="og:title" content="School Data Services | Data Engineering for Schools">
+<meta property="og:description" content="Helping schools automate data ingestion and centralize student data using Google Cloud.">
+<meta property="og:url" content="https://schooldataservices.com">
+<meta property="og:type" content="website">
+{% endblock head %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/intro_functionality.css' %}">
+{% endblock %}
+
+{% block toc_toggle_button %}
+    <button id="toc-toggle">☰</button>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid"> <!-- Changed to container-fluid for full-width -->
+    <div class="row">
+        <div class="col-md-12"> <!-- Changed to col-md-12 to take full width -->
+            <div class="content-wrapper">
+
+                <div>
+                    <div class="text-center">
+                        <h1 class="main-heading animated-underline">Data Engineering <br> Designed for Schools</h1>
+                    </div>
+        
+                    <div class="text-center">
+                        <p>
+                            <strong>We organize, clean, and centralize school data in one cloud-based location, so you can focus on the insights that matter most.</strong>
+                        </p>
+                    </div>
+                </div>
+           
+               <!-- SVG Code -->
+               <div class="svg-container background-accent" style="position: relative;">
+                    
+                    <p class="top-paragraph background-box">
+                        <strong>School Data Services simplifies the process of data management with automated ETL methods and leverages Google Cloud Platform for seamless integration and scalability. <br><br>
+                         Our data pipelines, and databases are customized to save time, reduce errors, and improve operational efficiency, enabling educators to focus on what matters most—student success.</strong>
+                    
+                        <strong>Ready to transform your school's data management? 
+                            <a href="mailto:schooldataservices.info@gmail.com" class="cta-link">
+                                Contact us today
+                            </a> 
+                            to learn more!
+                        </strong>
+                    </p>
+
+        
+   
+                <svg viewBox="0 0 800 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Gradient Definition -->
+                    <defs>
+                      <linearGradient id="boxGradient" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#14539295"/>
+                        <stop offset="100%" stop-color="#14539293"/>
+                      </linearGradient>
+                      <marker id="arrow" markerWidth="12" markerHeight="10" refX="12" refY="5" orient="auto">
+                        <polygon points="0 0, 12 5, 0 10" fill="black"/>
+                      </marker>
+                    </defs>
+
+                    <!-- Extract -->
+                    <a href="{% url 'data_pipelines' %}" target="_self">
+                        <rect x="25%" y="5%" width="50%" height="15%" fill="url(#boxGradient)" stroke="none" rx="12"/>
+                        <text x="50%" y="12%" font-size="44" font-family="Arial" fill="white" text-anchor="middle">Extract</text>
+                        <text x="50%" y="17%" font-size="30" font-family="Arial" fill="white" text-anchor="middle">(SIS, Vendors, Testing Data)</text>
+                    </a>
+                    <image href="https://storage.googleapis.com/django_hosting/base_images/SHOVEL-BUTTON.png" x="60%" y="6%" width="7%" height="7%" />
+
+                    <!-- Transform -->
+                    <a href="{% url 'data_modeling' %}" target="_self">
+                        <rect x="25%" y="30%" width="50%" height="15%" fill="url(#boxGradient)" stroke="none" rx="12"/>
+                        <text x="50%" y="37%" font-size="44" font-family="Arial" fill="white" text-anchor="middle">Transform</text>
+                        <text x="50%" y="42%" font-size="30" font-family="Arial" fill="white" text-anchor="middle">(Processing, ETL)</text>
+                    </a>
+                    <image href="https://storage.googleapis.com/django_hosting/base_images/GEAR-BUTTON.png" x="63%" y="30%" width="8%" height="8%" />
+
+                    <!-- Load -->
+                    <a href="{% url 'cloud_setup' %}" target="_self">
+                        <rect x="25%" y="55%" width="50%" height="15%" fill="url(#boxGradient)" stroke="none" rx="12"/>
+                        <text x="50%" y="62%" font-size="44" font-family="Arial" fill="white" text-anchor="middle">Load</text>
+                        <text x="50%" y="67%" font-size="30" font-family="Arial" fill="white" text-anchor="middle">(Cloud Database, Insights)</text>
+                    </a>
+                    <image href="https://storage.googleapis.com/django_hosting/base_images/gcp_vectorized.png" x="63%" y="56%" width="7%" height="7%" />
+
+                    <!-- Arrows -->
+                    <line x1="50%" y1="20%" x2="50%" y2="30%" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                    <line x1="50%" y1="45%" x2="50%" y2="55%" stroke="black" stroke-width="4" marker-end="url(#arrow)"/>
+                </svg>
+            </div> <!-- Close content-wrapper here -->  
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "sds_app/toc.html" %}
+
+{% endblock content %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="{% static 'js/toc_toggles.js' %}"></script>
+{% endblock extra_js %}
+
+{% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/schooldataservices" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github_logo_black.svg" alt="GitHub profile for School Data Services" class="github-logo">
+      </a>
+
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="Email for School Data Services">
+      </a>
+
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <div id="calendar-button-container"></div>
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#fff',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button'
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
+{% endblock footer %}

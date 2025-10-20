@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap 4.6.2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous">
+    </script>
+
+    <script 
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" 
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" 
+        crossorigin="anonymous">
+    </script>
+
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" 
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" 
+        crossorigin="anonymous">
+    </script>
+
+    {% block meta_description %}
+    <meta name="description" content="School Data Services - Helping Schools Make Data Flow Easy">
+    {% endblock %}
+    <title>{% block title %}School Data Services{% endblock %}</title>
+
+    <link rel="shortcut icon" href="https://storage.googleapis.com/django_hosting/base_images/SDS-BUTTON.png" type="image/png">
+
+    <!-- Allow pages to override or add to the head -->
+    {% block head %}
+    <meta name="author" content="School Data Services">
+    {% endblock head %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% block extra_css %}
+    <!-- Additional CSS files can be added here -->
+    {% endblock %}
+</head>
+<body>
+
+<!-- Navigation bar -->
+<div class="navbar" id="main-navbar">
+    <div class="navbar-left">
+        <div class="header-container">
+            <h1 class="header-title">
+                <a href="{% url 'landing_page' %}" class="outlined-text">School Data Services</a>
+                <br>
+                <small class="text-muted closer-text">Helping Schools Make Data Flow Easy.</small>
+            </h1>
+                <img src="https://storage.googleapis.com/django_hosting/base_images/cloud-database-secondary.png" alt="cloud-db" class="cloud-db-logo">
+        </div>
+       <p class="tagline">
+            {% block toc_toggle_button %}{% endblock %}
+        </p>
+    </div>
+    <div class="navbar-right">
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'landing_page' %}">Home</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'landing_page' %}">Home</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+        <!-- For alignment purposes -->
+        {% if user.is_authenticated %} 
+
+        <div class="profile-container">
+            <a class="nav-link dropdown-toggle" href="#" id="requestsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Requests
+            </a>
+        </div>
+
+        <div class="profile-container">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img class="rounded-circle account-img" src="{{ user.profile.image.url }}" style="width: 70px; height: 70px;">
+                <span id="notificationBadge" class="badge badge-danger" style="display: none;">0</span>
+            </a>
+        </div>
+        
+        {% else %}
+        <div class="profile-container">
+            <a class="nav-link dropdown-toggle" href="#" id="requestsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Requests
+            </a>
+        </div>
+        {% endif %}
+        
+    </div>
+</div>
+
+<div class="dropdown-menu dropdown-menu-right" id="requestsDropdownMenu" aria-labelledby="requestsDropdown">
+    <a class="dropdown-item" href="{% url 'submit-requests' %}">Submit Request</a>
+    <a class="dropdown-item" href="{% url 'historical_requests' %}">Historical Requests</a>
+    <a class="dropdown-item" href="{% url 'data_pipelines_metadata' %}">My Data Pipelines</a>
+</div>
+
+<div id="profileDropdownMenu" class="dropdown-menu profile-dropdown" aria-labelledby="profileDropdown">
+    <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="dropdown-item">Logout</button>
+    </form>
+    <div class="dropdown-divider"></div>
+    <div id="notificationsArea">
+        <h6 class="dropdown-header">Notifications</h6>
+        <div id="notificationsList">
+            <p class="dropdown-item text-muted">No new notifications</p>
+        </div>
+    </div>
+</div>
+
+<!-- Content block -->
+<div class="content">
+    <!-- Display success and error messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == 'warning' %}
+                    <div class="alert alert-warning">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == 'info' %}
+                    <div class="alert alert-info">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-secondary">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+
+{% block footer %}
+<div class="contact-content-container">
+  <div class="contact-content">
+      <a href="https://github.com/schooldataservices" target="_blank" class="github-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/github_logo_black.svg" alt="GitHub" class="github-logo">
+      </a>
+
+      <a href="mailto:schooldataservices.info@gmail.com" class="gmail-link">
+          <img src="https://storage.googleapis.com/django_hosting/base_images/gmail-icon.png" alt="email">
+      </a>
+
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+      <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+      <script>
+        (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                    url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1YEbyOgaX3uivrz4uynx7FLP68WD7OZxcaoi2sH003T2gLao95wSfPzkUckhMAeY-mcsJ_dEj8?gv=true',
+                    color: '#333',
+                    label: 'Get in Touch',
+                    target,
+                    className: 'custom-calendar-button' // Add custom class
+                });
+            });
+        })();
+      </script>
+  </div>
+</div>
+{% endblock %}
+
+
+<!-- Additional js file can be added here -->
+{% block extra_js %}
+<script src="{% static 'js/profile_dropdown_functionality.js' %}"></script>
+{% endblock extra_js %}
+
+</body>
+</html>
+
+
+
